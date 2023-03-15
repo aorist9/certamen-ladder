@@ -1,0 +1,50 @@
+.letter-display {
+	font-size: 100pt;
+}
+
+.draw-section {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+.draw-button {
+	min-height: 4rem;
+	min-width: 4rem;
+}
+
+.draw .teams {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: 5em;
+	row-gap: 3em;
+	margin-top: 3em;
+}
+
+.draw ul {
+	list-style: none;
+}
+
+.draw .team-display {
+	display: flex;
+}
+
+.draw div.letter {
+	min-width: 4em;
+}
+
+.draw div.team {
+	min-width: 15em;
+}
+
+.draw .teams ul,
+.draw .teams li {
+	border: 1px solid black;
+	padding-inline-start: 0px;
+}
+
+.draw .button-section {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
