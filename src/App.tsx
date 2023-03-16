@@ -14,7 +14,7 @@ function App() {
 			<header className="App-header">
 				<h1>Certamen Ladder</h1>
 			</header>
-			<BrowserRouter>
+			<BrowserRouter basename={process.env.PUBLIC_URL}>
 				<section style={{ display: "flex" }}>
 					<Sidebar />
 					<article style={{ flexGrow: 3 }}>
