@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CreateLadder from "./CreateLadder";
@@ -16,9 +16,9 @@ jest.mock("react-router-dom", () => ({
 
 const renderCreateLadder = () =>
 	render(
-		<BrowserRouter>
+		<HashRouter>
 			<CreateLadder />
-		</BrowserRouter>
+		</HashRouter>
 	);
 
 describe("CreateLadder", () => {

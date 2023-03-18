@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import ViewLadders from "./ViewLadders";
 import userEvent from "@testing-library/user-event";
 import ladderService from "../services/ladderService";
@@ -23,9 +23,9 @@ jest.mock("../services/ladderService", () => ({
 
 const renderViewLadders = () => {
 	render(
-		<BrowserRouter>
+		<HashRouter>
 			<ViewLadders />
-		</BrowserRouter>
+		</HashRouter>
 	);
 };
 
