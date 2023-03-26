@@ -26,6 +26,7 @@ const RandomDraw = (props: DrawProps) => {
 			let availableLetters = letters.slice(0, splitTeams.length);
 			return mapTeamsToObject(splitTeams, availableLetters);
 		});
+		// eslint-disable-next-line
 	}, [teams]);
 
 	return (

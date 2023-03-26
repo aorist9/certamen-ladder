@@ -29,6 +29,7 @@ const OldFashionedDraw = (props: DrawProps) => {
 
 	useEffect(() => {
 		props.setDrawFunction(() => mapTeamsToObject(rows));
+		// eslint-disable-next-line
 	}, [rows]);
 
 	return (

@@ -13,6 +13,7 @@ const Draw = (props: DrawProps) => {
 
 	useEffect(() => {
 		props.setDrawFunction(() => teams);
+		// eslint-disable-next-line
 	}, [teams]);
 
 	useEffect(() => {
