@@ -48,3 +48,48 @@
 	justify-content: center;
 	flex-direction: column;
 }
+
+.tabs {
+	padding: 1.5rem;
+	border: solid lightgrey;
+	border-width: 1px;
+	border-top-left-radius: 0.25rem;
+	border-top-right-radius: 0.25rem;
+}
+
+.tabs ul {
+	border-bottom: 1px solid lightgrey;
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	margin-bottom: 0;
+	padding-left: 0;
+}
+
+.tabs li {
+	display: list-item;
+}
+
+.tabs button {
+	margin-bottom: -1px;
+	background: 0 0;
+	border: 1px solid transparent;
+	border-top-left-radius: 0.25rem;
+	border-top-right-radius: 0.25rem;
+	display: block;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+}
+
+.tabs button.active,
+.tabs button.active:hover {
+	border-color: lightgrey lightgrey white;
+}
+
+.tabs button:hover {
+	border-color: rgb(211, 211, 211, 0.75);
+}
+
+.tabs input {
+	max-width: 6em;
+}

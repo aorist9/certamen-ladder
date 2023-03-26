@@ -32,7 +32,6 @@ describe("Draw", () => {
 			// @ts-ignore
 			ladderService.getLadder.mockReturnValue({
 				id: "123",
-				divisions: 7,
 				draw: 0,
 				name: "The LADDER!",
 				rounds: 17,
@@ -75,7 +74,6 @@ describe("Draw", () => {
 			userEvent.click(screen.getByText("Generate Ladder"));
 			expect(ladderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
-				divisions: 7,
 				draw: 0,
 				name: "The LADDER!",
 				rounds: 17,
@@ -95,7 +93,6 @@ describe("Draw", () => {
 			// @ts-ignore
 			ladderService.getLadder.mockReturnValue({
 				id: "123",
-				divisions: 7,
 				draw: 1,
 				name: "The LADDER!",
 				rounds: 17,
@@ -133,7 +130,7 @@ describe("Draw", () => {
 				done();
 			}, 51);
 			expect(screen.getByText("Team Name:")).toBeInTheDocument();
-			expect(screen.getByRole("button").textContent).toEqual("Save");
+			expect(screen.getByText("Save")).toBeInTheDocument();
 		});
 
 		test("should display the team name once saved", () => {
@@ -163,7 +160,6 @@ describe("Draw", () => {
 			userEvent.click(screen.getByText("Generate Ladder"));
 			expect(ladderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
-				divisions: 7,
 				draw: 1,
 				name: "The LADDER!",
 				rounds: 17,
@@ -185,7 +181,6 @@ describe("Draw", () => {
 			// @ts-ignore
 			ladderService.getLadder.mockReturnValue({
 				id: "123",
-				divisions: 7,
 				draw: 2,
 				name: "The LADDER!",
 				rounds: 17,
@@ -211,7 +206,6 @@ describe("Draw", () => {
 			userEvent.click(screen.getByText("Generate Ladder"));
 			expect(ladderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
-				divisions: 7,
 				draw: 2,
 				name: "The LADDER!",
 				rounds: 17,
@@ -226,6 +220,54 @@ describe("Draw", () => {
 				expect.arrayContaining(["Team", "Teamy", "Teamily", "Team team"])
 			);
 
+			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
+		});
+	});
+
+	describe("Multiple Divisions", () => {
+		beforeEach(() => {
+			// @ts-ignore
+			ladderService.getLadder.mockReturnValue({
+				id: "123",
+				divisions: 3,
+				draw: 2,
+				name: "The LADDER!",
+				rounds: 17,
+				type: 0
+			});
+		});
+
+		test("should show instructions on entering teams", () => {
+			renderDraw();
+			expect(
+				screen.getAllByText(
+					"Please enter team names in the text box. You can separate them with commas or new lines."
+				)
+			).toHaveLength(3);
+		});
+
+		test("should update the ladder and redirect to ladder page when teams are entered and generate ladder is clicked", () => {
+			renderDraw();
+			const textAreas: HTMLElement[] =
+				screen.getAllByPlaceholderText("Enter teams here");
+			userEvent.type(textAreas[0], "Team, Teamy\nTeamily, Team team");
+			userEvent.type(textAreas[1], "A, B\nY, G");
+			userEvent.type(textAreas[1], "X, Y, Z");
+			userEvent.click(screen.getByText("Generate Ladder"));
+			expect(ladderService.editLadder).toHaveBeenCalledWith({
+				id: "123",
+				divisions: 3,
+				draw: 2,
+				name: "The LADDER!",
+				rounds: 17,
+				type: 0,
+				teams: expect.anything()
+			});
+
+			expect(
+				// @ts-ignore
+				Object.values(ladderService.editLadder.mock.calls[0][0].teams)
+			).toHaveLength(3);
 			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
 		});
 	});

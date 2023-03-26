@@ -1,9 +1,8 @@
-import React from 'react';
-import DrawListItem from './DrawListItem';
+import React from "react";
+import DrawListItem from "./DrawListItem";
 
 type Props = {
 	teams: { [letter: string]: string };
-	addTeams: (teams: { [letter: string]: string }) => void;
 	removeTeam: (letter: string) => void;
 };
 
@@ -21,11 +20,6 @@ const ChooseDrawTeamsSection = (props: Props) => (
 					/>
 				))}
 		</ul>
-		<section className="button-section">
-			<button onClick={() => props.addTeams(props.teams)}>
-				Generate Ladder
-			</button>
-		</section>
 	</section>
 );
 

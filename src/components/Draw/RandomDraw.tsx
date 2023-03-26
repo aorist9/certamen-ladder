@@ -1,6 +1,12 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { DrawProps } from '../../routes/Draw';
-import { letters } from '../../constants';
+import React, {
+	ChangeEvent,
+	FormEvent,
+	useCallback,
+	useEffect,
+	useState
+} from "react";
+import { DrawProps } from "../../routes/Draw";
+import { letters } from "../../constants";
 
 const mapTeamsToObject = (
 	splitTeams: string[],
@@ -19,37 +25,30 @@ const mapTeamsToObject = (
 };
 
 const RandomDraw = (props: DrawProps) => {
-	const [teams, setTeams] = useState<string>('');
+	const [teams, setTeams] = useState<string>("");
+	useEffect(() => {
+		props.setDrawFunction(() => {
+			let splitTeams = teams.split(/\s*[,\n]\s*/);
+			let availableLetters = letters.slice(0, splitTeams.length);
+			return mapTeamsToObject(splitTeams, availableLetters);
+		});
+	}, [teams]);
 
 	return (
-		<section className="App-page draw">
-			Please enter team names in the text box. You can separate them with
-			commas or new lines.
-			<form
-				onSubmit={(e: FormEvent) => {
-					e.preventDefault();
-					let splitTeams = teams.split(/\s*[,\n]\s*/);
-					let availableLetters = letters.slice(0, splitTeams.length);
-					props.addTeams(
-						mapTeamsToObject(splitTeams, availableLetters)
-					);
-				}}
-			>
-				<section className="teams">
-					<textarea
-						value={teams}
-						onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-							setTeams(e.target.value)
-						}
-						rows={8}
-						cols={50}
-						placeholder="Enter teams here"
-					/>
-					<section className="button-section">
-						<button type="submit">Generate Ladder</button>
-					</section>
-				</section>
-			</form>
+		<section>
+			Please enter team names in the text box. You can separate them with commas
+			or new lines.
+			<section className="teams">
+				<textarea
+					value={teams}
+					onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+						setTeams(e.target.value)
+					}
+					rows={8}
+					cols={50}
+					placeholder="Enter teams here"
+				/>
+			</section>
 		</section>
 	);
 };

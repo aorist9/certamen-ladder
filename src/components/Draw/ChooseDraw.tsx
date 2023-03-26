@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import NumberInput from '../NumberInput';
-import { letters } from '../../constants';
-import { DrawProps } from '../../routes/Draw';
-import ChooseDrawTeamsSection from './ChooseDrawTeamsSection';
-import ChooseDrawTeamInput from './ChooseDrawTeamInput';
+import React, { useCallback, useEffect, useState } from "react";
+import NumberInput from "../NumberInput";
+import { letters } from "../../constants";
+import { DrawProps } from "../../routes/Draw";
+import ChooseDrawTeamsSection from "./ChooseDrawTeamsSection";
+import ChooseDrawTeamInput from "./ChooseDrawTeamInput";
 
 const Draw = (props: DrawProps) => {
 	const [numLetters, setNumLetters] = useState<number | undefined>(15);
-	const [displayLetter, setDisplayLetter] = useState<string>('A');
+	const [displayLetter, setDisplayLetter] = useState<string>("A");
 	const [chosenLetter, setChosenLetter] = useState<string | undefined>();
 	const [teams, setTeams] = useState<{ [key: string]: string }>({});
+
+	useEffect(() => {
+		props.setDrawFunction(() => teams);
+	}, [teams]);
 
 	useEffect(() => {
 		let timeout: NodeJS.Timeout;
@@ -22,13 +26,11 @@ const Draw = (props: DrawProps) => {
 				if (numLetters) {
 					setDisplayLetter(
 						lettersToChooseFrom[
-							Math.floor(
-								Math.random() * lettersToChooseFrom.length
-							)
+							Math.floor(Math.random() * lettersToChooseFrom.length)
 						]
 					);
 				} else {
-					setDisplayLetter('A');
+					setDisplayLetter("A");
 				}
 
 				if (!chosenLetter) {
@@ -42,7 +44,7 @@ const Draw = (props: DrawProps) => {
 	}, [chosenLetter, numLetters, teams]);
 
 	return (
-		<section className="App-page draw">
+		<section>
 			<NumberInput
 				id="number-of-letters"
 				label="How many letters should players choose from (it's okay if not all letters are picked)?"
@@ -77,7 +79,6 @@ const Draw = (props: DrawProps) => {
 			{Object.keys(teams).length ? (
 				<ChooseDrawTeamsSection
 					teams={teams}
-					addTeams={props.addTeams}
 					removeTeam={(letter: string) => {
 						let newTeams = { ...teams };
 						delete newTeams[letter];
@@ -85,7 +86,7 @@ const Draw = (props: DrawProps) => {
 					}}
 				/>
 			) : (
-				''
+				""
 			)}
 		</section>
 	);

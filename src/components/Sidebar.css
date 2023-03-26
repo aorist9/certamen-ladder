@@ -3,6 +3,7 @@
 	min-height: 100vh;
 	padding-top: 20px;
 	padding-right: 20px;
+	min-width: 12em;
 }
 
 .Sidebar a {

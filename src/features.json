@@ -1,5 +1,5 @@
 {
-	"multipleDivisions": false,
+	"multipleDivisions": true,
 	"swissLadder": false,
 	"pointsSwissLadder": false,
 	"chooseRounds": false

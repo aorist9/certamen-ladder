@@ -1,3 +1,5 @@
+type Teams = { [letter: string]: string };
+
 type LadderType = {
 	id: string;
 	divisions?: number;
@@ -5,7 +7,7 @@ type LadderType = {
 	name: string;
 	rounds: number;
 	type: number;
-	teams?: { [letter: string]: string };
+	teams?: Teams | { division: string; teams: Teams }[];
 };
 
 export default LadderType;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DrawProps } from "../../routes/Draw";
 import DrawInputTableRow, { DrawRow } from "./DrawInputTableRow";
 
@@ -26,8 +26,13 @@ const OldFashionedDraw = (props: DrawProps) => {
 		{},
 		{}
 	]);
+
+	useEffect(() => {
+		props.setDrawFunction(() => mapTeamsToObject(rows));
+	}, [rows]);
+
 	return (
-		<section className="App-page draw">
+		<section>
 			<section>
 				Please enter the teams as they draw. Don't worry about putting them in
 				order or filling up all the fields.
@@ -55,16 +60,6 @@ const OldFashionedDraw = (props: DrawProps) => {
 					</table>
 					<button onClick={() => setRows([...rows, {}, {}, {}, {}, {}, {}])}>
 						+ Add More Teams
-					</button>
-				</section>
-				<section className="button-section">
-					<button
-						style={{ margin: "auto" }}
-						onClick={() => {
-							props.addTeams(mapTeamsToObject(rows));
-						}}
-					>
-						Generate Ladder
 					</button>
 				</section>
 			</section>
