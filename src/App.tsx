@@ -5,8 +5,8 @@ import Sidebar from "./components/Sidebar";
 import CreateLadder from "./routes/CreateLadder";
 import ViewLadders from "./routes/ViewLadders";
 import Draw from "./routes/Draw";
-import "./App.css";
 import LadderDisplay from "./routes/LadderDisplay";
+import "./App.css";
 
 function App() {
 	return (

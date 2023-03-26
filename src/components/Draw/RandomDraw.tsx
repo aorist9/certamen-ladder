@@ -1,10 +1,4 @@
-import React, {
-	ChangeEvent,
-	FormEvent,
-	useCallback,
-	useEffect,
-	useState
-} from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { DrawProps } from "../../routes/Draw";
 import { letters } from "../../constants";
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DrawProps } from "../../routes/Draw";
 import DrawInputTableRow, { DrawRow } from "./DrawInputTableRow";
 

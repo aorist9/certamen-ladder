@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import LadderType from "../types/LadderType";
 import pittingService from "../services/pittingService";
 

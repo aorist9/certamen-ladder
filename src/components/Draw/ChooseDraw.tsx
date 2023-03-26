@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import NumberInput from "../NumberInput";
 import { letters } from "../../constants";
 import { DrawProps } from "../../routes/Draw";

@@ -2,9 +2,8 @@ import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
-import pittingService from "../services/pittingService";
-import "./LadderDisplay.css";
 import DisplayedLadder from "../components/DisplayedLadder";
+import "./LadderDisplay.css";
 
 const LadderDisplay = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
