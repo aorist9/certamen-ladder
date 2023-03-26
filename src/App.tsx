@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
 import Sidebar from "./components/Sidebar";
 import CreateLadder from "./routes/CreateLadder";
@@ -14,7 +14,7 @@ function App() {
 			<header className="App-header">
 				<h1>Certamen Ladder</h1>
 			</header>
-			<BrowserRouter basename={process.env.PUBLIC_URL}>
+			<HashRouter basename={process.env.PUBLIC_URL}>
 				<section style={{ display: "flex" }}>
 					<Sidebar />
 					<article style={{ flexGrow: 3 }}>
@@ -27,7 +27,7 @@ function App() {
 						</Routes>
 					</article>
 				</section>
-			</BrowserRouter>
+			</HashRouter>
 		</main>
 	);
 }
