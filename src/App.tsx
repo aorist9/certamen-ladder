@@ -9,6 +9,7 @@ import LadderDisplay from "./routes/LadderDisplay";
 import "./App.css";
 
 function App() {
+	console.log(process.env.PUBLIC_URL);
 	return (
 		<main className="App">
 			<header className="App-header">

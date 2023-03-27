@@ -2,6 +2,7 @@
 	"name": "certamen-ladder",
 	"version": "0.1.0",
 	"private": true,
+	"homepage": "/certamen-ladder/#",
 	"dependencies": {
 		"@types/node": "^16.18.13",
 		"@types/react": "^18.0.28",
