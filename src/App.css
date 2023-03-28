@@ -8,6 +8,12 @@
 	color: white;
 }
 
+@media print {
+	.App-header {
+		display: none;
+	}
+}
+
 .App-page {
 	margin: 2rem;
 }

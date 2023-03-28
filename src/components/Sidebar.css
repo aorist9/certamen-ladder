@@ -6,6 +6,12 @@
 	min-width: 12em;
 }
 
+@media print {
+	.Sidebar {
+		display: none;
+	}
+}
+
 .Sidebar a {
 	color: #61dafb;
 	text-decoration: none;

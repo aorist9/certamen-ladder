@@ -18,13 +18,15 @@ const LadderDisplay = () => {
 			<section className="App-page ladder-display">
 				<h2>{ladder.name}</h2>
 				{Array.isArray(ladder.teams) ? (
-					ladder.teams.map(team => (
-						<DisplayedLadder
-							key={team.division}
-							name={team.division}
-							ladder={{ ...ladder, teams: team.teams }}
-						/>
-					))
+					<section className="multi-ladder-display">
+						{ladder.teams.map(team => (
+							<DisplayedLadder
+								key={team.division}
+								name={team.division}
+								ladder={{ ...ladder, teams: team.teams }}
+							/>
+						))}
+					</section>
 				) : (
 					<DisplayedLadder ladder={ladder} />
 				)}

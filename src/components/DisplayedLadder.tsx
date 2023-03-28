@@ -15,7 +15,7 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 
 	if (props.ladder && pittings && pittings.length) {
 		return (
-			<section>
+			<section className="displayed-ladder">
 				{props.name ? <h3>{props.name}</h3> : ""}
 				<table>
 					<thead>

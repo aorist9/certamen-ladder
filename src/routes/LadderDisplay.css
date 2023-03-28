@@ -3,3 +3,13 @@
 	border-collapse: collapse;
 	padding: 0.5em;
 }
+
+.multi-ladder-display {
+	display: flex;
+	column-gap: 1em;
+	flex-wrap: wrap;
+}
+
+.ladder-display .displayed-ladder {
+	break-inside: avoid;
+}
