@@ -13,3 +13,9 @@
 .ladder-display .displayed-ladder {
 	break-inside: avoid;
 }
+
+.ladder-display .room-cell {
+	white-space: pre-line;
+	min-width: 5em;
+	padding-left: 1em;
+}

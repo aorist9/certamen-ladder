@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
@@ -19,16 +19,31 @@ const LadderDisplay = () => {
 				<h2>{ladder.name}</h2>
 				{Array.isArray(ladder.teams) ? (
 					<section className="multi-ladder-display">
-						{ladder.teams.map(team => (
+						{ladder.teams.map((team, idx) => (
 							<DisplayedLadder
 								key={team.division}
 								name={team.division}
-								ladder={{ ...ladder, teams: team.teams }}
+								ladder={{ ...ladder, rooms: team.rooms, teams: team.teams }}
+								updateRooms={(rooms: string[]) => {
+									// @ts-ignore
+									const newTeams = [...ladder.teams];
+									newTeams[idx].rooms = rooms;
+									const newLadder: LadderType = {
+										...ladder,
+										teams: newTeams
+									};
+									ladderService.editLadder(newLadder);
+								}}
 							/>
 						))}
 					</section>
 				) : (
-					<DisplayedLadder ladder={ladder} />
+					<DisplayedLadder
+						ladder={ladder}
+						updateRooms={(rooms: string[]) => {
+							ladderService.editLadder({ ...ladder, rooms });
+						}}
+					/>
 				)}
 			</section>
 		);

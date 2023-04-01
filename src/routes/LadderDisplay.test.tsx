@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import LadderDisplay from "./LadderDisplay";
 import { HashRouter } from "react-router-dom";
 import ladderService from "../services/ladderService";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("../services/ladderService", () => ({
 	addLadder: jest.fn(),
@@ -67,6 +68,44 @@ describe("LadderDisplay", () => {
 			expect(rounds[2].textContent).toContain("Highlanders");
 			expect(rounds[2].textContent).toContain("Zebras");
 		});
+
+		test("should add a column and change text of button when add rooms button is clicked", () => {
+			renderLadderDisplay();
+			userEvent.click(screen.getByText("Add Rooms"));
+			expect(screen.getByText("Done Adding Rooms")).toBeInTheDocument();
+			expect(screen.getAllByTestId("room")).toHaveLength(3);
+			expect(screen.getAllByTestId("room-input")).toHaveLength(3);
+		});
+
+		test("should save rooms when inputted", () => {
+			renderLadderDisplay();
+			userEvent.click(screen.getByText("Add Rooms"));
+			const inputs = screen.getAllByTestId("room-input");
+			userEvent.type(inputs[0], "abra");
+			userEvent.type(inputs[1], "kadabra");
+			userEvent.type(inputs[2], "presto");
+			userEvent.click(screen.getByText("Done Adding Rooms"));
+			expect(screen.getByText("Edit Rooms")).toBeInTheDocument();
+			expect(screen.getByText("abra")).toBeInTheDocument();
+			expect(screen.getByText("kadabra")).toBeInTheDocument();
+			expect(screen.getByText("presto")).toBeInTheDocument();
+			expect(ladderService.editLadder).toHaveBeenCalledWith({
+				id: "123",
+				draw: 0,
+				name: "My Ladder",
+				rooms: ["abra", "kadabra", "presto"],
+				rounds: 17,
+				type: 0,
+				teams: {
+					G: "Georgya",
+					B: "Bama",
+					A: "Arizona",
+					C: "Capitol One",
+					H: "Highlanders",
+					Z: "Zebras"
+				}
+			});
+		});
 	});
 
 	describe("multiple divisions", () => {
@@ -118,6 +157,50 @@ describe("LadderDisplay", () => {
 			expect(rounds[1].textContent).toContain("Georgya");
 			expect(rounds[2].textContent).toContain("Highlanders");
 			expect(rounds[2].textContent).toContain("Zebras");
+		});
+
+		test("should save rooms when inputted", () => {
+			renderLadderDisplay();
+			userEvent.click(screen.getAllByText("Add Rooms")[0]);
+			const inputs = screen.getAllByTestId("room-input");
+			userEvent.type(inputs[0], "abra");
+			userEvent.type(inputs[1], "kadabra");
+			userEvent.type(inputs[2], "presto");
+			userEvent.click(screen.getByText("Done Adding Rooms"));
+			expect(screen.getByText("Edit Rooms")).toBeInTheDocument();
+			expect(screen.getByText("abra")).toBeInTheDocument();
+			expect(screen.getByText("kadabra")).toBeInTheDocument();
+			expect(screen.getByText("presto")).toBeInTheDocument();
+			expect(ladderService.editLadder).toHaveBeenCalledWith({
+				id: "123",
+				divisions: 3,
+				draw: 0,
+				name: "My Ladder",
+				rounds: 17,
+				type: 0,
+				teams: [
+					{
+						division: "The Div",
+						teams: {
+							G: "Georgya",
+							B: "Bama",
+							A: "Arizona",
+							C: "Capitol One",
+							H: "Highlanders",
+							Z: "Zebras"
+						},
+						rooms: ["abra", "kadabra", "presto"]
+					},
+					{
+						division: "The Other Div",
+						teams: {
+							A: "A",
+							Z: "Z",
+							Y: "Y"
+						}
+					}
+				]
+			});
 		});
 	});
 });
