@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
-import LadderType from "../types/LadderType";
-import DisplayedLadder from "../components/DisplayedLadder";
+import LadderType, { Matches } from "../types/LadderType";
+import DisplayedLadder from "../components/DisplayLadder/DisplayedLadder";
 import "./LadderDisplay.css";
 
 const LadderDisplay = () => {
@@ -23,7 +23,22 @@ const LadderDisplay = () => {
 							<DisplayedLadder
 								key={team.division}
 								name={team.division}
-								ladder={{ ...ladder, rooms: team.rooms, teams: team.teams }}
+								ladder={{
+									...ladder,
+									rooms: team.rooms,
+									teams: team.teams,
+									matches: team.matches
+								}}
+								updateMatches={(matches: Matches) => {
+									// @ts-ignore
+									const newTeams = [...ladder.teams];
+									newTeams[idx].matches = matches;
+									const newLadder: LadderType = {
+										...ladder,
+										teams: newTeams
+									};
+									ladderService.editLadder(newLadder);
+								}}
 								updateRooms={(rooms: string[]) => {
 									// @ts-ignore
 									const newTeams = [...ladder.teams];
@@ -40,6 +55,9 @@ const LadderDisplay = () => {
 				) : (
 					<DisplayedLadder
 						ladder={ladder}
+						updateMatches={(matches: Matches) => {
+							ladderService.editLadder({ ...ladder, matches });
+						}}
 						updateRooms={(rooms: string[]) => {
 							ladderService.editLadder({ ...ladder, rooms });
 						}}

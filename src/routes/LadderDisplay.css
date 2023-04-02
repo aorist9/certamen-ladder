@@ -19,3 +19,22 @@
 	min-width: 5em;
 	padding-left: 1em;
 }
+
+.ladder-display ul {
+	padding-inline-start: 1.2em;
+}
+
+.ladder-display ul li .team-display {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ladder-display ul li input {
+	max-width: 3em;
+}
+
+@media print {
+	.ladder-display button {
+		display: none;
+	}
+}
