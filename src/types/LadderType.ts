@@ -1,6 +1,5 @@
-type Teams = { [letter: string]: string };
-
-export type Matches = { team: string; score?: number }[][][];
+import Matches from "./Matches";
+import Teams from "./Teams";
 
 type LadderType = {
 	id: string;

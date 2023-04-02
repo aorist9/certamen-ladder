@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
-import LadderType, { Matches } from "../types/LadderType";
+import LadderType from "../types/LadderType";
+import Matches from "../types/Matches";
 import DisplayedLadder from "../components/DisplayLadder/DisplayedLadder";
 import "./LadderDisplay.css";
 

@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
-import LadderType, { Matches } from "../../types/LadderType";
+import LadderType from "../../types/LadderType";
+import Matches from "../../types/Matches";
 import pittingService from "../../services/pittingService";
 import TeamDisplay from "./TeamDisplay";
 
