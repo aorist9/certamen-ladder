@@ -1,0 +1,9 @@
+.scoreboard td {
+	outline: 1px solid black;
+	border-collapse: collapse;
+	padding: 0.5em;
+}
+
+.scoreboard th {
+	padding: 0 1em;
+}

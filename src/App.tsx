@@ -6,6 +6,7 @@ import CreateLadder from "./routes/CreateLadder";
 import ViewLadders from "./routes/ViewLadders";
 import Draw from "./routes/Draw";
 import LadderDisplay from "./routes/LadderDisplay";
+import ScoreboardPage from "./routes/ScoreboardPage";
 import "./App.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
 							<Route path="/draw" element={<Draw />} />
 							<Route path="/ladder" element={<LadderDisplay />} />
 							<Route path="/ladders" element={<ViewLadders />} />
+							<Route path="/scoreboard" element={<ScoreboardPage />} />
 						</Routes>
 					</article>
 				</section>

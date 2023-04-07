@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
 import Matches from "../types/Matches";
@@ -17,7 +17,15 @@ const LadderDisplay = () => {
 	if (ladder) {
 		return (
 			<section className="App-page ladder-display">
-				<h2>{ladder.name}</h2>
+				<section style={{ display: "flex", columnGap: "2em" }}>
+					<h2>{ladder.name}</h2>
+					<Link
+						to={`/scoreboard?ladder=${ladderId}`}
+						style={{ margin: "auto 0" }}
+					>
+						Scoreboard
+					</Link>
+				</section>
 				{Array.isArray(ladder.teams) ? (
 					<section className="multi-ladder-display">
 						{ladder.teams.map((team, idx) => (
