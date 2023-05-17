@@ -1,13 +1,10 @@
 import LadderType from "../types/LadderType";
-import Matches from "../types/Matches";
 import calculateScores, {
 	ScoreRow,
 	sortScores
 } from "../utils/calculateScores";
+import Deconflicter from "./Deconflicter";
 import { handleSpecialCase, isSpecialCase } from "./specialCases";
-
-type Conflict = { total: number; roundConflicts: number[] };
-export type TeamEntry = { team: string; rank: number };
 
 const NOT_A_TEAM = "NOT-A-TEAM";
 
@@ -15,212 +12,6 @@ const pushIfTeam = (team: string, array: string[]) => {
 	if (team !== NOT_A_TEAM) {
 		array.push(team);
 	}
-};
-
-const calculateSinglePittingConflict = (
-	matches: Matches,
-	pitting: string[]
-): number => {
-	const conflictCount = matches.reduce(
-		(acc, round) =>
-			acc +
-			round.reduce((roundAcc, matchup) => {
-				let rawConflict: number = matchup.reduce(
-					(pittingAcc, team) =>
-						pitting.includes(team.team) ? pittingAcc + 1 : pittingAcc,
-					0
-				);
-				if (rawConflict === 0) {
-					return roundAcc;
-				} else {
-					return roundAcc + rawConflict - 1;
-				}
-			}, 0),
-		0
-	);
-	return conflictCount;
-};
-
-const calculateConflict = (
-	proposedRound: TeamEntry[][],
-	matches: Matches
-): Conflict => {
-	const result: Conflict = {
-		total: 0,
-		roundConflicts: []
-	};
-	proposedRound.forEach(pitting => {
-		let conflictCount: number = calculateSinglePittingConflict(
-			matches,
-			pitting.map(t => t.team)
-		);
-		result.total += conflictCount;
-		result.roundConflicts.push(conflictCount);
-	});
-	return result;
-};
-
-const deconflictRound = (
-	round: TeamEntry[][],
-	matches: Matches
-): string[][] => {
-	const currentConflict: Conflict = calculateConflict(round, matches);
-	const totalTeams = matches[0].reduce((acc, room) => acc + room.length, 0);
-
-	if (currentConflict.total > 0) {
-		for (
-			let roomIdx = currentConflict.roundConflicts.length - 1;
-			roomIdx >= 0;
-			roomIdx--
-		) {
-			if (currentConflict.roundConflicts[roomIdx] === 0) {
-				continue;
-			}
-
-			// determine longest possible swap distance from this room
-			let longestSwapDistance = 0;
-			round[roomIdx].forEach(t => {
-				if (t.rank - 1 > longestSwapDistance) {
-					longestSwapDistance = t.rank - 1;
-				}
-
-				if (totalTeams - t.rank > longestSwapDistance) {
-					longestSwapDistance = totalTeams - t.rank;
-				}
-			});
-
-			// iterate from lowest to highest swap distance
-			for (
-				let swapDistance = 1;
-				swapDistance <= longestSwapDistance;
-				swapDistance++
-			) {
-				let teamsSortedByDescendingRank = round[roomIdx].sort(
-					(t1, t2) => t2.rank - t1.rank
-				);
-
-				// try all downward swaps of distance `swapDistance`
-				for (
-					let teamIdx = 0;
-					teamIdx < teamsSortedByDescendingRank.length;
-					teamIdx++
-				) {
-					let rankToSwap =
-						teamsSortedByDescendingRank[teamIdx].rank + swapDistance;
-					const successfulSwap: TeamEntry[][] | undefined = swapByRank({
-						currentConflict,
-						matches,
-						rankToSwap,
-						roomIdx,
-						round,
-						teamIdx,
-						teamsSortedByDescendingRank
-					});
-					if (successfulSwap) {
-						return deconflictRound(successfulSwap, matches);
-					}
-				}
-
-				// try all upward swaps of distance `swapDistance`
-				for (
-					let teamIdx = 0;
-					teamIdx < teamsSortedByDescendingRank.length;
-					teamIdx++
-				) {
-					let rankToSwap =
-						teamsSortedByDescendingRank[teamIdx].rank - swapDistance;
-					const successfulSwap: TeamEntry[][] | undefined = swapByRank({
-						currentConflict,
-						matches,
-						rankToSwap,
-						roomIdx,
-						round,
-						teamIdx,
-						teamsSortedByDescendingRank
-					});
-					if (successfulSwap) {
-						return deconflictRound(successfulSwap, matches);
-					}
-				}
-			}
-		}
-	}
-	return round.map(room => room.map(team => team.team));
-};
-
-const swapByRank = ({
-	currentConflict,
-	matches,
-	rankToSwap,
-	roomIdx,
-	round,
-	teamIdx,
-	teamsSortedByDescendingRank
-}: {
-	currentConflict: Conflict;
-	matches: Matches;
-	rankToSwap: number;
-	roomIdx: number;
-	round: TeamEntry[][];
-	teamIdx: number;
-	teamsSortedByDescendingRank: TeamEntry[];
-}): TeamEntry[][] | undefined => {
-	// if swap team is in the same room, then skip this one
-	if (teamsSortedByDescendingRank.find(team => team.rank === rankToSwap)) {
-		return;
-	}
-
-	// find team with rankToSwap
-	for (let swapRoomIdx = 0; swapRoomIdx < round.length; swapRoomIdx++) {
-		if (swapRoomIdx === roomIdx) {
-			continue;
-		}
-
-		for (
-			let swapTeamIdx = 0;
-			swapTeamIdx < round[swapRoomIdx].length;
-			swapTeamIdx++
-		) {
-			if (round[swapRoomIdx][swapTeamIdx].rank === rankToSwap) {
-				const swappedRound = swapTeams(
-					round,
-					{ roomIdx, teamIdx },
-					{ roomIdx: swapRoomIdx, teamIdx: swapTeamIdx }
-				);
-				const newConflict = calculateConflict(swappedRound, matches);
-				if (newConflict.total < currentConflict.total) {
-					return swappedRound;
-				} else {
-					return;
-				}
-			}
-		}
-	}
-};
-
-export const swapTeams = (
-	round: TeamEntry[][],
-	team1: { roomIdx: number; teamIdx: number },
-	team2: { roomIdx: number; teamIdx: number }
-): TeamEntry[][] => {
-	if (
-		team1.roomIdx >= round.length ||
-		team2.roomIdx >= round.length ||
-		team1.teamIdx >= round[team1.roomIdx].length ||
-		team2.teamIdx >= round[team2.roomIdx].length
-	) {
-		throw new Error("Invalid team");
-	}
-
-	return round.map((room, idx) => {
-		let result = [...room];
-		if (idx === team1.roomIdx) {
-			result[team1.teamIdx] = round[team2.roomIdx][team2.teamIdx];
-		} else if (idx === team2.roomIdx) {
-			result[team2.teamIdx] = round[team1.roomIdx][team1.teamIdx];
-		}
-		return result;
-	});
 };
 
 const pittingService = {
@@ -308,14 +99,13 @@ const pittingService = {
 		}
 
 		if (ladder.matches) {
-			round = deconflictRound(
+			round = new Deconflicter(ladder.matches).deconflictRound(
 				round.map((room, roomIdx) =>
 					room.map((team, teamIdx) => ({
 						team,
 						rank: roomIdx * 3 + teamIdx + 1
 					}))
-				),
-				ladder.matches
+				)
 			);
 		}
 
