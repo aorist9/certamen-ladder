@@ -22,6 +22,7 @@ const LadderDisplay = () => {
 					<Link
 						to={`/scoreboard?ladder=${ladderId}`}
 						style={{ margin: "auto 0" }}
+						className="hide-print"
 					>
 						Scoreboard
 					</Link>

@@ -1,11 +1,9 @@
 import React, { useMemo } from "react";
+import calculateScores, {
+	ScoreRow,
+	sortScores
+} from "../utils/calculateScores";
 import LadderType from "../types/LadderType";
-
-type ScoreRow = {
-	team: string;
-	roundScores: (number | undefined)[];
-	total: number;
-};
 
 type ScoreboardProps = {
 	ladder: LadderType;
@@ -15,32 +13,9 @@ type ScoreboardProps = {
 const Scoreboard = (props: ScoreboardProps) => {
 	const { ladder, name } = props;
 
-	const scores: ScoreRow[] = useMemo(() => {
-		// @ts-ignore
-		const result: ScoreRow[] = Object.values(ladder.teams).map(team => ({
-			team,
-			roundScores: [],
-			total: 0
-		}));
-		if (ladder.matches) {
-			ladder.matches.forEach((round, roundNum) => {
-				round.forEach(match => {
-					match.forEach(t => {
-						const boardTeam = result.find(team => t.team === team.team);
-						boardTeam?.roundScores.push(t.score);
-						if (boardTeam && t.score) {
-							boardTeam.total += t.score;
-						}
-					});
-				});
-			});
-		}
-		return result;
-	}, [ladder]);
+	const scores: ScoreRow[] = useMemo(() => calculateScores(ladder), [ladder]);
 
-	const sortedScores: ScoreRow[] = scores?.sort(
-		(score1, score2) => score2.total - score1.total
-	);
+	const sortedScores: ScoreRow[] = scores?.sort(sortScores);
 
 	return (
 		<section>
@@ -54,7 +29,9 @@ const Scoreboard = (props: ScoreboardProps) => {
 								{ladder.matches?.map((_, idx) => (
 									<th key={idx}>Round {idx + 1}</th>
 								))}
-								<th>Total</th>
+								{ladder.type === 1 ? <th>Total Swiss Points</th> : ""}
+								{ladder.type === 1 ? <th>SOS</th> : ""}
+								<th>Total Score</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -67,8 +44,17 @@ const Scoreboard = (props: ScoreboardProps) => {
 											data-testid={`round-${rdNum + 1}-score-cell`}
 										>
 											{round}
+											{team.roundSwiss && team.roundSwiss.length > rdNum
+												? ` / ${team.roundSwiss[rdNum]}`
+												: ""}
 										</td>
 									))}
+									{team.swissTotal ? (
+										<td data-testid="total-swiss-cell">{team.swissTotal}</td>
+									) : (
+										""
+									)}
+									{team.sos ? <td data-testid="sos-cell">{team.sos}</td> : ""}
 									<td data-testid="total-score-cell">{team.total}</td>
 								</tr>
 							))}

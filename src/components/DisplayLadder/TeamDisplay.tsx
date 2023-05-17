@@ -5,6 +5,7 @@ type TeamDisplayProps = {
 	onScoreChange: (e: ChangeEvent<HTMLInputElement>) => void;
 	roundEditStatus: EditingStatus;
 	score: number | undefined;
+	swissPoints?: number;
 	team: string;
 };
 
@@ -24,7 +25,9 @@ const TeamDisplay = (props: TeamDisplayProps) => {
 								onChange={props.onScoreChange}
 							/>
 						) : (
-							<strong>{props.score}</strong>
+							<strong>{`${props.score}${
+								props.swissPoints ? ` / ${props.swissPoints}` : ""
+							}`}</strong>
 						)}
 					</span>
 				</section>

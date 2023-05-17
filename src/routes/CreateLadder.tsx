@@ -131,7 +131,7 @@ const CreateLadder = () => {
 				) : (
 					""
 				)}
-				{features.chooseRounds ? (
+				{features.chooseRounds || (features.swissLadder && type === 1) ? (
 					<NumberInput
 						id="rounds"
 						value={rounds}

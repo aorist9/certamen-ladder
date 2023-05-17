@@ -1,6 +1,6 @@
 {
 	"multipleDivisions": true,
-	"swissLadder": false,
+	"swissLadder": true,
 	"pointsSwissLadder": false,
 	"chooseRounds": false
 }

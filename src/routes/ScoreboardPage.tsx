@@ -14,7 +14,11 @@ const ScoreboardPage = () => {
 	const header = (
 		<section style={{ display: "flex", columnGap: "2em" }}>
 			<h2>{ladder?.name}</h2>
-			<Link to={`/ladder?ladder=${ladderId}`} style={{ margin: "auto 0" }}>
+			<Link
+				to={`/ladder?ladder=${ladderId}`}
+				style={{ margin: "auto 0" }}
+				className="hide-print"
+			>
 				Ladder
 			</Link>
 		</section>

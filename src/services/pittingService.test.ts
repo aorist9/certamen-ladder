@@ -1,5 +1,5 @@
 import LadderType from "../types/LadderType";
-import pittingService from "./pittingService";
+import pittingService, { TeamEntry, swapTeams } from "./pittingService";
 
 const BASE_LADDER: LadderType = {
 	id: "123",
@@ -481,6 +481,242 @@ describe("Pitting Service", () => {
 						expect.arrayContaining(["D", "H"])
 					])
 				]);
+			});
+		});
+
+		describe("Swiss", () => {
+			test("should only return the first round", () => {
+				expect(
+					pittingService.generateInitialPittings({
+						...BASE_LADDER,
+						type: 1,
+						teams: {
+							A: "A",
+							B: "B",
+							C: "C",
+							D: "D",
+							E: "E",
+							F: "F",
+							G: "G",
+							H: "H",
+							I: "I",
+							J: "J",
+							K: "K",
+							L: "L",
+							M: "M"
+						}
+					})
+				).toEqual([
+					[
+						["A", "B", "C"],
+						["D", "E", "F"],
+						["G", "H", "I"],
+						["J", "K"],
+						["L", "M"]
+					]
+				]);
+			});
+
+			describe("generateNextSwissRound", () => {
+				test("should generate a chalk round when there are no conflicts", () => {
+					expect(
+						pittingService.generateNextSwissRound({
+							...BASE_LADDER,
+							type: 1,
+							teams: {
+								A: "A",
+								B: "B",
+								C: "C",
+								D: "D",
+								E: "E",
+								F: "F",
+								G: "G",
+								H: "H",
+								I: "I"
+							},
+							matches: [
+								[
+									[
+										{ team: "A", score: 105, swissPoints: 3 },
+										{ team: "B", score: 55, swissPoints: 2 },
+										{ team: "C", score: 45, swissPoints: 1 }
+									],
+									[
+										{ team: "D", score: 85, swissPoints: 3 },
+										{ team: "E", score: 35, swissPoints: 2 },
+										{ team: "F", score: 10, swissPoints: 1 }
+									],
+									[
+										{ team: "G", score: 125, swissPoints: 3 },
+										{ team: "H", score: 110, swissPoints: 2 },
+										{ team: "I", score: 50, swissPoints: 1 }
+									]
+								]
+							]
+						})
+					).toEqual([
+						expect.arrayContaining(["A", "D", "G"]),
+						expect.arrayContaining(["B", "E", "H"]),
+						expect.arrayContaining(["C", "F", "I"])
+					]);
+				});
+
+				test("should make swaps to reduce conflict", () => {
+					expect(
+						pittingService.generateNextSwissRound({
+							...BASE_LADDER,
+							type: 1,
+							teams: {
+								A: "A",
+								B: "B",
+								C: "C",
+								D: "D",
+								E: "E",
+								F: "F",
+								G: "G",
+								H: "H",
+								I: "I",
+								J: "J",
+								K: "K",
+								L: "L"
+							},
+							matches: [
+								[
+									[
+										{ team: "A", score: 105, swissPoints: 3 },
+										{ team: "B", score: 55, swissPoints: 2 },
+										{ team: "C", score: 45, swissPoints: 1 }
+									],
+									[
+										{ team: "D", score: 85, swissPoints: 3 },
+										{ team: "E", score: 35, swissPoints: 2 },
+										{ team: "F", score: 10, swissPoints: 1 }
+									],
+									[
+										{ team: "G", score: 125, swissPoints: 3 },
+										{ team: "H", score: 110, swissPoints: 2 },
+										{ team: "I", score: 50, swissPoints: 1 }
+									],
+									[
+										{ team: "J", score: 25, swissPoints: 3 },
+										{ team: "K", score: 10, swissPoints: 2 },
+										{ team: "L", score: 0, swissPoints: 1 }
+									]
+								],
+								[
+									[
+										{ team: "A", score: 105, swissPoints: 3 },
+										{ team: "D", score: 55, swissPoints: 2 },
+										{ team: "G", score: 45, swissPoints: 1 }
+									],
+									[
+										{ team: "J", score: 85, swissPoints: 3 },
+										{ team: "B", score: 35, swissPoints: 2 },
+										{ team: "H", score: 10, swissPoints: 1 }
+									],
+									[
+										{ team: "K", score: 85, swissPoints: 3 },
+										{ team: "E", score: 35, swissPoints: 2 },
+										{ team: "I", score: 10, swissPoints: 1 }
+									],
+									[
+										{ team: "C", score: 125, swissPoints: 3 },
+										{ team: "F", score: 110, swissPoints: 2 },
+										{ team: "L", score: 50, swissPoints: 1 }
+									]
+								]
+							]
+						})
+					).toEqual([
+						expect.arrayContaining(["A", "J", "E"]), // E swapped for D
+						expect.arrayContaining(["K", "F", "G"]), // F swapped for B
+						expect.arrayContaining(["D", "H", "C"]),
+						expect.arrayContaining(["B", "L", "I"])
+					]);
+				});
+			});
+
+			describe("swapTeams", () => {
+				test("should return a new round with the teams swapped", () => {
+					const teams: TeamEntry[][] = [
+						[
+							{ team: "A", rank: 1 },
+							{ team: "B", rank: 2 },
+							{ team: "C", rank: 3 }
+						],
+						[
+							{ team: "D", rank: 4 },
+							{ team: "E", rank: 5 },
+							{ team: "F", rank: 6 }
+						],
+						[
+							{ team: "G", rank: 7 },
+							{ team: "H", rank: 8 }
+						]
+					];
+
+					expect(
+						swapTeams(
+							teams,
+							{ roomIdx: 1, teamIdx: 0 },
+							{ roomIdx: 0, teamIdx: 2 }
+						)
+					).toEqual([
+						expect.arrayContaining([
+							{ team: "A", rank: 1 },
+							{ team: "B", rank: 2 },
+							{ team: "D", rank: 4 }
+						]),
+						expect.arrayContaining([
+							{ team: "C", rank: 3 },
+							{ team: "E", rank: 5 },
+							{ team: "F", rank: 6 }
+						]),
+						expect.arrayContaining([
+							{ team: "G", rank: 7 },
+							{ team: "H", rank: 8 }
+						])
+					]);
+
+					expect(teams).toEqual([
+						[
+							{ team: "A", rank: 1 },
+							{ team: "B", rank: 2 },
+							{ team: "C", rank: 3 }
+						],
+						[
+							{ team: "D", rank: 4 },
+							{ team: "E", rank: 5 },
+							{ team: "F", rank: 6 }
+						],
+						[
+							{ team: "G", rank: 7 },
+							{ team: "H", rank: 8 }
+						]
+					]);
+				});
+
+				test("should throw an error if one of the teams does not exist", () => {
+					const teams: TeamEntry[][] = [
+						[
+							{ team: "A", rank: 1 },
+							{ team: "B", rank: 2 },
+							{ team: "C", rank: 3 }
+						],
+						[
+							{ team: "D", rank: 4 },
+							{ team: "E", rank: 5 }
+						]
+					];
+
+					expect(() =>
+						swapTeams(
+							teams,
+							{ roomIdx: 2, teamIdx: 0 },
+							{ roomIdx: 0, teamIdx: 2 }
+						)
+					).toThrow(new Error("Invalid team"));
+				});
 			});
 		});
 	});

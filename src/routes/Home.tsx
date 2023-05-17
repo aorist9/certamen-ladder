@@ -22,7 +22,10 @@ const Home = () => (
 				<h2>About the Swiss System</h2>
 				<p>
 					When creating a ladder you'll be offered the opportunity to use Swiss
-					seeding TODO
+					seeding, which will provide you the pittings for the first round based
+					on the draw and then determine the following rounds by pitting teams
+					against each other based on their performance in previous rounds
+					(pitting teams against others performing at the same level).
 				</p>
 			</>
 		) : (

@@ -3,6 +3,7 @@ import LadderType from "../../types/LadderType";
 import Matches from "../../types/Matches";
 import pittingService from "../../services/pittingService";
 import TeamDisplay from "./TeamDisplay";
+import addSwissPoints from "./addSwissPoints";
 
 type DisplayedLadderProps = {
 	ladder: LadderType;
@@ -89,6 +90,34 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 					>
 						{roomEditStatus}
 					</button>
+					{ladder.type === 1 &&
+					pittings[pittings.length - 1][0][0].swissPoints !== undefined &&
+					ladder.rounds > pittings.length ? (
+						<button
+							style={{ marginLeft: "1em" }}
+							onClick={() => {
+								let newPittings = [...pittings];
+								newPittings.push(
+									pittingService
+										.generateNextSwissRound({
+											...ladder,
+											matches: newPittings
+										})
+										.map(room => room.map(team => ({ team })))
+								);
+								props.updateMatches(newPittings);
+								setPittings(newPittings);
+								setRoundScoreEditStatuses([
+									...roundScoreEditStatuses,
+									EditingStatus.NEW
+								]);
+							}}
+						>
+							Generate Next Round
+						</button>
+					) : (
+						""
+					)}
 				</h3>
 				<table>
 					<thead>
@@ -98,15 +127,29 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 									Round {i + 1}
 									<button
 										style={{ marginLeft: "1.5em" }}
-										onClick={() =>
+										onClick={() => {
+											if (
+												roundScoreEditStatuses[i] === EditingStatus.EDITING &&
+												ladder.type === 1
+											) {
+												let newPittings = [
+													...pittings.slice(0, i),
+													pittings[i].map(addSwissPoints),
+													...pittings.slice(i + 1)
+												];
+
+												props.updateMatches(newPittings);
+												setPittings(newPittings);
+											}
+
 											setRoundScoreEditStatuses([
 												...roundScoreEditStatuses.slice(0, i),
 												roundScoreEditStatuses[i] === EditingStatus.EDITING
 													? EditingStatus.EDITED
 													: EditingStatus.EDITING,
 												...roundScoreEditStatuses.slice(i + 1)
-											])
-										}
+											]);
+										}}
 									>
 										{determineAddScoresButtonText(roundScoreEditStatuses[i])}
 									</button>
@@ -121,12 +164,13 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 								{pittings.map((_, j: number) => (
 									<td key={`${j}:${i}`} data-testid={`round-${j + 1}`}>
 										<ul>
-											{pittings[j][i].map(({ team, score }, k) => (
+											{pittings[j][i].map(({ team, score, swissPoints }, k) => (
 												<TeamDisplay
 													key={team}
 													onScoreChange={onScoreChange(i, j, k)}
 													roundEditStatus={roundScoreEditStatuses[j]}
 													score={score}
+													swissPoints={swissPoints}
 													team={team}
 												/>
 											))}

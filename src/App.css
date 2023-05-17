@@ -12,6 +12,10 @@
 	.App-header {
 		display: none;
 	}
+
+	.hide-print {
+		display: none;
+	}
 }
 
 .App-page {
