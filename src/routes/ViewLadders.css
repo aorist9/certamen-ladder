@@ -21,6 +21,10 @@
 .ladder-info-section {
 	padding: 1em;
 	border: 1px solid black;
+}
+
+.ladder-additional-info-section {
+	margin-top: 1em;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;

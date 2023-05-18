@@ -12,23 +12,27 @@ const LadderInfoSection = (props: { ladder: LadderType }) => {
 				"-"
 			)}`}
 		>
-			<DataDisplay description="Name" value={ladder.name} />
-			<DataDisplay description="Status" value={status} />
-			<DataDisplay description="Type" value={ladderTypes[ladder.type]} />
-			{ladder.divisions ? (
-				<DataDisplay description="Divisions" value={"" + ladder.divisions} />
-			) : (
-				""
-			)}
-			<DataDisplay
-				description="Teams"
-				value={(ladder.calculateTeams() || "None Yet") + ""}
-			/>
-			<DataDisplay description="Total Rounds" value={"" + ladder.rounds} />
-			<DataDisplay
-				description="Rounds Played"
-				value={(ladder.calculateRoundsPlayed() || "None that I can tell") + ""}
-			/>
+			<strong>{ladder.name}</strong>
+			<section className="ladder-additional-info-section">
+				<DataDisplay description="Status" value={status} />
+				<DataDisplay description="Type" value={ladderTypes[ladder.type]} />
+				{ladder.divisions ? (
+					<DataDisplay description="Divisions" value={"" + ladder.divisions} />
+				) : (
+					""
+				)}
+				<DataDisplay
+					description="Teams"
+					value={(ladder.calculateTeams() || "None Yet") + ""}
+				/>
+				<DataDisplay description="Total Rounds" value={"" + ladder.rounds} />
+				<DataDisplay
+					description="Rounds Played"
+					value={
+						(ladder.calculateRoundsPlayed() || "None that I can tell") + ""
+					}
+				/>
+			</section>
 		</section>
 	);
 };
