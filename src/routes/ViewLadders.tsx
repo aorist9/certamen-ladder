@@ -1,52 +1,47 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
-import { Link } from "react-router-dom";
+import LadderInfoSection from "../components/LadderInfoSection";
+import "./ViewLadders.css";
 
 const ViewLadders = () => {
 	const [ladders, setLadders] = useState<LadderType[]>(
 		ladderService.getLadders()
 	);
-	let maxWidth = ladders.reduce((acc: number, ladder: LadderType): number => {
-		if (ladder.name.length > acc) {
-			return ladder.name.length;
-		} else {
-			return acc;
-		}
-	}, 0);
 
 	return (
 		<section className="App-page view-ladders">
 			<h2>Existing Ladders</h2>
-			<ul>
+			<p>Click one to see the ladder</p>
+			<section className="list-of-ladders">
 				{ladders.map((ladder: LadderType) => (
-					<li
-						key={ladder.id}
-						style={{
-							display: "flex",
-							justifyContent: "space-between",
-							maxWidth: `${maxWidth}.5em`,
-							marginBottom: "0.5em"
-						}}
-					>
+					<section className="ladder-item" key={ladder.id}>
 						<Link
 							to={`/${ladder.teams ? "ladder" : "draw"}?ladder=${ladder.id}`}
-						>
-							{ladder.name}
-						</Link>
-						<button
-							onClick={() => {
-								ladderService.deleteLadder(ladder.id);
-								setLadders(
-									ladders.filter((l: LadderType) => l.id !== ladder.id)
-								);
+							style={{
+								flexGrow: 1,
+								textDecoration: "inherit",
+								color: "inherit"
 							}}
 						>
-							Delete
-						</button>
-					</li>
+							<LadderInfoSection ladder={ladder} />
+						</Link>
+						<section className="delete-ladder-button-section">
+							<button
+								onClick={() => {
+									ladderService.deleteLadder(ladder.id);
+									setLadders(
+										ladders.filter((l: LadderType) => l.id !== ladder.id)
+									);
+								}}
+							>
+								Delete
+							</button>
+						</section>
+					</section>
 				))}
-			</ul>
+			</section>
 		</section>
 	);
 };

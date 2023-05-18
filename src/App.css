@@ -36,3 +36,9 @@
 .form-field {
 	margin: 1rem 0;
 }
+
+.data-display .description {
+	font-size: 80%;
+	font-style: italic;
+	color: rgba(0, 0, 0, 0.6);
+}
