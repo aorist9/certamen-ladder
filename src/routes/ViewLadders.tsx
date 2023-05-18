@@ -20,7 +20,6 @@ const ViewLadders = () => {
 						<Link
 							to={`/${ladder.teams ? "ladder" : "draw"}?ladder=${ladder.id}`}
 							style={{
-								flexGrow: 1,
 								textDecoration: "inherit",
 								color: "inherit"
 							}}
