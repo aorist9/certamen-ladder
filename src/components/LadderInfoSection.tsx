@@ -6,7 +6,12 @@ const LadderInfoSection = (props: { ladder: LadderType }) => {
 	const ladder: Ladder = new Ladder(props.ladder);
 	const status: LadderStatus = ladder.calculateStatus();
 	return (
-		<section className={`ladder-info-section ladder-status-${status}`}>
+		<section
+			className={`ladder-info-section ladder-status-${status.replaceAll(
+				" ",
+				"-"
+			)}`}
+		>
 			<DataDisplay description="Name" value={ladder.name} />
 			<DataDisplay description="Status" value={status} />
 			<DataDisplay description="Type" value={ladderTypes[ladder.type]} />

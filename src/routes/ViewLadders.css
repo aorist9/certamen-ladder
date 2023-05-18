@@ -32,3 +32,19 @@
 	margin: auto;
 	height: 100%;
 }
+
+.ladder-info-section.ladder-status-Created {
+	background-color: lightpink;
+}
+
+.ladder-info-section.ladder-status-Drawn {
+	background-color: lightcyan;
+}
+
+.ladder-info-section.ladder-status-In-Progress {
+	background-color: lightgoldenrodyellow;
+}
+
+.ladder-info-section.ladder-status-Done {
+	background-color: lightgreen;
+}

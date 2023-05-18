@@ -62,11 +62,12 @@ export class Ladder implements LadderType {
 			return LadderStatus.CREATED;
 		}
 
-		if (!this.calculateRoundsPlayed()) {
+		const roundsPlayed: number | undefined = this.calculateRoundsPlayed();
+		if (!roundsPlayed) {
 			return LadderStatus.DRAWN;
 		}
 
-		if (this.calculateRoundsPlayed() || 0 < this.rounds) {
+		if ((roundsPlayed || 0) < this.rounds) {
 			return LadderStatus.IN_PROGRESS;
 		}
 
