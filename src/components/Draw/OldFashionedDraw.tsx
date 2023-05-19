@@ -51,6 +51,7 @@ const OldFashionedDraw = (props: DrawProps) => {
 							{rows.map((row, i) => (
 								<DrawInputTableRow
 									key={i}
+									idx={i}
 									row={row}
 									onChange={(value: DrawRow) => {
 										setRows([...rows.slice(0, i), value, ...rows.slice(i + 1)]);

@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from "react";
 
 export type DrawRow = {
 	letter?: string;
@@ -9,15 +9,18 @@ export type DrawRow = {
 const DrawInputTableRow = (props: {
 	row: DrawRow;
 	onChange: (value: DrawRow) => void;
+	idx: number;
 }) => (
 	<tr data-testid="ladder-input-row">
 		<td>
 			<input
+				id={`letter-${props.idx}`}
 				type="text"
-				style={{ maxWidth: '4em' }}
-				value={props.row.letter || ''}
+				style={{ maxWidth: "4em" }}
+				value={props.row.letter || ""}
 				data-testid="letter-input"
 				aria-describedby="letter-header"
+				aria-labelledby="letter-header"
 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
 					props.onChange({ ...props.row, letter: e.target.value });
 				}}
@@ -25,10 +28,12 @@ const DrawInputTableRow = (props: {
 		</td>
 		<td>
 			<input
+				id={`team-${props.idx}`}
 				type="text"
-				value={props.row.team || ''}
+				value={props.row.team || ""}
 				data-testid="team-input"
 				aria-describedby="team-header"
+				aria-labelledby="team-header"
 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
 					props.onChange({ ...props.row, team: e.target.value });
 				}}
