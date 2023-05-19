@@ -124,8 +124,9 @@ const Draw = () => {
 			)}
 			<section className="App-page draw">
 				{divisionNames?.length
-					? divisionNames.map((_, idx: number) => (
+					? divisionNames.map((divName, idx: number) => (
 							<section
+								key={divName}
 								style={selectedDivision === idx ? {} : { display: "none" }}
 							>
 								{renderDraw(idx)}
