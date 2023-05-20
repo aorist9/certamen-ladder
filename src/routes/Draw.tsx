@@ -30,6 +30,7 @@ type DrawFunction = () => { [letter: string]: string };
 
 export type DrawProps = {
 	setDrawFunction: (func: DrawFunction) => void;
+	error?: string;
 };
 
 const Draw = () => {
@@ -42,6 +43,9 @@ const Draw = () => {
 	const [divisionNames, setDivisionNames] = useState<string[]>(
 		ladder?.divisions ? determineInitialDivisions(ladder.divisions) : []
 	);
+	const [error, setError] = useState<
+		{ idx: number; message: string } | undefined
+	>();
 
 	const initialDrawFunctions: DrawFunction[] = [() => ({})];
 	if (ladder?.divisions) {
@@ -62,16 +66,41 @@ const Draw = () => {
 
 	const submit = () => {
 		let newLadder: LadderType = { ...ladder };
-		if (divisionNames.length) {
-			newLadder.teams = divisionNames.map((name, idx) => ({
-				division: name,
-				teams: drawFunctions[idx]()
-			}));
-		} else {
-			newLadder.teams = drawFunctions[0]();
+		try {
+			if (divisionNames.length) {
+				newLadder.teams = divisionNames.map((name, idx) => {
+					try {
+						const teams = drawFunctions[idx]();
+						if (Object.keys(teams).length < 2) {
+							throw new Error("You did not enter enough teams");
+						}
+						return {
+							division: name,
+							teams
+						};
+					} catch (err) {
+						// @ts-ignore
+						setError({ idx, message: err.message });
+						throw err;
+					}
+				});
+			} else {
+				try {
+					newLadder.teams = drawFunctions[0]();
+					if (Object.keys(newLadder.teams).length < 2) {
+						throw new Error("You did not enter enough teams");
+					}
+				} catch (err) {
+					// @ts-ignore
+					setError({ idx: 0, message: err.message });
+					throw err;
+				}
+			}
+			ladderService.editLadder(newLadder);
+			navigate(`/ladder?ladder=${query.get("ladder")}`);
+		} catch (err) {
+			console.log("error while generating ladder", err);
 		}
-		ladderService.editLadder(newLadder);
-		navigate(`/ladder?ladder=${query.get("ladder")}`);
 	};
 
 	const renderDraw = (idx: number) => {
@@ -123,16 +152,26 @@ const Draw = () => {
 				""
 			)}
 			<section className="App-page draw">
-				{divisionNames?.length
-					? divisionNames.map((divName, idx: number) => (
-							<section
-								key={divName}
-								style={selectedDivision === idx ? {} : { display: "none" }}
-							>
-								{renderDraw(idx)}
-							</section>
-					  ))
-					: renderDraw(0)}
+				{divisionNames?.length ? (
+					divisionNames.map((divName, idx: number) => (
+						<section
+							key={divName}
+							style={selectedDivision === idx ? {} : { display: "none" }}
+						>
+							{error?.idx === idx ? (
+								<p className="error">{error?.message}</p>
+							) : (
+								""
+							)}
+							{renderDraw(idx)}
+						</section>
+					))
+				) : (
+					<>
+						{error?.message ? <p className="error">{error?.message}</p> : ""}
+						{renderDraw(0)}
+					</>
+				)}
 				<button style={{ marginTop: "1em" }} onClick={() => submit()}>
 					Generate Ladder
 				</button>

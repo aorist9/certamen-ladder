@@ -98,6 +98,8 @@ describe("Draw", () => {
 				rounds: 17,
 				type: 0
 			});
+
+			jest.useRealTimers();
 		});
 
 		test("should ask how many letters there should be if click to draw is selected", () => {
@@ -146,7 +148,7 @@ describe("Draw", () => {
 			expect(screen.getByText("Team")).toBeInTheDocument();
 		});
 
-		test("should update the ladder and redirect to ladder page when teams are entered and generate ladder is clicked", () => {
+		test("should show error message if less than 2 teams are added", () => {
 			renderDraw();
 			userEvent.click(screen.getByText("Draw"));
 			userEvent.type(
@@ -154,6 +156,33 @@ describe("Draw", () => {
 					"Enter Your Team's Name (make sure to include Purple/Gold, A/B, if necessary)"
 				),
 				"Teamily Team"
+			);
+			userEvent.click(screen.getByText("Save"));
+
+			userEvent.click(screen.getByText("Generate Ladder"));
+			expect(
+				screen.getByText("You did not enter enough teams")
+			).toBeInTheDocument();
+		});
+
+		test("should update the ladder and redirect to ladder page when teams are entered and generate ladder is clicked", async () => {
+			renderDraw();
+			userEvent.click(screen.getByText("Draw"));
+			userEvent.type(
+				screen.getByPlaceholderText(
+					"Enter Your Team's Name (make sure to include Purple/Gold, A/B, if necessary)"
+				),
+				"Teamily Team"
+			);
+			userEvent.click(screen.getByText("Save"));
+
+			await new Promise(resolve => setTimeout(resolve, 100));
+			userEvent.click(screen.getByText("Draw"));
+			userEvent.type(
+				screen.getByPlaceholderText(
+					"Enter Your Team's Name (make sure to include Purple/Gold, A/B, if necessary)"
+				),
+				"Team Team T-Team Team Team"
 			);
 			userEvent.click(screen.getByText("Save"));
 
@@ -252,7 +281,7 @@ describe("Draw", () => {
 				screen.getAllByPlaceholderText("Enter teams here");
 			userEvent.type(textAreas[0], "Team, Teamy\nTeamily, Team team");
 			userEvent.type(textAreas[1], "A, B\nY, G");
-			userEvent.type(textAreas[1], "X, Y, Z");
+			userEvent.type(textAreas[2], "X, Y, Z");
 			userEvent.click(screen.getByText("Generate Ladder"));
 			expect(ladderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
