@@ -81,6 +81,7 @@ const Draw = () => {
 					} catch (err) {
 						// @ts-ignore
 						setError({ idx, message: err.message });
+						setSelectedDivision(idx);
 						throw err;
 					}
 				});
