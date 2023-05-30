@@ -27,6 +27,9 @@ const LadderDisplay = () => {
 						Scoreboard
 					</Link>
 				</section>
+				<p className="hide-print">
+					Click and drag to move a match up and down to a different room
+				</p>
 				{Array.isArray(ladder.teams) ? (
 					<section className="multi-ladder-display">
 						{ladder.teams.map((team, idx) => (

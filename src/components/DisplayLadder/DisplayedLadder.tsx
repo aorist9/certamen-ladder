@@ -2,8 +2,9 @@ import React, { ChangeEvent, useState } from "react";
 import LadderType from "../../types/LadderType";
 import Matches from "../../types/Matches";
 import pittingService from "../../services/pittingService";
-import TeamDisplay from "./TeamDisplay";
 import addSwissPoints from "./addSwissPoints";
+import DraggableRoomDisplay from "./DraggableRoomDisplay";
+import ladderService from "../../services/ladderService";
 
 type DisplayedLadderProps = {
 	ladder: LadderType;
@@ -49,6 +50,8 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 	const [roundScoreEditStatuses, setRoundScoreEditStatuses] = useState<
 		EditingStatus[]
 	>(pittings.map(() => EditingStatus.NEW));
+
+	const [draggedRound, setDraggedRound] = useState<number | undefined>();
 
 	const onScoreChange =
 		(i: number, j: number, k: number) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -162,20 +165,48 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 						{pittings[0].map((_, i: number) => (
 							<tr key={i}>
 								{pittings.map((_, j: number) => (
-									<td key={`${j}:${i}`} data-testid={`round-${j + 1}`}>
-										<ul>
-											{pittings[j][i].map(({ team, score, swissPoints }, k) => (
-												<TeamDisplay
-													key={team}
-													onScoreChange={onScoreChange(i, j, k)}
-													roundEditStatus={roundScoreEditStatuses[j]}
-													score={score}
-													swissPoints={swissPoints}
-													team={team}
-												/>
-											))}
-										</ul>
-									</td>
+									<DraggableRoomDisplay
+										key={`${j}:${i}`}
+										editStatus={roundScoreEditStatuses[j]}
+										isDraggedRound={draggedRound === j}
+										moveRoom={(sourceIdx: number) => {
+											if (sourceIdx === i) {
+												return;
+											}
+
+											const newPittings: Matches = [...pittings];
+											let newRound;
+											if (sourceIdx < i) {
+												newRound = [
+													...pittings[j].slice(0, sourceIdx),
+													...pittings[j].slice(sourceIdx + 1, i + 1),
+													pittings[j][sourceIdx],
+													...pittings[j].slice(i + 1)
+												];
+											} else {
+												newRound = [
+													...pittings[j].slice(0, i),
+													pittings[j][sourceIdx],
+													...pittings[j].slice(i, sourceIdx),
+													...pittings[j].slice(sourceIdx + 1)
+												];
+											}
+											newPittings[j] = newRound;
+											// let swap = pittings[j][i];
+											// newPittings[j][i] = pittings[j][destinationIdx];
+											// newPittings[j][destinationIdx] = swap;
+											setPittings(newPittings);
+											ladderService.editLadder({
+												...ladder,
+												matches: newPittings
+											});
+										}}
+										onScoreChange={onScoreChange}
+										pitting={pittings[j][i]}
+										roomNumber={i}
+										roundNumber={j}
+										startDrag={() => setDraggedRound(j)}
+									/>
 								))}
 								{roomEditStatus === EditingStatus.NEW ? (
 									""
