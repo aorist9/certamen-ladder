@@ -1,3 +1,5 @@
-.home {
-	padding-right: 10em;
+@media (min-width: 768px) {
+	.home {
+		padding-right: 10em;
+	}
 }

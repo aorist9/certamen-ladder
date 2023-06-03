@@ -1,9 +1,6 @@
 .Sidebar {
 	background-color: #282c34;
-	min-height: 100vh;
-	padding-top: 20px;
 	padding-right: 20px;
-	min-width: 12em;
 }
 
 @media print {
@@ -28,4 +25,24 @@
 
 .Sidebar li {
 	margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+	.Sidebar {
+		min-height: 100vh;
+		padding-top: 20px;
+		min-width: 12em;
+	}
+}
+
+@media (max-width: 768px) {
+	.sidebar-mobile-hidden {
+		display: none;
+	}
+
+	.sidebar-mobile-visible {
+		position: fixed;
+		left: 10;
+		top: 10;
+	}
 }

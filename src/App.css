@@ -46,3 +46,28 @@
 .error {
 	color: lightcoral;
 }
+
+.menu-btn {
+	background-color: #282c34;
+	color: white;
+	outline: 1px solid white;
+	box-shadow: none;
+	font-weight: bold;
+}
+
+.menu-btn:hover {
+	background-color: #393d45;
+}
+
+@media (min-width: 768px) {
+	.mobile-only {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	header.App-header {
+		position: fixed;
+		width: 100%;
+	}
+}
