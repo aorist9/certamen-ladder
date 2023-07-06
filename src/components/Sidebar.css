@@ -46,3 +46,14 @@
 		top: 10;
 	}
 }
+
+@media (prefers-color-scheme: dark) {
+	.Sidebar,
+	.Sidebar * {
+		background-color: #262a56;
+	}
+
+	.Sidebar a {
+		color: #b8621b;
+	}
+}

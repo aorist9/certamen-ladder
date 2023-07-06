@@ -44,7 +44,7 @@
 }
 
 .error {
-	color: lightcoral;
+	color: rgb(34, 16, 16);
 }
 
 .menu-btn {
@@ -69,5 +69,31 @@
 	header.App-header {
 		position: fixed;
 		width: 100%;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	* {
+		background-color: black;
+		color: #e3ccae;
+	}
+
+	.App-header,
+	.App-header * {
+		background-color: #262a56;
+	}
+
+	input[type="text"] {
+		background-color: #393d45;
+	}
+
+	.menu-btn {
+		outline: 1px solid #e3ccae;
+	}
+
+	.data-display .description {
+		font-size: 80%;
+		font-style: italic;
+		color: rgba(227, 204, 174, 0.6);
 	}
 }

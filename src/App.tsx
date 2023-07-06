@@ -30,7 +30,7 @@ function App() {
 						style={{ margin: "0.5em 1em" }}
 						onClick={() => setShowSidebar(!showSidebar)}
 					>
-						<HamburgerIcon color="white" />
+						<HamburgerIcon color="currentColor" />
 					</button>
 					Certamen Ladder
 				</h1>

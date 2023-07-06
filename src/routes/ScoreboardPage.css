@@ -7,3 +7,9 @@
 .scoreboard th {
 	padding: 0 1em;
 }
+
+@media (prefers-color-scheme: dark) {
+	.scoreboard td {
+		outline: 1px solid #e3ccae;
+	}
+}

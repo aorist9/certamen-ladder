@@ -10,14 +10,6 @@
 	max-width: 25em;
 }
 
-.ladder-list-item:nth-child(odd) {
-	background-color: lightgrey;
-}
-
-.ladder-list-item:nth-child(even) {
-	background-color: lightblue;
-}
-
 .ladder-info-section {
 	padding: 1em;
 	border: 1px solid black;
@@ -37,18 +29,48 @@
 	height: 100%;
 }
 
-.ladder-info-section.ladder-status-Created {
+.ladder-info-section.ladder-status-Created,
+.ladder-info-section.ladder-status-Created * {
 	background-color: lightpink;
 }
 
-.ladder-info-section.ladder-status-Drawn {
+.ladder-info-section.ladder-status-Drawn,
+.ladder-info-section.ladder-status-Drawn * {
 	background-color: lightcyan;
 }
 
-.ladder-info-section.ladder-status-In-Progress {
+.ladder-info-section.ladder-status-In-Progress,
+.ladder-info-section.ladder-status-In-Progress * {
 	background-color: lightgoldenrodyellow;
 }
 
-.ladder-info-section.ladder-status-Done {
+.ladder-info-section.ladder-status-Done,
+.ladder-info-section.ladder-status-Done * {
 	background-color: lightgreen;
+}
+
+@media (prefers-color-scheme: dark) {
+	.ladder-display td {
+		border: 1px solid #e3ccae;
+	}
+
+	.ladder-info-section.ladder-status-Created,
+	.ladder-info-section.ladder-status-Created * {
+		background-color: #d21312;
+	}
+
+	.ladder-info-section.ladder-status-Drawn,
+	.ladder-info-section.ladder-status-Drawn * {
+		background-color: #4f4557;
+	}
+
+	.ladder-info-section.ladder-status-In-Progress,
+	.ladder-info-section.ladder-status-In-Progress * {
+		background-color: #19376d;
+	}
+
+	.ladder-info-section.ladder-status-Done,
+	.ladder-info-section.ladder-status-Done * {
+		background-color: #66347f;
+	}
 }

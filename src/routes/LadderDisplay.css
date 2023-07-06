@@ -38,3 +38,9 @@
 		display: none;
 	}
 }
+
+@media (prefers-color-scheme: dark) {
+	.ladder-display td {
+		outline: 1px solid #e3ccae;
+	}
+}
