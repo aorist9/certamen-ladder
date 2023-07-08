@@ -29,6 +29,7 @@ function App() {
 						className="menu-btn mobile-only"
 						style={{ margin: "0.5em 1em" }}
 						onClick={() => setShowSidebar(!showSidebar)}
+						aria-label="Menu Button"
 					>
 						<HamburgerIcon color="currentColor" />
 					</button>
