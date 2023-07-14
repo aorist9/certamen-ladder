@@ -10,13 +10,26 @@ const Home = () => (
 		</p>
 		<h2>About this Tool</h2>
 		<p>
-			Although Certamen Ladder is on the web and runs on your browser, the data
-			you put in doesn't go anywhere but is stored on your computer. The good
-			news is that no one can see the information you put in; the bad news is
-			that no one can see the information you put in. Ladders will be designed
-			to be printed out for sharing purposes, but as of now there's no way to
-			share your ladder via this app.
+			Certamen Ladder allows you to create ladders for Certamen tournaments,
+			including help doing the draw, setting the pittings, and keeping score.
 		</p>
+		{features.publishLadder ? (
+			<p>
+				Ladders can now be made public to share via a link; watch the sidebar
+				for the opportunity to publish your ladder. Even when a ladder is shared
+				it can only be updated/edited from the computer that created it, which
+				should keep others from changing your ladders.
+			</p>
+		) : (
+			<p>
+				Although Certamen Ladder is on the web and runs on your browser, the
+				data you put in doesn't go anywhere but is stored on your computer. The
+				good news is that no one can see the information you put in; the bad
+				news is that no one can see the information you put in. Ladders will be
+				designed to be printed out for sharing purposes, but as of now there's
+				no way to share your ladder via this app.
+			</p>
+		)}
 		{features.swissLadder ? (
 			<>
 				<h2>About the Swiss System</h2>
