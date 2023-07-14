@@ -33,9 +33,7 @@ const editLadder = (ladder: LadderType): void => {
 		addLadder(ladder);
 	}
 
-	console.log("Hello there");
 	if (ladder.publicId) {
-		console.log("General Kenobi");
 		window.fetch(`${BACKEND_URL}/api/certamen/ladders.php`, {
 			method: "PUT",
 			body: JSON.stringify(ladder)
