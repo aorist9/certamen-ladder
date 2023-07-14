@@ -2,5 +2,6 @@
 	"multipleDivisions": true,
 	"swissLadder": true,
 	"pointsSwissLadder": false,
-	"chooseRounds": false
+	"chooseRounds": false,
+	"publishLadder": true
 }

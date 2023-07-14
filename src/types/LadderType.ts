@@ -7,6 +7,7 @@ interface LadderType {
 	draw: number;
 	name: string;
 	matches?: Matches; // should be undefined for multiple divisions
+	publicId?: string; // should be undefined unless the ladder is published
 	rooms?: string[]; // should be undefined for multiple divisions
 	rounds: number;
 	type: number;
@@ -33,6 +34,7 @@ export class Ladder implements LadderType {
 	public draw: number;
 	public name: string;
 	public matches?: Matches; // should be undefined for multiple divisions
+	public publicId?: string; // should be undefined unless the ladder is published
 	public rooms?: string[]; // should be undefined for multiple divisions
 	public rounds: number;
 	public type: number;
@@ -47,6 +49,7 @@ export class Ladder implements LadderType {
 
 	constructor(ladderType: LadderType) {
 		this.id = ladderType.id;
+		this.publicId = ladderType.publicId;
 		this.divisions = ladderType.divisions;
 		this.draw = ladderType.draw;
 		this.name = ladderType.name;

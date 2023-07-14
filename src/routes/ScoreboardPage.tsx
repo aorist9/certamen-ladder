@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
 import Scoreboard from "../components/Scoreboard";
 import "./ScoreboardPage.css";
+import { retrievePublicOrPrivateLadder } from "./LadderDisplay";
 
 const ScoreboardPage = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
-	const ladder: LadderType | undefined = ladderId
-		? ladderService.getLadder(ladderId)
-		: undefined;
+	const publicId: string | null = useSearchParams()[0].get("publicId");
+	const [ladder, setLadder] = useState<LadderType | undefined>();
+
+	useEffect(
+		() => retrievePublicOrPrivateLadder(ladderId, setLadder, publicId),
+		[ladderId, publicId]
+	);
 
 	const header = (
 		<section style={{ display: "flex", columnGap: "2em" }}>
 			<h2>{ladder?.name}</h2>
 			<Link
-				to={`/ladder?ladder=${ladderId}`}
+				to={`/ladder?${
+					ladderId ? `ladder=${ladderId}` : `publicId=${publicId}`
+				}`}
 				style={{ margin: "auto 0" }}
 				className="hide-print"
 			>

@@ -16,6 +16,9 @@ const determineAddScoresButtonText = (status: EditingStatus) => {
 };
 
 type LadderTableProps = {
+	hideIfPublic: (
+		elem: string | JSX.Element | JSX.Element[]
+	) => string | JSX.Element | JSX.Element[];
 	isSwiss: boolean;
 	pittings: Matches;
 	roomEditStatus: EditingStatus;
@@ -61,36 +64,41 @@ const LadderTable = (props: LadderTableProps) => {
 			<thead>
 				<tr>
 					{props.pittings.map((_, i: number) => (
-						<th key={i}>
+						<th key={i} style={{ padding: "0 10px" }}>
 							Round {i + 1}
-							<button
-								style={{ marginLeft: "1.5em" }}
-								onClick={() => {
-									if (
-										props.roundScoreEditStatuses[i] === EditingStatus.EDITING &&
-										props.isSwiss
-									) {
-										let newPittings = [
-											...props.pittings.slice(0, i),
-											props.pittings[i].map(addSwissPoints),
-											...props.pittings.slice(i + 1)
-										];
+							{props.hideIfPublic(
+								<button
+									style={{ marginLeft: "1.5em" }}
+									onClick={() => {
+										if (
+											props.roundScoreEditStatuses[i] ===
+												EditingStatus.EDITING &&
+											props.isSwiss
+										) {
+											let newPittings = [
+												...props.pittings.slice(0, i),
+												props.pittings[i].map(addSwissPoints),
+												...props.pittings.slice(i + 1)
+											];
 
-										props.updateMatches(newPittings);
-										props.setPittings(newPittings);
-									}
+											props.updateMatches(newPittings);
+											props.setPittings(newPittings);
+										}
 
-									props.setRoundScoreEditStatuses([
-										...props.roundScoreEditStatuses.slice(0, i),
-										props.roundScoreEditStatuses[i] === EditingStatus.EDITING
-											? EditingStatus.EDITED
-											: EditingStatus.EDITING,
-										...props.roundScoreEditStatuses.slice(i + 1)
-									]);
-								}}
-							>
-								{determineAddScoresButtonText(props.roundScoreEditStatuses[i])}
-							</button>
+										props.setRoundScoreEditStatuses([
+											...props.roundScoreEditStatuses.slice(0, i),
+											props.roundScoreEditStatuses[i] === EditingStatus.EDITING
+												? EditingStatus.EDITED
+												: EditingStatus.EDITING,
+											...props.roundScoreEditStatuses.slice(i + 1)
+										]);
+									}}
+								>
+									{determineAddScoresButtonText(
+										props.roundScoreEditStatuses[i]
+									)}
+								</button>
+							)}
 						</th>
 					))}
 					{props.roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
