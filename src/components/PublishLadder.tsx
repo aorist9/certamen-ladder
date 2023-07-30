@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
+import QRCode from "react-qr-code";
 
 const PublishLadder = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
@@ -13,15 +14,22 @@ const PublishLadder = () => {
 	if (loading) {
 		return <section>Processing...</section>;
 	} else if (ladder?.publicId) {
+		const href = `${window.location.href.substring(
+			0,
+			window.location.href.indexOf("/certamen-ladder")
+		)}/certamen-ladder#/ladder?publicId=${ladder.publicId}`;
 		return (
-			<section>
+			<section
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					padding: "0 3em"
+				}}
+			>
 				<h2>Your ladder is public</h2>
-				<a
-					href={`${window.location.href.substring(
-						0,
-						window.location.href.indexOf("/certamen-ladder")
-					)}/certamen-ladder#/ladder?publicId=${ladder.publicId}`}
-				>
+				<QRCode value={href} size={150} />
+				<a href={href} style={{ margin: "0.5em 0" }}>
 					Public Link
 				</a>
 			</section>
