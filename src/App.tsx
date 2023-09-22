@@ -9,6 +9,7 @@ import LadderDisplay from "./routes/LadderDisplay";
 import ScoreboardPage from "./routes/ScoreboardPage";
 import "./App.css";
 import HamburgerIcon from "./icons/Hamburger";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
 	const headerRef = useRef<HTMLHeadingElement>(null);
@@ -23,38 +24,42 @@ function App() {
 
 	return (
 		<main className="App">
-			<header className="App-header" ref={headerRef}>
-				<h1 style={{ display: "flex" }}>
-					<button
-						className="menu-btn mobile-only"
-						style={{ margin: "0.5em 1em" }}
-						onClick={() => setShowSidebar(!showSidebar)}
-						aria-label="Menu Button"
-					>
-						<HamburgerIcon color="currentColor" />
-					</button>
-					Certamen Ladder
-				</h1>
-			</header>
-			<div className="mobile-only" style={{ height: `${height}px` }}></div>
-			<HashRouter>
-				<section style={{ display: "flex" }}>
-					<Sidebar visible={showSidebar} />
-					<article
-						style={{ flexGrow: 3 }}
-						onClick={() => setShowSidebar(false)}
-					>
-						<Routes>
-							<Route path="/" element={<Home />} />
-							<Route path="/create" element={<CreateLadder />} />
-							<Route path="/draw" element={<Draw />} />
-							<Route path="/ladder" element={<LadderDisplay />} />
-							<Route path="/ladders" element={<ViewLadders />} />
-							<Route path="/scoreboard" element={<ScoreboardPage />} />
-						</Routes>
-					</article>
-				</section>
-			</HashRouter>
+			<ErrorBoundary>
+				<header className="App-header" ref={headerRef}>
+					<h1 style={{ display: "flex" }}>
+						<button
+							className="menu-btn mobile-only"
+							style={{ margin: "0.5em 1em" }}
+							onClick={() => setShowSidebar(!showSidebar)}
+							aria-label="Menu Button"
+						>
+							<HamburgerIcon color="currentColor" />
+						</button>
+						Certamen Ladder
+					</h1>
+				</header>
+				<div className="mobile-only" style={{ height: `${height}px` }}></div>
+				<HashRouter>
+					<section style={{ display: "flex" }}>
+						<Sidebar visible={showSidebar} />
+						<article
+							style={{ flexGrow: 3 }}
+							onClick={() => setShowSidebar(false)}
+						>
+							<ErrorBoundary>
+								<Routes>
+									<Route path="/" element={<Home />} />
+									<Route path="/create" element={<CreateLadder />} />
+									<Route path="/draw" element={<Draw />} />
+									<Route path="/ladder" element={<LadderDisplay />} />
+									<Route path="/ladders" element={<ViewLadders />} />
+									<Route path="/scoreboard" element={<ScoreboardPage />} />
+								</Routes>
+							</ErrorBoundary>
+						</article>
+					</section>
+				</HashRouter>
+			</ErrorBoundary>
 		</main>
 	);
 }

@@ -96,4 +96,8 @@
 		font-style: italic;
 		color: rgba(227, 204, 174, 0.6);
 	}
+
+	.error {
+		color: #e3ccae;
+	}
 }

@@ -55,7 +55,7 @@ const DraggableRoomDisplay = ({
 					startDrag();
 				}}
 			>
-				{pitting.map(({ team, score, swissPoints }, idx) => (
+				{pitting?.map(({ team, score, swissPoints }, idx) => (
 					<TeamDisplay
 						key={team}
 						onScoreChange={onScoreChange(roomNumber, roundNumber, idx)}
