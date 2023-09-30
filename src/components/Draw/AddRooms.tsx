@@ -26,6 +26,7 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 							<div key={idx} style={{ display: "flex", flexDirection: "row" }}>
 								<textarea
 									value={room.value}
+									autoFocus={true}
 									onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
 										setRooms([
 											...rooms.slice(0, idx),
