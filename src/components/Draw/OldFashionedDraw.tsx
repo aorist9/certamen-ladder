@@ -33,7 +33,7 @@ const OldFashionedDraw = (props: DrawProps) => {
 	}, [rows]);
 
 	return (
-		<section>
+		<section className="draw-body">
 			<section>
 				Please enter the teams as they draw. Don't worry about putting them in
 				order or filling up all the fields.

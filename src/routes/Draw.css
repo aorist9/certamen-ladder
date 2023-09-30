@@ -2,6 +2,16 @@
 	font-size: 100pt;
 }
 
+.draw-division {
+	display: flex;
+	flex-direction: row;
+	column-gap: 1em;
+}
+
+.draw-body {
+	min-width: 65%;
+}
+
 .draw-section {
 	align-items: center;
 	display: flex;
@@ -92,4 +102,11 @@
 
 .tabs input {
 	max-width: 6em;
+}
+
+@media (max-width: 768px) {
+	.draw-division {
+		flex-direction: column;
+		row-gap: 1em;
+	}
 }

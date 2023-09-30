@@ -7,6 +7,7 @@ import RandomDraw from "../components/Draw/RandomDraw";
 import LadderType from "../types/LadderType";
 import "./Draw.css";
 import DivisionTab from "../components/Draw/DivisionTab";
+import AddRooms from "../components/Draw/AddRooms";
 
 const determineInitialDivisions = (divisions: number): string[] => {
 	const basicDivisions = [
@@ -76,7 +77,11 @@ const Draw = () => {
 						}
 						return {
 							division: name,
-							teams
+							teams,
+							rooms:
+								ladder?.teams && Array.isArray(ladder?.teams)
+									? ladder.teams[idx]?.rooms
+									: []
 						};
 					} catch (err) {
 						// @ts-ignore
@@ -111,13 +116,78 @@ const Draw = () => {
 			setDrawFunctions(newDrawFunctions);
 		};
 
+		const updateRooms = (rooms: string[]) => {
+			if (ladder?.divisions && ladder.divisions > 1) {
+				const newLadder = { ...ladder };
+				if (
+					!newLadder.teams ||
+					!Array.isArray(newLadder.teams) ||
+					newLadder.teams.length < idx
+				) {
+					newLadder.teams = divisionNames.map(division => ({
+						division,
+						teams: {}
+					}));
+				}
+				newLadder.teams[idx].rooms = rooms;
+				ladderService.editLadder(newLadder);
+			} else {
+				ladderService.editLadder({ ...ladder, rooms });
+			}
+		};
+
+		const savedRooms =
+			ladder.rooms ||
+			(ladder.teams &&
+				Array.isArray(ladder.teams) &&
+				ladder.teams[idx].rooms) ||
+			[];
 		switch (ladder?.draw) {
 			case 0: // old fashioned
-				return <OldFashionedDraw setDrawFunction={inputDrawFunction} />;
+				return (
+					<section className="draw-division">
+						<OldFashionedDraw setDrawFunction={inputDrawFunction} />
+						<AddRooms
+							divisionOrTournament={
+								ladder.divisions && ladder.divisions > 1
+									? "division"
+									: "tournament"
+							}
+							savedRooms={savedRooms}
+							updateRooms={updateRooms}
+						/>
+					</section>
+				);
 			case 1: // virtual choose
-				return <ChooseDraw setDrawFunction={inputDrawFunction} />;
+				return (
+					<section className="draw-division">
+						<ChooseDraw setDrawFunction={inputDrawFunction} />
+						<AddRooms
+							divisionOrTournament={
+								ladder.divisions && ladder.divisions > 1
+									? "division"
+									: "tournament"
+							}
+							savedRooms={savedRooms}
+							updateRooms={updateRooms}
+						/>
+					</section>
+				);
 			case 2: // random assignment
-				return <RandomDraw setDrawFunction={inputDrawFunction} />;
+				return (
+					<section className="draw-division">
+						<RandomDraw setDrawFunction={inputDrawFunction} />
+						<AddRooms
+							divisionOrTournament={
+								ladder.divisions && ladder.divisions > 1
+									? "division"
+									: "tournament"
+							}
+							savedRooms={savedRooms}
+							updateRooms={updateRooms}
+						/>
+					</section>
+				);
 			default:
 				return (
 					<section className="App-page draw">

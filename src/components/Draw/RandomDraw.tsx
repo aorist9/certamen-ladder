@@ -30,7 +30,7 @@ const RandomDraw = (props: DrawProps) => {
 	}, [teams]);
 
 	return (
-		<section>
+		<section className="draw-body">
 			Please enter team names in the text box. You can separate them with commas
 			or new lines.
 			<section className="teams">

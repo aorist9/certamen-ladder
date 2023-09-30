@@ -61,7 +61,11 @@ export class Ladder implements LadderType {
 	}
 
 	calculateStatus(): LadderStatus {
-		if (!this.teams) {
+		if (
+			!this.teams ||
+			(typeof this.teams === "object" && !Object.keys(this.teams).length) ||
+			(Array.isArray(this.teams) && !Object.keys(this.teams[0].teams).length)
+		) {
 			return LadderStatus.CREATED;
 		}
 

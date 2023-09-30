@@ -45,7 +45,7 @@ const Draw = (props: DrawProps) => {
 	}, [chosenLetter, numLetters, teams]);
 
 	return (
-		<section>
+		<section className="draw-body">
 			<NumberInput
 				id="number-of-letters"
 				label="How many letters should players choose from (it's okay if not all letters are picked)?"
