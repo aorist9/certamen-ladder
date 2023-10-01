@@ -40,8 +40,14 @@ const PublishLadder = () => {
 				style={{ fontSize: "1.4rem", marginTop: "1em" }}
 				onClick={() => {
 					setLoading(true);
+					const lddr: LadderType | undefined = ladderService.getLadder(
+						ladder.id
+					);
+					if (!lddr) {
+						throw new Error("umm... there's no ladder");
+					}
 					ladderService
-						.publishLadder(ladder)
+						.publishLadder(lddr)
 						.then(newLadder => {
 							setLoading(false);
 							window.location.reload();

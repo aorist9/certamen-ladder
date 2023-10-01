@@ -23,7 +23,9 @@ export enum EditingStatus {
 const DisplayedLadder = (props: DisplayedLadderProps) => {
 	const { ladder, name, updateMatches } = props;
 	const [roomEditStatus, setRoomEditStatus] = useState<EditingStatus>(
-		ladder.rooms ? EditingStatus.EDITED : EditingStatus.NEW
+		ladder.rooms && ladder.rooms.length
+			? EditingStatus.EDITED
+			: EditingStatus.NEW
 	);
 
 	const [pittings, setPittings] = useState<Matches>(
@@ -34,7 +36,7 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 	);
 
 	const [rooms, setRooms] = useState<string[]>(
-		ladder.rooms || pittings[0].map(() => "")
+		ladder.rooms || (pittings.length ? pittings[0].map(() => "") : [])
 	);
 
 	const [roundScoreEditStatuses, setRoundScoreEditStatuses] = useState<
