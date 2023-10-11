@@ -24,22 +24,22 @@ function App() {
 
 	return (
 		<main className="App">
-			<ErrorBoundary>
-				<header className="App-header" ref={headerRef}>
-					<h1 style={{ display: "flex" }}>
-						<button
-							className="menu-btn mobile-only"
-							style={{ margin: "0.5em 1em" }}
-							onClick={() => setShowSidebar(!showSidebar)}
-							aria-label="Menu Button"
-						>
-							<HamburgerIcon color="currentColor" />
-						</button>
-						Certamen Ladder
-					</h1>
-				</header>
-				<div className="mobile-only" style={{ height: `${height}px` }}></div>
-				<HashRouter>
+			<header className="App-header" ref={headerRef}>
+				<h1 style={{ display: "flex" }}>
+					<button
+						className="menu-btn mobile-only"
+						style={{ margin: "0.5em 1em" }}
+						onClick={() => setShowSidebar(!showSidebar)}
+						aria-label="Menu Button"
+					>
+						<HamburgerIcon color="currentColor" />
+					</button>
+					Certamen Ladder
+				</h1>
+			</header>
+			<div className="mobile-only" style={{ height: `${height}px` }}></div>
+			<HashRouter>
+				<ErrorBoundary>
 					<section style={{ display: "flex" }}>
 						<Sidebar visible={showSidebar} />
 						<article
@@ -58,8 +58,8 @@ function App() {
 							</ErrorBoundary>
 						</article>
 					</section>
-				</HashRouter>
-			</ErrorBoundary>
+				</ErrorBoundary>
+			</HashRouter>
 		</main>
 	);
 }

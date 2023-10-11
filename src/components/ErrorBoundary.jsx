@@ -1,7 +1,8 @@
 import React from "react";
 import ladderService from "../services/ladderService";
+import { useNavigate } from "react-router";
 
-export default class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { error: null };
@@ -44,6 +45,14 @@ export default class ErrorBoundary extends React.Component {
 							""
 						)}
 					</p>
+					<button
+						onClick={() => {
+							this.props.navigate("/");
+							this.setState({ error: undefined });
+						}}
+					>
+						Return to home page
+					</button>
 				</section>
 			);
 		} else {
@@ -51,3 +60,10 @@ export default class ErrorBoundary extends React.Component {
 		}
 	}
 }
+
+const ErrorBoundaryWrapper = ({ children }) => {
+	const navigate = useNavigate();
+	return <ErrorBoundary navigate={navigate}>{children}</ErrorBoundary>;
+};
+
+export default ErrorBoundaryWrapper;
