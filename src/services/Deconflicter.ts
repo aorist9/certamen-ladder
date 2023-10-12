@@ -89,16 +89,10 @@ class Deconflicter {
 				}
 
 				// determine longest possible swap distance from this room
-				let longestSwapDistance = 0;
-				round[roomIdx].forEach(t => {
-					if (t.rank - 1 > longestSwapDistance) {
-						longestSwapDistance = t.rank - 1;
-					}
-
-					if (totalTeams - t.rank > longestSwapDistance) {
-						longestSwapDistance = totalTeams - t.rank;
-					}
-				});
+				const longestSwapDistance = round[roomIdx].reduce((acc, t) => {
+					const distance = Math.max(t.rank - 1, totalTeams - t.rank);
+					return Math.max(acc, distance);
+				}, 0);
 
 				// iterate from lowest to highest swap distance
 				for (

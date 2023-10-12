@@ -1,6 +1,41 @@
-import { TeamEntry, swapTeams } from "./Deconflicter";
+import Deconflicter, { TeamEntry, swapTeams } from "./Deconflicter";
 
 describe("Deconflicter", () => {
+	describe("deconflictRound", () => {
+		let deconflicter: Deconflicter;
+		beforeEach(() => {
+			deconflicter = new Deconflicter([
+				[
+					[{ team: "A" }, { team: "B" }, { team: "C" }],
+					[{ team: "D" }, { team: "E" }, { team: "F" }],
+					[{ team: "G" }, { team: "H" }]
+				]
+			]);
+		});
+
+		test("should do nothing if there are no conflicts", () => {
+			let unconflictedRound: TeamEntry[][] = [
+				[
+					{ team: "A", rank: 1 },
+					{ team: "D", rank: 2 },
+					{ team: "G", rank: 3 }
+				],
+				[
+					{ team: "B", rank: 4 },
+					{ team: "E", rank: 5 },
+					{ team: "H", rank: 6 }
+				],
+				[
+					{ team: "C", rank: 7 },
+					{ team: "F", rank: 8 }
+				]
+			];
+			expect(deconflicter.deconflictRound(unconflictedRound)).toEqual(
+				unconflictedRound.map(room => room.map(team => team.team))
+			);
+		});
+	});
+
 	describe("swapTeams", () => {
 		test("should return a new round with the teams swapped", () => {
 			const teams: TeamEntry[][] = [
