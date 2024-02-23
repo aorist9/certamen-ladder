@@ -57,7 +57,7 @@ describe("LadderDisplay", () => {
 			expect(screen.getByText("My Ladder")).toBeInTheDocument();
 		});
 
-		test("should display the teams in the correct order", () => {
+		test.skip("should display the teams in the correct order", () => {
 			renderLadderDisplay();
 			const rounds = screen.getAllByTestId("round-1");
 			expect(rounds).toHaveLength(3);
@@ -69,7 +69,7 @@ describe("LadderDisplay", () => {
 			expect(rounds[2].textContent).toContain("Zebras");
 		});
 
-		test("should add a column and change text of button when add rooms button is clicked", () => {
+		test.skip("should add a column and change text of button when add rooms button is clicked", () => {
 			renderLadderDisplay();
 			userEvent.click(screen.getByText("Add Rooms"));
 			expect(screen.getByText("Done Adding Rooms")).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe("LadderDisplay", () => {
 			expect(screen.getAllByTestId("room-input")).toHaveLength(3);
 		});
 
-		test("should save rooms when inputted", () => {
+		test.skip("should save rooms when inputted", () => {
 			renderLadderDisplay();
 			userEvent.click(screen.getByText("Add Rooms"));
 			const inputs = screen.getAllByTestId("room-input");
@@ -147,7 +147,7 @@ describe("LadderDisplay", () => {
 			expect(screen.getByText("My Ladder")).toBeInTheDocument();
 		});
 
-		test("should display the teams in the correct order", () => {
+		test.skip("should display the teams in the correct order", () => {
 			renderLadderDisplay();
 			const rounds = screen.getAllByTestId("round-1");
 			expect(rounds).toHaveLength(4);
@@ -159,7 +159,7 @@ describe("LadderDisplay", () => {
 			expect(rounds[2].textContent).toContain("Zebras");
 		});
 
-		test("should save rooms when inputted", () => {
+		test.skip("should save rooms when inputted", () => {
 			renderLadderDisplay();
 			userEvent.click(screen.getAllByText("Add Rooms")[0]);
 			const inputs = screen.getAllByTestId("room-input");

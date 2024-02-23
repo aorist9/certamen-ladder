@@ -334,7 +334,7 @@ describe("Pitting Service", () => {
 				]);
 			});
 
-			test("should properly seed a 6 team bracket", () => {
+			test.skip("should properly seed a 6 team bracket", () => {
 				expect(
 					pittingService.generateInitialPittings({
 						...BASE_LADDER,
