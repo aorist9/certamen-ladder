@@ -19,7 +19,9 @@ const mapTeamsToObject = (
 };
 
 const RandomDraw = (props: DrawProps) => {
-	const [teams, setTeams] = useState<string>("");
+	const [teams, setTeams] = useState<string>(
+		props.teams ? Object.values(props.teams).join("\n") : ""
+	);
 	useEffect(() => {
 		props.setDrawFunction(() => {
 			let splitTeams = teams.split(/\s*[,\n]\s*/);

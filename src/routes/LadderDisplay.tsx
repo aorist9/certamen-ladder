@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import LadderType from "../types/LadderType";
@@ -32,6 +32,29 @@ const LadderDisplay = () => {
 		elem: string | JSX.Element | JSX.Element[]
 	): string | JSX.Element | JSX.Element[] => (ladderId ? elem : "");
 
+	const canStillGoBack = useMemo(() => {
+		if (!ladder) {
+			return true;
+		}
+
+		let canStillGoBack = true;
+		if (
+			ladder.divisions &&
+			ladder.divisions > 1 &&
+			Array.isArray(ladder.teams)
+		) {
+			ladder.teams.forEach(div => {
+				if (div.matches) {
+					canStillGoBack = false;
+				}
+			});
+		} else {
+			canStillGoBack = !ladder.matches;
+		}
+
+		return canStillGoBack;
+	}, [ladder]);
+
 	if (ladder) {
 		return (
 			<section className="App-page ladder-display">
@@ -52,6 +75,12 @@ const LadderDisplay = () => {
 						Click and drag to move a match up and down to a different room
 					</p>
 				)}
+				{canStillGoBack &&
+					hideIfPublic(
+						<Link to={`/draw?ladder=${ladderId}`} className="hide-print">
+							Add/Remove Teams
+						</Link>
+					)}
 				{Array.isArray(ladder.teams) ? (
 					<section className="multi-ladder-display">
 						{ladder.teams.map((team, idx) => (

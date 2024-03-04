@@ -8,6 +8,7 @@ import LadderType from "../types/LadderType";
 import "./Draw.css";
 import DivisionTab from "../components/Draw/DivisionTab";
 import AddRooms from "../components/Draw/AddRooms";
+import Teams from "../types/Teams";
 
 const determineInitialDivisions = (divisions: number): string[] => {
 	const basicDivisions = [
@@ -32,6 +33,7 @@ type DrawFunction = () => { [letter: string]: string };
 export type DrawProps = {
 	setDrawFunction: (func: DrawFunction) => void;
 	error?: string;
+	teams?: Record<string, string>;
 };
 
 const Draw = () => {
@@ -48,10 +50,20 @@ const Draw = () => {
 		{ idx: number; message: string } | undefined
 	>();
 
-	const initialDrawFunctions: DrawFunction[] = [() => ({})];
+	const defaultDrawFunction = (idx: number) => (): Teams => {
+		if (ladder?.divisions && ladder?.divisions > 1) {
+			// @ts-ignore
+			return ladder?.teams?.[idx].teams || {};
+		} else if (ladder?.teams) {
+			return ladder?.teams as Teams;
+		} else {
+			return {};
+		}
+	};
+	const initialDrawFunctions: DrawFunction[] = [defaultDrawFunction(0)];
 	if (ladder?.divisions) {
 		for (let i = 1; i < ladder?.divisions; i++) {
-			initialDrawFunctions.push(() => ({}));
+			initialDrawFunctions.push(defaultDrawFunction(i));
 		}
 	}
 	const [drawFunctions, setDrawFunctions] =
@@ -110,6 +122,11 @@ const Draw = () => {
 	};
 
 	const renderDraw = (idx: number) => {
+		const teams: Record<string, string> | undefined =
+			ladder.divisions && ladder.divisions > 1
+				? // @ts-ignore
+				  ladder?.teams?.[idx]?.teams || []
+				: ladder.teams;
 		const inputDrawFunction = (func: DrawFunction) => {
 			let newDrawFunctions = [...drawFunctions];
 			newDrawFunctions[idx] = func;
@@ -146,7 +163,10 @@ const Draw = () => {
 			case 0: // old fashioned
 				return (
 					<section className="draw-division">
-						<OldFashionedDraw setDrawFunction={inputDrawFunction} />
+						<OldFashionedDraw
+							setDrawFunction={inputDrawFunction}
+							teams={teams}
+						/>
 						<AddRooms
 							divisionOrTournament={
 								ladder.divisions && ladder.divisions > 1
@@ -161,7 +181,7 @@ const Draw = () => {
 			case 1: // virtual choose
 				return (
 					<section className="draw-division">
-						<ChooseDraw setDrawFunction={inputDrawFunction} />
+						<ChooseDraw setDrawFunction={inputDrawFunction} teams={teams} />
 						<AddRooms
 							divisionOrTournament={
 								ladder.divisions && ladder.divisions > 1
@@ -176,7 +196,7 @@ const Draw = () => {
 			case 2: // random assignment
 				return (
 					<section className="draw-division">
-						<RandomDraw setDrawFunction={inputDrawFunction} />
+						<RandomDraw setDrawFunction={inputDrawFunction} teams={teams} />
 						<AddRooms
 							divisionOrTournament={
 								ladder.divisions && ladder.divisions > 1

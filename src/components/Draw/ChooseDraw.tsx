@@ -9,7 +9,9 @@ const Draw = (props: DrawProps) => {
 	const [numLetters, setNumLetters] = useState<number | undefined>(15);
 	const [displayLetter, setDisplayLetter] = useState<string>("A");
 	const [chosenLetter, setChosenLetter] = useState<string | undefined>();
-	const [teams, setTeams] = useState<{ [key: string]: string }>({});
+	const [teams, setTeams] = useState<{ [key: string]: string }>(
+		props.teams || {}
+	);
 
 	useEffect(() => {
 		props.setDrawFunction(() => teams);

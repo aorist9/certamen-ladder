@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DrawProps } from "../../routes/Draw";
 import DrawInputTableRow, { DrawRow } from "./DrawInputTableRow";
+import { useMemo } from "react";
 
 const mapTeamsToObject = (rows: DrawRow[]): { [letter: string]: string } => {
 	return rows.reduce((acc: { [letter: string]: string }, row) => {
@@ -12,20 +13,21 @@ const mapTeamsToObject = (rows: DrawRow[]): { [letter: string]: string } => {
 };
 
 const OldFashionedDraw = (props: DrawProps) => {
-	const [rows, setRows] = useState<DrawRow[]>([
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{},
-		{}
-	]);
+	const { teams } = props;
+	const defaultRows = useMemo(() => {
+		const defaultRows = teams
+			? Object.keys(teams).map(letter => ({
+					letter,
+					team: teams?.[letter] as string
+			  }))
+			: [];
+		const targetLength = defaultRows.length < 12 ? 12 : defaultRows.length + 3;
+		while (defaultRows.length < targetLength) {
+			defaultRows.push({ letter: "", team: "" });
+		}
+		return defaultRows;
+	}, [teams]);
+	const [rows, setRows] = useState<DrawRow[]>(defaultRows);
 
 	useEffect(() => {
 		props.setDrawFunction(() => mapTeamsToObject(rows));
