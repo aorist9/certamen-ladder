@@ -81,7 +81,8 @@ describe("Draw", () => {
 				teams: {
 					G: "Team",
 					I: "Teamily Team"
-				}
+				},
+				threeRooms: false
 			});
 
 			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
@@ -193,7 +194,8 @@ describe("Draw", () => {
 				name: "The LADDER!",
 				rounds: 17,
 				type: 0,
-				teams: expect.anything()
+				teams: expect.anything(),
+				threeRooms: false
 			});
 
 			expect(
@@ -239,7 +241,8 @@ describe("Draw", () => {
 				name: "The LADDER!",
 				rounds: 17,
 				type: 0,
-				teams: expect.anything()
+				teams: expect.anything(),
+				threeRooms: false
 			});
 
 			expect(

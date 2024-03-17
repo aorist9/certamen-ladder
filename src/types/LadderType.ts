@@ -11,11 +11,13 @@ interface LadderType {
 	rooms?: string[]; // should be undefined for multiple divisions
 	rounds: number;
 	type: number;
+	threeRooms?: boolean;
 	teams?:
 		| Teams
 		| {
 				division: string;
 				teams: Teams;
+				threeRooms?: boolean;
 				rooms?: string[];
 				matches?: Matches;
 		  }[];
@@ -38,11 +40,13 @@ export class Ladder implements LadderType {
 	public rooms?: string[]; // should be undefined for multiple divisions
 	public rounds: number;
 	public type: number;
+	public threeRooms?: boolean;
 	public teams?:
 		| Teams
 		| {
 				division: string;
 				teams: Teams;
+				threeRooms?: boolean;
 				rooms?: string[];
 				matches?: Matches;
 		  }[];
@@ -57,6 +61,7 @@ export class Ladder implements LadderType {
 		this.rooms = ladderType.rooms;
 		this.rounds = ladderType.rounds;
 		this.type = ladderType.type;
+		this.threeRooms = ladderType.threeRooms;
 		this.teams = ladderType.teams;
 	}
 

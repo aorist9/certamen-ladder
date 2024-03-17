@@ -34,6 +34,8 @@ export type DrawProps = {
 	setDrawFunction: (func: DrawFunction) => void;
 	error?: string;
 	teams?: Record<string, string>;
+	threeRooms: boolean;
+	setThreeRooms: (tr: boolean) => void;
 };
 
 const Draw = () => {
@@ -45,6 +47,15 @@ const Draw = () => {
 	);
 	const [divisionNames, setDivisionNames] = useState<string[]>(
 		ladder?.divisions ? determineInitialDivisions(ladder.divisions) : []
+	);
+	const defaultThreeRooms: boolean | boolean[] = ladder?.divisions ? [] : false;
+	if (ladder?.divisions && Array.isArray(defaultThreeRooms)) {
+		for (let i = 0; i < ladder?.divisions; i++) {
+			defaultThreeRooms.push(false);
+		}
+	}
+	const [threeRooms, setThreeRooms] = useState<boolean | boolean[]>(
+		defaultThreeRooms
 	);
 	const [error, setError] = useState<
 		{ idx: number; message: string } | undefined
@@ -90,6 +101,9 @@ const Draw = () => {
 						return {
 							division: name,
 							teams,
+							threeRooms:
+								Object.keys(teams).length === 6 &&
+								(threeRooms as boolean[])[idx],
 							rooms:
 								ladder?.teams && Array.isArray(ladder?.teams)
 									? ladder.teams[idx]?.rooms
@@ -105,6 +119,9 @@ const Draw = () => {
 			} else {
 				try {
 					newLadder.teams = drawFunctions[0]();
+					newLadder.threeRooms =
+						Object.keys(newLadder.teams).length === 6 &&
+						(threeRooms as boolean);
 					if (Object.keys(newLadder.teams).length < 2) {
 						throw new Error("You did not enter enough teams");
 					}
@@ -166,6 +183,20 @@ const Draw = () => {
 						<OldFashionedDraw
 							setDrawFunction={inputDrawFunction}
 							teams={teams}
+							threeRooms={
+								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+							}
+							setThreeRooms={
+								Array.isArray(threeRooms)
+									? (tr: boolean) => {
+											setThreeRooms([
+												...threeRooms.slice(0, idx),
+												tr,
+												...threeRooms.slice(idx + 1)
+											]);
+									  }
+									: setThreeRooms
+							}
 						/>
 						<AddRooms
 							divisionOrTournament={
@@ -181,7 +212,24 @@ const Draw = () => {
 			case 1: // virtual choose
 				return (
 					<section className="draw-division">
-						<ChooseDraw setDrawFunction={inputDrawFunction} teams={teams} />
+						<ChooseDraw
+							setDrawFunction={inputDrawFunction}
+							teams={teams}
+							threeRooms={
+								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+							}
+							setThreeRooms={
+								Array.isArray(threeRooms)
+									? (tr: boolean) => {
+											setThreeRooms([
+												...threeRooms.slice(0, idx),
+												tr,
+												...threeRooms.slice(idx + 1)
+											]);
+									  }
+									: setThreeRooms
+							}
+						/>
 						<AddRooms
 							divisionOrTournament={
 								ladder.divisions && ladder.divisions > 1
@@ -196,7 +244,24 @@ const Draw = () => {
 			case 2: // random assignment
 				return (
 					<section className="draw-division">
-						<RandomDraw setDrawFunction={inputDrawFunction} teams={teams} />
+						<RandomDraw
+							setDrawFunction={inputDrawFunction}
+							teams={teams}
+							threeRooms={
+								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+							}
+							setThreeRooms={
+								Array.isArray(threeRooms)
+									? (tr: boolean) => {
+											setThreeRooms([
+												...threeRooms.slice(0, idx),
+												tr,
+												...threeRooms.slice(idx + 1)
+											]);
+									  }
+									: setThreeRooms
+							}
+						/>
 						<AddRooms
 							divisionOrTournament={
 								ladder.divisions && ladder.divisions > 1

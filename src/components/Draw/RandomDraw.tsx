@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { DrawProps } from "../../routes/Draw";
 import { letters } from "../../constants";
 
@@ -22,14 +22,17 @@ const RandomDraw = (props: DrawProps) => {
 	const [teams, setTeams] = useState<string>(
 		props.teams ? Object.values(props.teams).join("\n") : ""
 	);
+	const splitTeams = useMemo<string[]>(
+		() => teams.split(/\s*[,\n]\s*/),
+		[teams]
+	);
 	useEffect(() => {
 		props.setDrawFunction(() => {
-			let splitTeams = teams.split(/\s*[,\n]\s*/);
 			let availableLetters = letters.slice(0, splitTeams.length);
 			return mapTeamsToObject(splitTeams, availableLetters);
 		});
 		// eslint-disable-next-line
-	}, [teams]);
+	}, [splitTeams]);
 
 	return (
 		<section className="draw-body">
@@ -45,6 +48,19 @@ const RandomDraw = (props: DrawProps) => {
 					cols={50}
 					placeholder="Enter teams here"
 				/>
+				{Object.keys(splitTeams).length === 6 && (
+					<p>
+						<label>
+							<input
+								type="checkbox"
+								id="three-rooms-for-six-teams"
+								checked={props.threeRooms}
+								onChange={e => props.setThreeRooms(e.target.checked)}
+							/>
+							Separate these six teams into 3 rooms?
+						</label>
+					</p>
+				)}
 			</section>
 		</section>
 	);

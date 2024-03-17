@@ -91,7 +91,8 @@ const LadderDisplay = () => {
 									...ladder,
 									rooms: team.rooms,
 									teams: team.teams,
-									matches: team.matches
+									matches: team.matches,
+									threeRooms: team.threeRooms
 								}}
 								updateMatches={(matches: Matches) => {
 									// @ts-ignore

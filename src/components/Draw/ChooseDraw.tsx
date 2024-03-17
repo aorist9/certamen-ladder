@@ -91,6 +91,19 @@ const Draw = (props: DrawProps) => {
 			) : (
 				""
 			)}
+			{Object.keys(teams).length === 6 && (
+				<p>
+					<label>
+						<input
+							type="checkbox"
+							id="three-rooms-for-six-teams"
+							checked={props.threeRooms}
+							onChange={e => props.setThreeRooms(e.target.checked)}
+						/>
+						Separate these six teams into 3 rooms?
+					</label>
+				</p>
+			)}
 		</section>
 	);
 };

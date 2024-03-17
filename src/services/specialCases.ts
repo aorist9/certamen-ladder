@@ -28,16 +28,6 @@ const SPECIAL_CASES: { [teamNum: number]: number[][][] } = {
 			[0, 1, 4],
 			[2, 3, 5]
 		]
-		// [
-		// 	[0, 5],
-		// 	[1, 2],
-		// 	[3, 4]
-		// ],
-		// [
-		// 	[0, 3],
-		// 	[2, 5],
-		// 	[1, 4]
-		// ]
 	],
 	7: [
 		[
@@ -113,9 +103,25 @@ const SPECIAL_CASES: { [teamNum: number]: number[][][] } = {
 
 export const handleSpecialCase = (
 	length: number,
-	teams: string[]
+	teams: string[],
+	threeRooms?: boolean
 ): string[][][] => {
-	return SPECIAL_CASES[length].map((round: number[][]) =>
+	return (
+		threeRooms && length === 6
+			? [
+					[
+						[0, 5],
+						[1, 2],
+						[3, 4]
+					],
+					[
+						[0, 3],
+						[2, 5],
+						[1, 4]
+					]
+			  ]
+			: SPECIAL_CASES[length]
+	).map((round: number[][]) =>
 		round.map((room: number[]) => room.map((team: number) => teams[team]))
 	);
 };

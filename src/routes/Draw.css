@@ -31,6 +31,10 @@
 	margin-top: 3em;
 }
 
+.draw .three-rooms {
+	max-width: 12rem;
+}
+
 .draw ul {
 	list-style: none;
 }

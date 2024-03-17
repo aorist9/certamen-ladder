@@ -30,10 +30,10 @@ const pittingService = {
 			if (orderedTeams.length % 3 !== 0) {
 				orderedTeams.splice(orderedTeams.length - 5, 0, NOT_A_TEAM);
 			}
-			// } else if (orderedTeams.length === 6) {
-			// 	orderedTeams.push(NOT_A_TEAM);
-			// 	orderedTeams.splice(2, 0, NOT_A_TEAM);
-			// 	orderedTeams.splice(5, 0, NOT_A_TEAM);
+		} else if (orderedTeams.length === 6 && ladder.threeRooms) {
+			orderedTeams.push(NOT_A_TEAM);
+			orderedTeams.splice(2, 0, NOT_A_TEAM);
+			orderedTeams.splice(5, 0, NOT_A_TEAM);
 		}
 
 		const result: string[][][] = [[]];
@@ -53,7 +53,8 @@ const pittingService = {
 				result.push(
 					...handleSpecialCase(
 						originalOrderedTeams.length,
-						originalOrderedTeams
+						originalOrderedTeams,
+						ladder.threeRooms
 					)
 				);
 			} else {

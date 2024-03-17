@@ -29,6 +29,12 @@ const OldFashionedDraw = (props: DrawProps) => {
 	}, [teams]);
 	const [rows, setRows] = useState<DrawRow[]>(defaultRows);
 
+	const activeRows: number = useMemo<number>(
+		() =>
+			rows.reduce((acc, row) => (row.letter && row.team ? acc + 1 : acc), 0),
+		[rows]
+	);
+
 	useEffect(() => {
 		props.setDrawFunction(() => mapTeamsToObject(rows));
 		// eslint-disable-next-line
@@ -40,7 +46,7 @@ const OldFashionedDraw = (props: DrawProps) => {
 				Please enter the teams as they draw. Don't worry about putting them in
 				order or filling up all the fields.
 			</section>
-			<section className="teams">
+			<section className="teams" style={{ rowGap: "1em" }}>
 				<section>
 					<table className="input-table">
 						<thead>
@@ -65,6 +71,21 @@ const OldFashionedDraw = (props: DrawProps) => {
 					<button onClick={() => setRows([...rows, {}, {}, {}, {}, {}, {}])}>
 						+ Add More Teams
 					</button>
+				</section>
+				<section className="options">
+					{activeRows === 6 && (
+						<p className="three-rooms">
+							<label>
+								<input
+									type="checkbox"
+									id="three-rooms-for-six-teams"
+									checked={props.threeRooms}
+									onChange={e => props.setThreeRooms(e.target.checked)}
+								/>
+								Separate these six teams into 3 rooms?
+							</label>
+						</p>
+					)}
 				</section>
 			</section>
 		</section>
