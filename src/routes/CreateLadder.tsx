@@ -167,7 +167,11 @@ const CreateLadder = () => {
 					</section>
 				</section>
 				<section style={{ display: "flex" }}>
-					<button type="submit" disabled={isFormValid() !== true}>
+					<button
+						className="btn-success"
+						type="submit"
+						disabled={isFormValid() !== true}
+					>
 						Start
 					</button>
 					<p className="error">{error}</p>

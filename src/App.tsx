@@ -28,7 +28,7 @@ function App() {
 				<h1 style={{ display: "flex" }}>
 					<button
 						className="menu-btn mobile-only"
-						style={{ margin: "0.5em 1em" }}
+						style={{ margin: "0.5em 1em", borderRadius: "0" }}
 						onClick={() => setShowSidebar(!showSidebar)}
 						aria-label="Menu Button"
 					>

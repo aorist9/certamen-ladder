@@ -113,4 +113,9 @@
 		flex-direction: column;
 		row-gap: 1em;
 	}
+
+	figure.letter-display {
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
 }

@@ -37,7 +37,7 @@ const PublishLadder = () => {
 	} else if (ladder) {
 		return (
 			<button
-				style={{ fontSize: "1.4rem", marginTop: "1em" }}
+				style={{ fontSize: "1.4rem", marginTop: "1em", marginLeft: "0.5em" }}
 				onClick={() => {
 					setLoading(true);
 					const lddr: LadderType | undefined = ladderService.getLadder(

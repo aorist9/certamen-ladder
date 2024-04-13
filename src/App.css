@@ -1,3 +1,7 @@
+* {
+	font-family: "Roboto", "Helvetica Neue", "sans-serif";
+}
+
 .App-header {
 	background-color: #282c34;
 	display: flex;
@@ -20,6 +24,18 @@
 
 .App-page {
 	margin: 2rem;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+	padding: 0.2rem 0.5rem;
+	border-radius: 10px;
+}
+
+button {
+	border-radius: 15px;
 }
 
 .radio-group {
@@ -62,6 +78,26 @@
 @media (min-width: 768px) {
 	.mobile-only {
 		display: none;
+	}
+
+	* {
+		font-size: 14pt;
+	}
+
+	h1 {
+		font-size: 18pt;
+	}
+
+	h2 {
+		font-size: 17pt;
+	}
+
+	h3 {
+		font-size: 16pt;
+	}
+
+	h4 {
+		font-size: 15pt;
 	}
 }
 
