@@ -1,7 +1,8 @@
 {
 	"multipleDivisions": true,
 	"swissLadder": true,
-	"pointsSwissLadder": false,
+	"pointsSwissLadder": true,
 	"chooseRounds": false,
-	"publishLadder": true
+	"publishLadder": true,
+	"codeSheet": false
 }

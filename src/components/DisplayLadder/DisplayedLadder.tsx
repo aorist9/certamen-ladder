@@ -63,7 +63,7 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 							{roomEditStatus}
 						</button>
 					)}
-					{ladder.type === 1 &&
+					{(ladder.type === 1 || ladder.type === 2) &&
 					pittings[pittings.length - 1][0][0].swissPoints !== undefined &&
 					ladder.rounds > pittings.length
 						? props.hideIfPublic(
@@ -94,7 +94,8 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 				</h3>
 				<LadderTable
 					hideIfPublic={props.hideIfPublic}
-					isSwiss={ladder.type === 1}
+					isSwiss={ladder.type === 1 || ladder.type === 2}
+					isSwissByPoints={ladder.type === 2}
 					pittings={pittings}
 					roomEditStatus={roomEditStatus}
 					rooms={rooms}

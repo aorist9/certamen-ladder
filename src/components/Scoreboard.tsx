@@ -29,8 +29,8 @@ const Scoreboard = (props: ScoreboardProps) => {
 								{ladder.matches?.map((_, idx) => (
 									<th key={idx}>Round {idx + 1}</th>
 								))}
-								{ladder.type === 1 ? <th>Total Swiss Points</th> : ""}
-								{ladder.type === 1 ? <th>SOS</th> : ""}
+								{ladder.type === 1 || ladder.type === 2 ? <th>Total Swiss Points</th> : ""}
+								{ladder.type === 1 || ladder.type === 2 ? <th>SOS</th> : ""}
 								<th>Total Score</th>
 							</tr>
 						</thead>

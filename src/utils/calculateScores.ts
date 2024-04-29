@@ -28,7 +28,7 @@ export const sortScores = (score1: ScoreRow, score2: ScoreRow) => {
 const calculateScores = (ladder: LadderType): ScoreRow[] => {
 	// @ts-ignore
 	let result: ScoreRow[] = Object.values(ladder.teams).map(team =>
-		ladder.type === 1
+		ladder.type === 1 || ladder.type === 2
 			? {
 					team,
 					roundScores: [],
@@ -66,7 +66,7 @@ const calculateScores = (ladder: LadderType): ScoreRow[] => {
 		});
 	}
 
-	if (ladder.type === 1 && ladder.matches) {
+	if ((ladder.type === 1 || ladder.type === 2) && ladder.matches) {
 		result = result.map(row => ({
 			...row,
 			// @ts-ignore

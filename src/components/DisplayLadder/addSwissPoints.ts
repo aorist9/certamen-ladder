@@ -1,3 +1,5 @@
+import { MatchTeam } from "../../types/Matches";
+
 const addSwissPoints = (
 	room: { team: string; score?: number; swissPoints?: number }[]
 ) => {
@@ -32,6 +34,47 @@ const addSwissPoints = (
 	}
 
 	return newRoom;
+};
+
+export const addSwissByPointsPoints = (
+	room: MatchTeam[],
+	round: MatchTeam[][]
+) => {
+	const midPoints = determineMidPoints(round);
+	return room.map(team => {
+		let swissPoints = 1;
+		if (team.score && team.score >= midPoints[1]) {
+			swissPoints = 3;
+		} else if (team.score && team.score >= midPoints[0]) {
+			swissPoints = 2;
+		}
+
+		return { ...team, swissPoints };
+	});
+};
+
+const determineMidPoints = (round: MatchTeam[][]): number[] => {
+	const scores: number[] = round.reduce(
+		(acc, room) =>
+			[
+				...acc,
+				...room.reduce((roomAcc, team) => {
+					if (team.score) {
+						return [...roomAcc, team.score];
+					} else {
+						return roomAcc;
+					}
+				}, [] as number[])
+			] as number[],
+		[] as number[]
+	);
+
+	scores.sort((a, b) => a - b);
+
+	return [
+		scores[Math.floor(scores.length / 3)],
+		scores[Math.ceil((scores.length * 2) / 3)]
+	];
 };
 
 export default addSwissPoints;

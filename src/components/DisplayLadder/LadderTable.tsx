@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import Matches from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
-import addSwissPoints from "./addSwissPoints";
+import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
@@ -20,6 +20,7 @@ type LadderTableProps = {
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
 	isSwiss: boolean;
+	isSwissByPoints: boolean;
 	pittings: Matches;
 	roomEditStatus: EditingStatus;
 	rooms: string[];
@@ -77,7 +78,12 @@ const LadderTable = (props: LadderTableProps) => {
 										) {
 											let newPittings = [
 												...props.pittings.slice(0, i),
-												props.pittings[i].map(addSwissPoints),
+												props.pittings[i].map(
+													props.isSwissByPoints
+														? room =>
+																addSwissByPointsPoints(room, props.pittings[i])
+														: addSwissPoints
+												),
 												...props.pittings.slice(i + 1)
 											];
 
