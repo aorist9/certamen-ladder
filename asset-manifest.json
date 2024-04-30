@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "https://aorist9.github.io/certamen-ladder/static/css/main.8fc3e8c3.css",
-    "main.js": "https://aorist9.github.io/certamen-ladder/static/js/main.536aa749.js",
+    "main.js": "https://aorist9.github.io/certamen-ladder/static/js/main.782cf327.js",
     "static/js/787.6df50063.chunk.js": "https://aorist9.github.io/certamen-ladder/static/js/787.6df50063.chunk.js",
     "index.html": "https://aorist9.github.io/certamen-ladder/index.html",
     "main.8fc3e8c3.css.map": "https://aorist9.github.io/certamen-ladder/static/css/main.8fc3e8c3.css.map",
-    "main.536aa749.js.map": "https://aorist9.github.io/certamen-ladder/static/js/main.536aa749.js.map",
+    "main.782cf327.js.map": "https://aorist9.github.io/certamen-ladder/static/js/main.782cf327.js.map",
     "787.6df50063.chunk.js.map": "https://aorist9.github.io/certamen-ladder/static/js/787.6df50063.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8fc3e8c3.css",
-    "static/js/main.536aa749.js"
+    "static/js/main.782cf327.js"
   ]
 }
