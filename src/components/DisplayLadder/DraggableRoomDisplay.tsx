@@ -1,6 +1,7 @@
 import React, { useState, DragEvent, ChangeEvent } from "react";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
+import { useSearchParams } from "react-router-dom";
 
 type RoomDisplayProps = {
 	editStatus: EditingStatus;
@@ -28,6 +29,8 @@ const DraggableRoomDisplay = ({
 	startDrag
 }: RoomDisplayProps) => {
 	const [isDragHovered, setIsDragHovered] = useState<boolean>(false);
+	const [query] = useSearchParams();
+	const canEdit = !query.get("publicId");
 
 	return (
 		<td
@@ -39,20 +42,24 @@ const DraggableRoomDisplay = ({
 					setIsDragHovered(true);
 				}
 			}}
-			onDragEnd={() => setIsDragHovered(false)}
-			onDragExit={() => setIsDragHovered(false)}
-			onDragLeave={() => setIsDragHovered(false)}
+			onDragEnd={canEdit ? () => setIsDragHovered(false) : () => {}}
+			onDragExit={canEdit ? () => setIsDragHovered(false) : () => {}}
+			onDragLeave={canEdit ? () => setIsDragHovered(false) : () => {}}
 			onDrop={(e: DragEvent<HTMLTableCellElement>) => {
-				setIsDragHovered(false);
-				moveRoom(parseInt(e.dataTransfer.getData("roomIdx")));
+				if (canEdit) {
+					setIsDragHovered(false);
+					moveRoom(parseInt(e.dataTransfer.getData("roomIdx")));
+				}
 			}}
 			style={isDragHovered ? { border: "1.5px solid blue" } : {}}
 		>
 			<ul
-				draggable={true}
+				draggable={canEdit}
 				onDragStart={(e: DragEvent) => {
-					e.dataTransfer.setData("roomIdx", `${roomNumber}`);
-					startDrag();
+					if (canEdit) {
+						e.dataTransfer.setData("roomIdx", `${roomNumber}`);
+						startDrag();
+					}
 				}}
 			>
 				{pitting?.map(({ team, score, swissPoints }, idx) => (
