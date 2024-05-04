@@ -12,12 +12,24 @@
 	color: white;
 }
 
+.print-only {
+	display: none;
+}
+
 @media print {
 	.App-header {
 		display: none;
 	}
 
 	.hide-print {
+		display: none;
+	}
+
+	.print-only {
+		display: block;
+	}
+
+	button {
 		display: none;
 	}
 }

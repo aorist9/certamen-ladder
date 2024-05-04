@@ -10,6 +10,7 @@ import ScoreboardPage from "./routes/ScoreboardPage";
 import "./App.css";
 import HamburgerIcon from "./icons/Hamburger";
 import ErrorBoundary from "./components/ErrorBoundary";
+import ScoreSheet from "./routes/ScoreSheet";
 
 function App() {
 	const headerRef = useRef<HTMLHeadingElement>(null);
@@ -54,6 +55,7 @@ function App() {
 									<Route path="/ladder" element={<LadderDisplay />} />
 									<Route path="/ladders" element={<ViewLadders />} />
 									<Route path="/scoreboard" element={<ScoreboardPage />} />
+									<Route path="/score-sheet" element={<ScoreSheet />} />
 								</Routes>
 							</ErrorBoundary>
 						</article>

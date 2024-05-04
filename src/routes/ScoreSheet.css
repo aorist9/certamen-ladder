@@ -1,0 +1,51 @@
+.score-sheet .teams {
+	padding: 0;
+}
+
+.score-sheet .team-select-item {
+	list-style-type: none;
+	display: flex;
+	margin: 0.5em 0;
+	align-items: center;
+	justify-content: flex-start;
+	column-gap: 1em;
+}
+
+.score-sheet .team-select-item label {
+	width: 20%;
+}
+
+.score-sheet .team-assignment {
+	width: 50%;
+	outline: 1px solid;
+	padding: 0.25em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.score-sheet .team-assignment .button-section {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.score-sheet .team-assignment .direction-button {
+	border-radius: 0;
+	width: 1.5em;
+	font-size: 18pt;
+}
+
+.score-sheet .team-select-item button {
+	width: 20%;
+}
+
+.players .players-table td {
+	padding: 0.25em 0.5em;
+}
+
+.players .done-button {
+	margin-top: 1em;
+	font-size: 16pt;
+	padding: 0.5em;
+}
