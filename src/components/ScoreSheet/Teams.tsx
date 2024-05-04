@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ScoreSheetTeam from "./ScoreSheetTeam";
+import TeamDisplay from "./TeamDisplay";
 import Players from "./Players";
+import { useRoundContext } from "../../contexts/RoundContext";
 
 const LETTERS: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];
 
@@ -9,14 +10,9 @@ export interface Player {
 	isCaptain?: boolean;
 }
 
-interface Props {
-	players: Record<string, Player[]>;
-	teams: string[];
-	setPlayers: (players: Record<string, Player[]>) => void;
-	setTeams: (teams: string[]) => void;
-}
+const Teams = () => {
+	const { teams, setTeams } = useRoundContext();
 
-const ScoreSheet = ({ players, teams, setPlayers, setTeams }: Props) => {
 	const [playerEditingTeam, setPlayerEditingTeam] = useState<
 		number | undefined
 	>();
@@ -26,13 +22,17 @@ const ScoreSheet = ({ players, teams, setPlayers, setTeams }: Props) => {
 			<Players
 				done={() => setPlayerEditingTeam(undefined)}
 				letter={LETTERS[playerEditingTeam]}
-				team={teams[playerEditingTeam]}
-				players={players[teams[playerEditingTeam]]}
+				team={teams[playerEditingTeam].name}
+				players={teams[playerEditingTeam].players}
 				setPlayers={(newPlayers: Player[]) => {
-					setPlayers({
-						...players,
-						[teams[playerEditingTeam]]: newPlayers
-					});
+					setTeams([
+						...teams.slice(0, playerEditingTeam),
+						{
+							...teams[playerEditingTeam],
+							players: newPlayers
+						},
+						...teams.slice(playerEditingTeam + 1)
+					]);
 				}}
 			/>
 		);
@@ -40,9 +40,8 @@ const ScoreSheet = ({ players, teams, setPlayers, setTeams }: Props) => {
 		return (
 			<ul className="teams">
 				{teams.map((team, idx) => (
-					<>
-						<ScoreSheetTeam
-							key={team}
+					<React.Fragment key={team.name}>
+						<TeamDisplay
 							addPlayers={() => setPlayerEditingTeam(idx)}
 							letter={LETTERS[idx]}
 							moveDown={
@@ -69,10 +68,10 @@ const ScoreSheet = ({ players, teams, setPlayers, setTeams }: Props) => {
 									  }
 									: undefined
 							}
-							team={team}
+							team={team.name}
 						/>
 						<ul className="print-only">
-							{players[team].map((player, playerIdx) => {
+							{team.players.map((player, playerIdx) => {
 								if (player?.name && player.name.trim() !== "") {
 									return (
 										<li
@@ -92,11 +91,11 @@ const ScoreSheet = ({ players, teams, setPlayers, setTeams }: Props) => {
 								}
 							})}
 						</ul>
-					</>
+					</React.Fragment>
 				))}
 			</ul>
 		);
 	}
 };
 
-export default ScoreSheet;
+export default Teams;

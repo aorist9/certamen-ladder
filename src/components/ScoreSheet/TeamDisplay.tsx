@@ -3,7 +3,7 @@ import React from "react";
 const UP_ARROW = "\u2191";
 const DOWN_ARROW = "\u2193";
 
-const DraggableTeam = ({
+const TeamDisplay = ({
 	addPlayers,
 	letter,
 	moveDown,
@@ -45,4 +45,4 @@ const DraggableTeam = ({
 	);
 };
 
-export default DraggableTeam;
+export default TeamDisplay;

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./ScoreSheet.css";
 import Teams from "../components/ScoreSheet/Teams";
+import { RoundContextProvider } from "../contexts/RoundContext";
 
 const inputTeams = [
 	"West Ridge Middle School",
@@ -14,23 +15,13 @@ export interface Player {
 }
 
 const ScoreSheet = () => {
-	const [teams, setTeams] = useState(inputTeams);
-	const [players, setPlayers] = useState<Record<string, Player[]>>(
-		teams.reduce((acc, team) => {
-			acc[team] = [{ name: "" }, { name: "" }, { name: "" }, { name: "" }];
-			return acc;
-		}, {} as Record<string, Player[]>)
-	);
 	return (
-		<section className="App-page score-sheet">
-			<h2>Code Sheet</h2>
-			<Teams
-				players={players}
-				teams={teams}
-				setPlayers={setPlayers}
-				setTeams={setTeams}
-			/>
-		</section>
+		<RoundContextProvider teams={inputTeams}>
+			<section className="App-page score-sheet">
+				<h2>Code Sheet</h2>
+				<Teams />
+			</section>
+		</RoundContextProvider>
 	);
 };
 

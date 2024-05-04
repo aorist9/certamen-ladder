@@ -14,8 +14,6 @@ const Players = ({
 	players: Player[];
 	setPlayers: (players: Player[]) => void;
 }) => {
-	const [captain, setCaptain] = useState<number | undefined>();
-
 	return (
 		<section className="players">
 			<h2>{team} Players</h2>
@@ -30,17 +28,20 @@ const Players = ({
 					{players.map((player, idx) => (
 						<tr className="player-input" key={idx}>
 							<td>
-								{letter}
-								{idx + 1}
+								<label htmlFor={`${letter}${idx + 1}`}>
+									{letter}
+									{idx + 1}
+								</label>
 							</td>
 							<td>
 								<input
 									type="text"
+									name={`${letter}${idx + 1}`}
 									value={player.name}
 									onChange={(e: ChangeEvent<HTMLInputElement>) => {
 										setPlayers([
 											...players.slice(0, idx),
-											{ name: e.target.value, isCaptain: captain === idx },
+											{ name: e.target.value, isCaptain: player.isCaptain },
 											...players.slice(idx + 1)
 										]);
 									}}
@@ -51,10 +52,6 @@ const Players = ({
 									type="radio"
 									name="captain"
 									onChange={(e: ChangeEvent<HTMLInputElement>) => {
-										if (e.target.checked) {
-											setCaptain(idx);
-										}
-
 										setPlayers(
 											players.map((player, playerIdx) => ({
 												name: player.name,
@@ -62,7 +59,7 @@ const Players = ({
 											}))
 										);
 									}}
-									checked={captain === idx}
+									checked={player.isCaptain}
 								/>
 							</td>
 						</tr>
