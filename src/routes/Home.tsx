@@ -40,6 +40,14 @@ const Home = () => (
 					against each other based on their performance in previous rounds
 					(pitting teams against others performing at the same level).
 				</p>
+				{features.pointsSwissLadder && (
+					<p>
+						You will also see "Swiss by Points" as an option for type of ladder.
+						This is an experimental ladder type where swiss points are assigned
+						not on whether a team wins its particular round, but whether the
+						team's score falls in the top, middle, or bottom third of all scores
+					</p>
+				)}
 			</>
 		) : (
 			""
