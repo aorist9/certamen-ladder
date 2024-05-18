@@ -38,7 +38,17 @@ const CurrentQuestion = ({
 					{questions[currentQuestion].correctTeam}
 				</h3>
 				<section style={{ display: "flex" }}>
-					<BonusCheckboxSection />
+					<BonusCheckboxSection
+						done={(boni: boolean[]) => {
+							updateCurrentQuestion({
+								...questions[currentQuestion],
+								boni
+							});
+							setState(State.TOSSUP);
+							setCurrentQuestion(currentQuestion + 1);
+							setBuzzer(undefined);
+						}}
+					/>
 					<section className="timer-section"></section>
 				</section>
 			</section>
@@ -113,6 +123,9 @@ const CurrentQuestion = ({
 							<button
 								key={playerIdx}
 								className="buzzer-button"
+								disabled={questions[currentQuestion].buzzes.some(
+									b => b.team === teams[teamIdx].name
+								)}
 								onClick={() => {
 									setBuzzer(`${LETTERS[teamIdx]}${playerIdx + 1}`);
 									updateCurrentQuestion({

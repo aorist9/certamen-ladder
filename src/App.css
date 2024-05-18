@@ -152,4 +152,9 @@ button {
 	button {
 		background-color: #212121;
 	}
+
+	button:disabled {
+		background-color: #111;
+		color: grey;
+	}
 }

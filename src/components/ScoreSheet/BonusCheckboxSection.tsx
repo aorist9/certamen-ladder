@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const BonusCheckboxSection = () => {
+const BonusCheckboxSection = ({
+	done
+}: {
+	done: (boni: boolean[]) => void;
+}) => {
 	const [bonus1, setBonus1] = useState(false);
 	const [bonus2, setBonus2] = useState(false);
 
@@ -19,7 +23,12 @@ const BonusCheckboxSection = () => {
 				</label>
 			</p>
 			<p>{10 + (bonus1 ? 5 : 0) + (bonus2 ? 5 : 0)} Points</p>
-			<button>Done</button>
+			<button
+				style={{ fontSize: "14pt", padding: "0.25em 0.5em" }}
+				onClick={() => done([bonus1, bonus2])}
+			>
+				Done
+			</button>
 		</section>
 	);
 };
