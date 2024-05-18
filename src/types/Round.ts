@@ -14,14 +14,20 @@ export interface Question {
 	boni: boolean[];
 }
 
+export const LETTERS: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];
+
 export default class Round {
 	private _questions: Question[] = [];
 	private _teams: Record<string, Team> = {};
 	private _teamOrder: string[] = [];
 
 	constructor(teams: Team[], questions: Question[]) {
-		this.questions = questions;
-		this.teams = teams;
+		this._questions = questions;
+		this._teams = teams.reduce(
+			(acc, team) => ({ ...acc, [team.name]: team }),
+			{}
+		);
+		this._teamOrder = teams.map(team => team.name);
 	}
 
 	public set teamOrder(value: string[]) {

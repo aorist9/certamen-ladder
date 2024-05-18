@@ -11,12 +11,14 @@ const RoundContext = createContext<{
 	scores: number[];
 	setQuestions: (questions: Question[]) => void;
 	setTeams: (teams: Team[]) => void;
+	teamOrder: string[];
 	teams: Team[];
 }>({
 	questions: [],
 	scores: [],
 	setQuestions: () => {},
 	setTeams: () => {},
+	teamOrder: [],
 	teams: []
 });
 
@@ -43,6 +45,7 @@ export const RoundContextProvider = ({
 				scores: round.scores,
 				setQuestions,
 				setTeams,
+				teamOrder: round.teamOrder,
 				teams: round.teams
 			}}
 		>

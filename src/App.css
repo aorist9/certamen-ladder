@@ -148,4 +148,8 @@ button {
 	.error {
 		color: #e3ccae;
 	}
+
+	button {
+		background-color: #212121;
+	}
 }

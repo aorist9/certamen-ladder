@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import TeamDisplay from "./TeamDisplay";
 import Players from "./Players";
 import { useRoundContext } from "../../contexts/RoundContext";
-
-const LETTERS: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];
+import { LETTERS } from "../../types/Round";
 
 export interface Player {
 	name: string;

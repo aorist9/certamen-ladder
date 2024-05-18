@@ -49,3 +49,77 @@
 	font-size: 16pt;
 	padding: 0.5em;
 }
+
+.score-sheet .total-scores {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	margin: 1em 0;
+}
+
+.score-sheet .total-scores .team-total-score {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	font-size: 18pt;
+}
+
+.score-sheet .total-scores .team-total-score .letter {
+	font-weight: bold;
+}
+
+.score-sheet .questions-table {
+	width: 95%;
+	font-size: 16pt;
+}
+
+.score-sheet .questions-table .buzzer {
+	margin-right: 0.5em;
+}
+
+.score-sheet .questions-table .buzzer.correct {
+	font-weight: bold;
+}
+
+.score-sheet .questions-table .buzzer.incorrect {
+	text-decoration: line-through;
+}
+
+.score-sheet .questions-table td,
+.score-sheet .questions-table th {
+	outline: 1px solid;
+	border-collapse: collapse;
+	padding: 0.5em;
+}
+
+.score-sheet .questions-table td {
+	text-align: center;
+}
+
+.score-sheet .current-tossup {
+	margin: 1em 0;
+}
+
+.score-sheet .buzzer-section {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 1em 0;
+}
+
+.score-sheet .current-tossup.buzzed button {
+	font-size: 16pt;
+	padding: 0.5em;
+	margin: 1em;
+}
+
+.score-sheet .buzzer-section .buzzer-button {
+	font-size: 14pt;
+	padding: 1em;
+	margin: 0.5em;
+}
+
+.score-sheet .question-nav-button {
+	font-size: 18pt;
+	padding: 0.5em;
+	margin: 0.5em;
+}
