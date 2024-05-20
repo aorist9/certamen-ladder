@@ -5,6 +5,7 @@ import pittingService from "../../services/pittingService";
 import LadderTable from "./LadderTable";
 
 type DisplayedLadderProps = {
+	divisionNumber?: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
@@ -20,8 +21,14 @@ export enum EditingStatus {
 	EDITED = "Edit Rooms"
 }
 
-const DisplayedLadder = (props: DisplayedLadderProps) => {
-	const { ladder, name, updateMatches } = props;
+const DisplayedLadder = ({
+	divisionNumber,
+	hideIfPublic,
+	ladder,
+	name,
+	updateMatches,
+	updateRooms
+}: DisplayedLadderProps) => {
 	const [roomEditStatus, setRoomEditStatus] = useState<EditingStatus>(
 		ladder.rooms && ladder.rooms.length
 			? EditingStatus.EDITED
@@ -48,13 +55,13 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 			<section className="displayed-ladder">
 				<h3>
 					{name || ""}
-					{props.hideIfPublic(
+					{hideIfPublic(
 						<button
 							style={{ marginLeft: "1em" }}
 							onClick={() => {
 								if (roomEditStatus === EditingStatus.EDITING) {
 									setRoomEditStatus(EditingStatus.EDITED);
-									props.updateRooms(rooms);
+									updateRooms(rooms);
 								} else {
 									setRoomEditStatus(EditingStatus.EDITING);
 								}
@@ -66,7 +73,7 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 					{(ladder.type === 1 || ladder.type === 2) &&
 					pittings[pittings.length - 1][0][0].swissPoints !== undefined &&
 					ladder.rounds > pittings.length
-						? props.hideIfPublic(
+						? hideIfPublic(
 								<button
 									style={{ marginLeft: "1em" }}
 									onClick={() => {
@@ -79,7 +86,7 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 												})
 												.map(room => room.map(team => ({ team })))
 										);
-										props.updateMatches(newPittings);
+										updateMatches(newPittings);
 										setPittings(newPittings);
 										setRoundScoreEditStatuses([
 											...roundScoreEditStatuses,
@@ -93,9 +100,11 @@ const DisplayedLadder = (props: DisplayedLadderProps) => {
 						: ""}
 				</h3>
 				<LadderTable
-					hideIfPublic={props.hideIfPublic}
+					divisionNumber={divisionNumber}
+					hideIfPublic={hideIfPublic}
 					isSwiss={ladder.type === 1 || ladder.type === 2}
 					isSwissByPoints={ladder.type === 2}
+					matches={ladder.matches}
 					pittings={pittings}
 					roomEditStatus={roomEditStatus}
 					rooms={rooms}

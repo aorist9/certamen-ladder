@@ -1,11 +1,17 @@
 import React, { useState, DragEvent, ChangeEvent } from "react";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import features from "../../features.json";
 
 type RoomDisplayProps = {
+	divisionNumber?: number;
 	editStatus: EditingStatus;
+	hideIfPublic: (
+		elem: string | JSX.Element | JSX.Element[]
+	) => string | JSX.Element | JSX.Element[];
 	isDraggedRound: boolean;
+	lockPittings: VoidFunction;
 	moveRoom: (sourceIdx: number) => void;
 	onScoreChange: (
 		i: number,
@@ -19,8 +25,11 @@ type RoomDisplayProps = {
 };
 
 const DraggableRoomDisplay = ({
+	divisionNumber,
 	editStatus,
+	hideIfPublic,
 	isDraggedRound,
+	lockPittings,
 	moveRoom,
 	onScoreChange,
 	pitting,
@@ -73,6 +82,19 @@ const DraggableRoomDisplay = ({
 					/>
 				))}
 			</ul>
+			{features.codeSheet &&
+				hideIfPublic(
+					<Link
+						to={`/score-sheet?ladder=${query.get(
+							"ladder"
+						)}&round=${roundNumber}&room=${roomNumber}${
+							divisionNumber === undefined ? "" : `&division=${divisionNumber}`
+						}`}
+						onClick={lockPittings}
+					>
+						Score Sheet
+					</Link>
+				)}
 		</td>
 	);
 };

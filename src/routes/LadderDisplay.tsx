@@ -85,6 +85,7 @@ const LadderDisplay = () => {
 					<section className="multi-ladder-display">
 						{ladder.teams.map((team, idx) => (
 							<DisplayedLadder
+								divisionNumber={idx}
 								key={team.division}
 								name={team.division}
 								ladder={{

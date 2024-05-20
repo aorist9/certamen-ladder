@@ -1,6 +1,36 @@
 import Matches from "./Matches";
 import Teams from "./Teams";
 
+// interface SingleDivisionLadder { // TODO use this scheme once we can figure out how to incorporate the Ladder class into it
+// 	id: string;
+// 	draw: number;
+// 	name: string;
+// 	matches?: Matches;
+// 	publicId?: string;
+// 	rooms?: string[];
+// 	rounds: number;
+// 	type: number;
+// 	threeRooms?: boolean;
+// 	teams?: Teams;
+// }
+
+// interface MultipleDivisionLadder {
+// 	id: string;
+// 	divisions: number;
+// 	draw: number;
+// 	name: string;
+// 	rounds: number;
+// 	type: number;
+// 	teams: {
+// 		division: string;
+// 		teams: Teams;
+// 		threeRooms?: boolean;
+// 		rooms?: string[];
+// 		matches?: Matches;
+// 	}[];
+// }
+
+// type LadderType = SingleDivisionLadder | MultipleDivisionLadder;
 interface LadderType {
 	id: string;
 	divisions?: number;

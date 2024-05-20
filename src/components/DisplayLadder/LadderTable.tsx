@@ -16,11 +16,13 @@ const determineAddScoresButtonText = (status: EditingStatus) => {
 };
 
 type LadderTableProps = {
+	divisionNumber?: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
 	isSwiss: boolean;
 	isSwissByPoints: boolean;
+	matches?: Matches;
 	pittings: Matches;
 	roomEditStatus: EditingStatus;
 	rooms: string[];
@@ -116,8 +118,15 @@ const LadderTable = (props: LadderTableProps) => {
 						{props.pittings.map((_, j: number) => (
 							<DraggableRoomDisplay
 								key={`${j}:${i}`}
+								divisionNumber={props.divisionNumber}
 								editStatus={props.roundScoreEditStatuses[j]}
+								hideIfPublic={props.hideIfPublic}
 								isDraggedRound={draggedRound === j}
+								lockPittings={() => {
+									if (!props.matches) {
+										props.updateMatches(props.pittings);
+									}
+								}}
 								moveRoom={(sourceIdx: number) => {
 									if (sourceIdx === i) {
 										return;
