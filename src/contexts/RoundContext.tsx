@@ -32,27 +32,29 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	const roundIdx = query.get("round");
 	const roomIdx = query.get("room");
 	const divisionIdx = query.get("division");
+	const isDemo = !!query.get("demo");
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
-	const inputTeams = (
-		ladder?.divisions
-			? divisionIdx && roomIdx && roundIdx
-				? (
-						ladder?.teams as {
-							division: string;
-							teams: Teams;
-							threeRooms?: boolean;
-							rooms?: string[];
-							matches?: Matches;
-						}[]
-				  )?.[parseInt(divisionIdx)]?.matches?.[parseInt(roundIdx)]?.[
-						parseInt(roomIdx)
-				  ]
+	const inputTeams = isDemo
+		? ["Team", "Other Team", "Yet Another Team"]
+		: (ladder?.divisions
+				? divisionIdx && roomIdx && roundIdx
+					? (
+							ladder?.teams as {
+								division: string;
+								teams: Teams;
+								threeRooms?: boolean;
+								rooms?: string[];
+								matches?: Matches;
+							}[]
+					  )?.[parseInt(divisionIdx)]?.matches?.[parseInt(roundIdx)]?.[
+							parseInt(roomIdx)
+					  ]
+					: []
+				: roundIdx && roomIdx
+				? ladder?.matches?.[parseInt(roundIdx)]?.[parseInt(roomIdx)]
 				: []
-			: roundIdx && roomIdx
-			? ladder?.matches?.[parseInt(roundIdx)]?.[parseInt(roomIdx)]
-			: []
-	)?.map(team => team.team);
+		  )?.map(team => team.team);
 
 	const [teams, setTeams] = useState(
 		inputTeams?.map(team => ({
