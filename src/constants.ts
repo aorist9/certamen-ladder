@@ -4,12 +4,25 @@ export const drawTypes: string[] = [
 	"Just assign teams a letter randomly"
 ];
 
+export enum DrawType {
+	TRADITIONAL = "I wanna use scraps of paper like my ancestors did",
+	CLICK = "Have teams click a button to draw a letter",
+	RANDOM = "Just assign teams a letter randomly"
+}
+
 export const ladderTypes: string[] = [
 	"Traditional",
 	"Swiss",
 	"Swiss by Points",
 	"Other"
 ];
+
+export enum LadderStyle {
+	TRADITIONAL = "Traditional",
+	SWISS = "Swiss",
+	SWISS_BY_POINTS = "Swiss by Points",
+	OTHER = "Other"
+}
 
 export const letters: string[] = [
 	"A",

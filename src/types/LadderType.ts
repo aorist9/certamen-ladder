@@ -1,36 +1,23 @@
-import Matches from "./Matches";
+import { DrawType, LadderStyle, drawTypes, ladderTypes } from "../constants";
+import Matches, { MatchesV2 } from "./Matches";
 import Teams from "./Teams";
 
-// interface SingleDivisionLadder { // TODO use this scheme once we can figure out how to incorporate the Ladder class into it
-// 	id: string;
-// 	draw: number;
-// 	name: string;
-// 	matches?: Matches;
-// 	publicId?: string;
-// 	rooms?: string[];
-// 	rounds: number;
-// 	type: number;
-// 	threeRooms?: boolean;
-// 	teams?: Teams;
-// }
+export interface LadderTypeV2 {
+	id: string;
+	publicId?: string;
+	name: string;
+	divisions?: {
+		division?: string;
+		teams: Teams;
+		threeRooms?: boolean;
+		rooms?: string[];
+		matches?: MatchesV2;
+	}[];
+	drawType: DrawType;
+	ladderType: LadderStyle;
+	numRounds: number;
+}
 
-// interface MultipleDivisionLadder {
-// 	id: string;
-// 	divisions: number;
-// 	draw: number;
-// 	name: string;
-// 	rounds: number;
-// 	type: number;
-// 	teams: {
-// 		division: string;
-// 		teams: Teams;
-// 		threeRooms?: boolean;
-// 		rooms?: string[];
-// 		matches?: Matches;
-// 	}[];
-// }
-
-// type LadderType = SingleDivisionLadder | MultipleDivisionLadder;
 interface LadderType {
 	id: string;
 	divisions?: number;
@@ -60,46 +47,75 @@ export enum LadderStatus {
 	DONE = "Done"
 }
 
-export class Ladder implements LadderType {
+export class Ladder implements LadderTypeV2 {
 	public id: string;
-	public divisions?: number;
-	public draw: number;
+	public publicId?: string;
 	public name: string;
-	public matches?: Matches; // should be undefined for multiple divisions
-	public publicId?: string; // should be undefined unless the ladder is published
-	public rooms?: string[]; // should be undefined for multiple divisions
-	public rounds: number;
-	public type: number;
-	public threeRooms?: boolean;
-	public teams?:
-		| Teams
-		| {
-				division: string;
-				teams: Teams;
-				threeRooms?: boolean;
-				rooms?: string[];
-				matches?: Matches;
-		  }[];
+	public divisions?: {
+		division?: string;
+		teams: Teams;
+		threeRooms?: boolean;
+		rooms?: string[];
+		matches?: MatchesV2;
+	}[];
+	public drawType: DrawType;
+	public ladderType: LadderStyle;
+	public numRounds: number;
 
-	constructor(ladderType: LadderType) {
-		this.id = ladderType.id;
-		this.publicId = ladderType.publicId;
-		this.divisions = ladderType.divisions;
-		this.draw = ladderType.draw;
-		this.name = ladderType.name;
-		this.matches = ladderType.matches;
-		this.rooms = ladderType.rooms;
-		this.rounds = ladderType.rounds;
-		this.type = ladderType.type;
-		this.threeRooms = ladderType.threeRooms;
-		this.teams = ladderType.teams;
+	constructor(ladder: LadderType | LadderTypeV2) {
+		this.id = ladder.id;
+		this.publicId = ladder.publicId;
+		this.name = ladder.name;
+
+		if ("drawType" in ladder) {
+			// LadderTypeV2
+			this.divisions = ladder.divisions;
+			this.drawType = ladder.drawType;
+			this.ladderType = ladder.ladderType;
+			this.numRounds = ladder.numRounds;
+		} else {
+			this.drawType = drawTypes[ladder.draw] as DrawType;
+			this.ladderType = ladderTypes[ladder.type] as LadderStyle;
+			this.numRounds = ladder.rounds;
+			if (ladder.divisions) {
+				// multi-division
+				this.divisions = (
+					ladder.teams as {
+						division: string;
+						teams: Teams;
+						threeRooms?: boolean;
+						rooms?: string[];
+						matches?: Matches;
+					}[]
+				)?.map(division => ({
+					division: division.division,
+					teams: division.teams,
+					threeRooms: division.threeRooms,
+					rooms: division.rooms,
+					matches: division.matches?.map(round =>
+						round.map(room => ({ teams: room.map(team => team) }))
+					)
+				}));
+			} else {
+				// single division
+				this.divisions = [
+					{
+						teams: ladder.teams as Teams,
+						threeRooms: ladder.threeRooms,
+						rooms: ladder.rooms,
+						matches: ladder.matches?.map(round =>
+							round.map(room => ({ teams: room.map(team => team) }))
+						)
+					}
+				];
+			}
+		}
 	}
 
 	calculateStatus(): LadderStatus {
 		if (
-			!this.teams ||
-			(typeof this.teams === "object" && !Object.keys(this.teams).length) ||
-			(Array.isArray(this.teams) && !Object.keys(this.teams[0].teams).length)
+			!this.divisions?.length ||
+			this.divisions.some(division => !division.teams)
 		) {
 			return LadderStatus.CREATED;
 		}
@@ -109,7 +125,7 @@ export class Ladder implements LadderType {
 			return LadderStatus.DRAWN;
 		}
 
-		if ((roundsPlayed || 0) < this.rounds) {
+		if ((roundsPlayed || 0) < this.numRounds) {
 			return LadderStatus.IN_PROGRESS;
 		}
 
@@ -117,32 +133,40 @@ export class Ladder implements LadderType {
 	}
 
 	calculateTeams(): number | undefined {
-		if (!this.teams) {
+		if (!this.divisions?.length) {
 			return;
 		}
 
-		if (Array.isArray(this.teams)) {
-			return this.teams.reduce(
-				(acc, division) => acc + Object.keys(division).length,
-				0
-			);
-		} else {
-			return Object.keys(this.teams).length;
-		}
+		return this.divisions.reduce(
+			(acc, division) => acc + Object.keys(division.teams).length,
+			0
+		);
 	}
 
 	calculateRoundsPlayed(): number | undefined {
-		if (this.matches) {
-			return this.matches.reduce((acc, round) => {
-				if (round.find(room => room.find(team => team.score !== undefined))) {
-					return acc + 1;
-				} else {
-					return acc;
-				}
-			}, 0);
-		} else {
+		if (!this.divisions?.length) {
 			return;
 		}
+		let roundsPlayed: number | undefined;
+		for (const division of this.divisions) {
+			if (!division.matches) {
+				continue;
+			}
+			const divisionRoundsPlayed = division.matches.reduce((acc, round) => {
+				if (
+					round.some(room =>
+						room.teams.some(team => team.score && team.score > 0)
+					)
+				) {
+					return acc + 1;
+				}
+				return acc;
+			}, 0);
+			if (roundsPlayed === undefined || divisionRoundsPlayed > roundsPlayed) {
+				roundsPlayed = divisionRoundsPlayed;
+			}
+		}
+		return roundsPlayed;
 	}
 }
 

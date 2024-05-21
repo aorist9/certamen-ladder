@@ -21,9 +21,9 @@ const ViewLadders = () => {
 						<section className="ladder-item" key={ladder.id}>
 							<Link
 								to={`/${
-									ladder.calculateStatus() === LadderStatus.DRAWN
-										? "ladder"
-										: "draw"
+									ladder.calculateStatus() === LadderStatus.CREATED
+										? "draw"
+										: "ladder"
 								}?ladder=${ladder.id}`}
 								style={{
 									textDecoration: "inherit",

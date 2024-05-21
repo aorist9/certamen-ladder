@@ -1,8 +1,7 @@
-import { ladderTypes } from "../constants";
-import LadderType, { Ladder, LadderStatus } from "../types/LadderType";
+import { Ladder, LadderStatus } from "../types/LadderType";
 import DataDisplay from "./DataDisplay";
 
-const LadderInfoSection = (props: { ladder: LadderType }) => {
+const LadderInfoSection = (props: { ladder: Ladder }) => {
 	const ladder: Ladder = new Ladder(props.ladder);
 	const status: LadderStatus = ladder.calculateStatus();
 	return (
@@ -15,9 +14,12 @@ const LadderInfoSection = (props: { ladder: LadderType }) => {
 			<strong>{ladder.name}</strong>
 			<section className="ladder-additional-info-section">
 				<DataDisplay description="Status" value={status} />
-				<DataDisplay description="Type" value={ladderTypes[ladder.type]} />
+				<DataDisplay description="Type" value={ladder.ladderType} />
 				{ladder.divisions ? (
-					<DataDisplay description="Divisions" value={"" + ladder.divisions} />
+					<DataDisplay
+						description="Divisions"
+						value={"" + ladder.divisions.length}
+					/>
 				) : (
 					""
 				)}
@@ -25,7 +27,7 @@ const LadderInfoSection = (props: { ladder: LadderType }) => {
 					description="Teams"
 					value={(ladder.calculateTeams() || "None Yet") + ""}
 				/>
-				<DataDisplay description="Total Rounds" value={"" + ladder.rounds} />
+				<DataDisplay description="Total Rounds" value={"" + ladder.numRounds} />
 				<DataDisplay
 					description="Rounds Played"
 					value={
