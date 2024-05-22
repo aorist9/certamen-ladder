@@ -6,9 +6,9 @@ describe("Deconflicter", () => {
 		beforeEach(() => {
 			deconflicter = new Deconflicter([
 				[
-					[{ team: "A" }, { team: "B" }, { team: "C" }],
-					[{ team: "D" }, { team: "E" }, { team: "F" }],
-					[{ team: "G" }, { team: "H" }]
+					{ teams: [{ team: "A" }, { team: "B" }, { team: "C" }] },
+					{ teams: [{ team: "D" }, { team: "E" }, { team: "F" }] },
+					{ teams: [{ team: "G" }, { team: "H" }] }
 				]
 			]);
 		});

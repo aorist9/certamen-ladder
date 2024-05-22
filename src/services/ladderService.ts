@@ -1,22 +1,24 @@
-import LadderType from "../types/LadderType";
+import LadderType, { Ladder } from "../types/LadderType";
 
 const STORAGE_ITEM = "certamen-ladder.ladders";
 
-const getLadders = (): LadderType[] => {
+const getLadders = (): Ladder[] => {
 	const laddersJson: string | null = window.localStorage.getItem(STORAGE_ITEM);
-	return JSON.parse(laddersJson || "[]");
+	return JSON.parse(laddersJson || "[]").map(
+		(ladder: LadderType) => new Ladder(ladder)
+	);
 };
 
-const addLadder = (ladder: LadderType): void => {
+const addLadder = (ladder: Ladder): void => {
 	window.localStorage.setItem(
 		STORAGE_ITEM,
 		JSON.stringify([ladder, ...getLadders()])
 	);
 };
 
-const editLadder = (ladder: LadderType): void => {
-	const ladders: LadderType[] = getLadders();
-	const existingLadder: LadderType | undefined = ladders.find(
+const editLadder = (ladder: Ladder): void => {
+	const ladders: Ladder[] = getLadders();
+	const existingLadder: Ladder | undefined = ladders.find(
 		l => l.id === ladder.id
 	);
 	if (existingLadder) {
@@ -46,7 +48,7 @@ const BACKEND_URL =
 		? "https://txclassics.org"
 		: "http://localhost";
 
-const publishLadder = async (ladder: LadderType): Promise<LadderType> => {
+const publishLadder = async (ladder: Ladder): Promise<Ladder> => {
 	const response = await window.fetch(
 		`${BACKEND_URL}/api/certamen/ladders.php`,
 		{
@@ -58,18 +60,18 @@ const publishLadder = async (ladder: LadderType): Promise<LadderType> => {
 		}
 	);
 	const json = await response.json();
-	const updatedLadder: LadderType = { ...ladder, publicId: json.id };
-	editLadder(updatedLadder);
-	return updatedLadder;
+	ladder.publicId = json.id;
+	editLadder(ladder);
+	return ladder;
 };
 
 const ladderService = {
 	getLadders,
 	addLadder,
-	getLadder: (id: string): LadderType | undefined => {
+	getLadder: (id: string): Ladder | undefined => {
 		return getLadders().find(l => l.id === id);
 	},
-	getPublicLadder: async (id: string): Promise<LadderType | undefined> => {
+	getPublicLadder: async (id: string): Promise<Ladder | undefined> => {
 		const response = await window.fetch(
 			`${BACKEND_URL}/api/certamen/ladders.php?id=${id}`,
 			{
@@ -78,14 +80,14 @@ const ladderService = {
 		);
 
 		const json = await response.json();
-		return json.ladder;
+		return new Ladder(json.ladder);
 	},
 	editLadder,
 	deleteLadder: (id: string) => {
-		const ladders: LadderType[] = getLadders();
+		const ladders: Ladder[] = getLadders();
 		window.localStorage.setItem(
 			STORAGE_ITEM,
-			JSON.stringify(ladders.filter((ladder: LadderType) => ladder.id !== id))
+			JSON.stringify(ladders.filter((ladder: Ladder) => ladder.id !== id))
 		);
 	},
 	publishLadder

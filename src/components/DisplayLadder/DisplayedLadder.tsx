@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import LadderType from "../../types/LadderType";
-import Matches from "../../types/Matches";
+import { Ladder } from "../../types/LadderType";
+import { MatchesV2 } from "../../types/Matches";
 import pittingService from "../../services/pittingService";
 import LadderTable from "./LadderTable";
+import Teams from "../../types/Teams";
+import { LadderStyle } from "../../constants";
 
 type DisplayedLadderProps = {
 	divisionNumber?: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
-	ladder: LadderType;
+	ladder: Ladder;
 	name?: string;
-	updateMatches: (matches: Matches) => void;
+	updateMatches: (matches: MatchesV2) => void;
 	updateRooms: (rooms: string[]) => void;
 };
 
@@ -29,21 +31,30 @@ const DisplayedLadder = ({
 	updateMatches,
 	updateRooms
 }: DisplayedLadderProps) => {
+	const division = ladder.divisions?.[divisionNumber || 0] as {
+		division?: string;
+		teams: Teams;
+		threeRooms?: boolean;
+		rooms?: string[];
+		matches?: MatchesV2;
+	};
 	const [roomEditStatus, setRoomEditStatus] = useState<EditingStatus>(
-		ladder.rooms && ladder.rooms.length
+		division.rooms && division.rooms.length
 			? EditingStatus.EDITED
 			: EditingStatus.NEW
 	);
 
-	const [pittings, setPittings] = useState<Matches>(
-		ladder.matches ||
+	const [pittings, setPittings] = useState<MatchesV2>(
+		division.matches ||
 			pittingService
-				.generateInitialPittings(ladder)
-				.map(round => round.map(room => room.map(team => ({ team }))))
+				.generateInitialPittings(ladder, divisionNumber || 0)
+				.map(round =>
+					round.map(room => ({ teams: room.map(team => ({ team })) }))
+				)
 	);
 
 	const [rooms, setRooms] = useState<string[]>(
-		ladder.rooms || (pittings.length ? pittings[0].map(() => "") : [])
+		division.rooms || (pittings.length ? pittings[0].map(() => "") : [])
 	);
 
 	const [roundScoreEditStatuses, setRoundScoreEditStatuses] = useState<
@@ -70,21 +81,22 @@ const DisplayedLadder = ({
 							{roomEditStatus}
 						</button>
 					)}
-					{(ladder.type === 1 || ladder.type === 2) &&
-					pittings[pittings.length - 1][0][0].swissPoints !== undefined &&
-					ladder.rounds > pittings.length
+					{ladder.isSwiss() &&
+					pittings[pittings.length - 1][0].teams[0].swissPoints !== undefined &&
+					ladder.numRounds > pittings.length
 						? hideIfPublic(
 								<button
 									style={{ marginLeft: "1em" }}
 									onClick={() => {
 										let newPittings = [...pittings];
+										if (ladder?.divisions && ladder.divisions.length) {
+											ladder.divisions[divisionNumber || 0].matches =
+												newPittings;
+										}
 										newPittings.push(
 											pittingService
-												.generateNextSwissRound({
-													...ladder,
-													matches: newPittings
-												})
-												.map(room => room.map(team => ({ team })))
+												.generateNextSwissRound(ladder, divisionNumber || 0)
+												.map(room => ({ teams: room.map(team => ({ team })) }))
 										);
 										updateMatches(newPittings);
 										setPittings(newPittings);
@@ -102,9 +114,9 @@ const DisplayedLadder = ({
 				<LadderTable
 					divisionNumber={divisionNumber}
 					hideIfPublic={hideIfPublic}
-					isSwiss={ladder.type === 1 || ladder.type === 2}
-					isSwissByPoints={ladder.type === 2}
-					matches={ladder.matches}
+					isSwiss={ladder.isSwiss()}
+					isSwissByPoints={ladder.ladderType === LadderStyle.SWISS_BY_POINTS}
+					matches={division.matches}
 					pittings={pittings}
 					roomEditStatus={roomEditStatus}
 					rooms={rooms}

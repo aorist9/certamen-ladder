@@ -3,17 +3,21 @@ import calculateScores, {
 	ScoreRow,
 	sortScores
 } from "../utils/calculateScores";
-import LadderType from "../types/LadderType";
+import { Ladder } from "../types/LadderType";
 
 type ScoreboardProps = {
-	ladder: LadderType;
+	ladder: Ladder;
 	name?: string;
+	divisionNumber: number;
 };
 
 const Scoreboard = (props: ScoreboardProps) => {
-	const { ladder, name } = props;
+	const { divisionNumber, ladder, name } = props;
 
-	const scores: ScoreRow[] = useMemo(() => calculateScores(ladder), [ladder]);
+	const scores: ScoreRow[] = useMemo(
+		() => calculateScores(ladder, divisionNumber),
+		[ladder, divisionNumber]
+	);
 
 	const sortedScores: ScoreRow[] = scores?.sort(sortScores);
 
@@ -26,11 +30,11 @@ const Scoreboard = (props: ScoreboardProps) => {
 						<thead>
 							<tr>
 								<th>Team</th>
-								{ladder.matches?.map((_, idx) => (
+								{ladder.divisions?.[divisionNumber].matches?.map((_, idx) => (
 									<th key={idx}>Round {idx + 1}</th>
 								))}
-								{ladder.type === 1 || ladder.type === 2 ? <th>Total Swiss Points</th> : ""}
-								{ladder.type === 1 || ladder.type === 2 ? <th>SOS</th> : ""}
+								{ladder.isSwiss() ? <th>Total Swiss Points</th> : ""}
+								{ladder.isSwiss() ? <th>SOS</th> : ""}
 								<th>Total Score</th>
 							</tr>
 						</thead>

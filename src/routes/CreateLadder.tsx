@@ -2,17 +2,18 @@ import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import NumberInput from "../components/NumberInput";
-import { drawTypes, ladderTypes } from "../constants";
+import { DrawType, LadderStyle } from "../constants";
 import ladderService from "../services/ladderService";
-import LadderType from "../types/LadderType";
+import { Ladder } from "../types/LadderType";
 import features from "../features.json";
+import Teams from "../types/Teams";
 
 const CreateLadder = () => {
 	const [name, setName] = useState<string>("");
 	const [divisions, setDivisions] = useState<number | undefined>();
-	const [type, setType] = useState<number>(0);
+	const [type, setType] = useState<keyof typeof LadderStyle>("TRADITIONAL");
 	const [rounds, setRounds] = useState<number | undefined>(3);
-	const [draw, setDraw] = useState<number | undefined>();
+	const [draw, setDraw] = useState<DrawType | undefined>();
 	const [error, setError] = useState<string>("");
 	const navigate = useNavigate();
 
@@ -24,16 +25,21 @@ const CreateLadder = () => {
 		} else {
 			setError("");
 			const ladderId = uuid();
-			const newLadder: LadderType = {
+			const newLadder: Ladder = new Ladder({
 				id: ladderId,
-				draw: draw || 0,
+				drawType: draw || DrawType.CLICK,
 				name,
-				rounds: rounds || 3,
-				type
-			};
+				numRounds: rounds || 3,
+				ladderType: LadderStyle[type]
+			});
 
 			if (divisions) {
-				newLadder.divisions = divisions;
+				newLadder.divisions = [] as { teams: Teams }[];
+				for (let i = 0; i < divisions; i++) {
+					newLadder.divisions.push({ teams: {} });
+				}
+			} else {
+				newLadder.divisions = [{ teams: {} }];
 			}
 
 			ladderService.addLadder(newLadder);
@@ -48,7 +54,7 @@ const CreateLadder = () => {
 		if (!rounds || isNaN(rounds)) {
 			return "Rounds are required";
 		}
-		if (draw === undefined || isNaN(draw)) {
+		if (draw === undefined) {
 			return "Could you answer those questions about the draw for me, bud?";
 		}
 
@@ -112,18 +118,18 @@ const CreateLadder = () => {
 							id="ladder-type"
 							value={type}
 							onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-								setType(parseInt(e.target.value))
+								setType(e.target.value as keyof typeof LadderStyle)
 							}
 						>
-							{ladderTypes
+							{Object.keys(LadderStyle)
 								.filter(
-									type =>
-										(features.swissLadder || type !== "Swiss") &&
-										(features.pointsSwissLadder || type !== "Swiss by Points")
+									key =>
+										(features.swissLadder || type !== "SWISS") &&
+										(features.pointsSwissLadder || type !== "SWISS_BY_POINTS")
 								)
-								.map((type, i) => (
-									<option key={i} value={i}>
-										{type}
+								.map(key => (
+									<option key={key} value={key}>
+										{LadderStyle[key as keyof typeof LadderStyle]}
 									</option>
 								))}
 						</select>
@@ -131,7 +137,9 @@ const CreateLadder = () => {
 				) : (
 					""
 				)}
-				{features.chooseRounds || (features.swissLadder && type === 1) ? (
+				{features.chooseRounds ||
+				(features.swissLadder && type === "SWISS") ||
+				(features.pointsSwissLadder && type === "SWISS_BY_POINTS") ? (
 					<NumberInput
 						id="rounds"
 						value={rounds}
@@ -150,18 +158,18 @@ const CreateLadder = () => {
 						className="radio-group"
 						style={{ marginTop: ".3rem" }}
 					>
-						{drawTypes.map((drawType, i) => (
-							<label key={i} className="radio-button">
+						{Object.keys(DrawType).map(key => (
+							<label key={key} className="radio-button">
 								<input
 									type="radio"
 									name="draw-type"
-									value={i}
-									checked={i === draw}
+									value={key}
+									checked={DrawType[key as keyof typeof DrawType] === draw}
 									onChange={(e: ChangeEvent<HTMLInputElement>) => {
-										setDraw(parseInt(e.target.value));
+										setDraw(DrawType[e.target.value as keyof typeof DrawType]);
 									}}
 								/>
-								{drawType}
+								{DrawType[key as keyof typeof DrawType]}
 							</label>
 						))}
 					</section>

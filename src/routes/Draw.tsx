@@ -4,13 +4,18 @@ import ChooseDraw from "../components/Draw/ChooseDraw";
 import ladderService from "../services/ladderService";
 import OldFashionedDraw from "../components/Draw/OldFashionedDraw";
 import RandomDraw from "../components/Draw/RandomDraw";
-import LadderType from "../types/LadderType";
+import { Ladder } from "../types/LadderType";
 import "./Draw.css";
 import DivisionTab from "../components/Draw/DivisionTab";
 import AddRooms from "../components/Draw/AddRooms";
 import Teams from "../types/Teams";
+import { DrawType } from "../constants";
 
-const determineInitialDivisions = (divisions: number): string[] => {
+const determineInitialDivisions = (divisions: number | undefined): string[] => {
+	if (!divisions) {
+		return [];
+	}
+
 	const basicDivisions = [
 		"Middle School",
 		"Novice",
@@ -42,15 +47,15 @@ const Draw = () => {
 	const [selectedDivision, setSelectedDivision] = useState<number>(0);
 	const [query] = useSearchParams();
 	const navigate = useNavigate();
-	const ladder: LadderType | undefined = ladderService.getLadder(
+	const ladder: Ladder | undefined = ladderService.getLadder(
 		query.get("ladder") || ""
 	);
 	const [divisionNames, setDivisionNames] = useState<string[]>(
-		ladder?.divisions ? determineInitialDivisions(ladder.divisions) : []
+		determineInitialDivisions(ladder?.divisions?.length)
 	);
 	const defaultThreeRooms: boolean | boolean[] = ladder?.divisions ? [] : false;
 	if (ladder?.divisions && Array.isArray(defaultThreeRooms)) {
-		for (let i = 0; i < ladder?.divisions; i++) {
+		for (let i = 0; i < ladder?.divisions?.length; i++) {
 			defaultThreeRooms.push(false);
 		}
 	}
@@ -62,21 +67,11 @@ const Draw = () => {
 	>();
 
 	const defaultDrawFunction = (idx: number) => (): Teams => {
-		if (ladder?.divisions && ladder?.divisions > 1) {
-			// @ts-ignore
-			return ladder?.teams?.[idx].teams || {};
-		} else if (ladder?.teams) {
-			return ladder?.teams as Teams;
-		} else {
-			return {};
-		}
+		return ladder?.divisions?.[idx]?.teams || {};
 	};
-	const initialDrawFunctions: DrawFunction[] = [defaultDrawFunction(0)];
-	if (ladder?.divisions) {
-		for (let i = 1; i < ladder?.divisions; i++) {
-			initialDrawFunctions.push(defaultDrawFunction(i));
-		}
-	}
+
+	const initialDrawFunctions: DrawFunction[] =
+		ladder?.divisions?.map((_, idx) => defaultDrawFunction(idx)) || [];
 	const [drawFunctions, setDrawFunctions] =
 		useState<DrawFunction[]>(initialDrawFunctions);
 
@@ -89,49 +84,29 @@ const Draw = () => {
 	}
 
 	const submit = () => {
-		let newLadder: LadderType = { ...ladder };
 		try {
-			if (divisionNames.length) {
-				newLadder.teams = divisionNames.map((name, idx) => {
-					try {
-						const teams = drawFunctions[idx]();
-						if (Object.keys(teams).length < 2) {
-							throw new Error("You did not enter enough teams");
-						}
-						return {
-							division: name,
-							teams,
-							threeRooms:
-								Object.keys(teams).length === 6 &&
-								(threeRooms as boolean[])[idx],
-							rooms:
-								ladder?.teams && Array.isArray(ladder?.teams)
-									? ladder.teams[idx]?.rooms
-									: []
-						};
-					} catch (err) {
-						// @ts-ignore
-						setError({ idx, message: err.message });
-						setSelectedDivision(idx);
-						throw err;
-					}
-				});
-			} else {
+			ladder.divisions = ladder?.divisions?.map((division, idx) => {
 				try {
-					newLadder.teams = drawFunctions[0]();
-					newLadder.threeRooms =
-						Object.keys(newLadder.teams).length === 6 &&
-						(threeRooms as boolean);
-					if (Object.keys(newLadder.teams).length < 2) {
+					const teams = drawFunctions[idx]();
+					if (Object.keys(teams).length < 2) {
 						throw new Error("You did not enter enough teams");
 					}
+					return {
+						division:
+							divisionNames.length > idx ? divisionNames[idx] : undefined,
+						teams,
+						threeRooms:
+							Object.keys(teams).length === 6 && (threeRooms as boolean[])[idx],
+						rooms: division?.rooms || []
+					};
 				} catch (err) {
 					// @ts-ignore
-					setError({ idx: 0, message: err.message });
+					setError({ idx, message: err.message });
+					setSelectedDivision(idx);
 					throw err;
 				}
-			}
-			ladderService.editLadder(newLadder);
+			});
+			ladderService.editLadder(ladder);
 			navigate(`/ladder?ladder=${query.get("ladder")}`);
 		} catch (err) {
 			console.log("error while generating ladder", err);
@@ -140,10 +115,7 @@ const Draw = () => {
 
 	const renderDraw = (idx: number) => {
 		const teams: Record<string, string> | undefined =
-			ladder.divisions && ladder.divisions > 1
-				? // @ts-ignore
-				  ladder?.teams?.[idx]?.teams || []
-				: ladder.teams;
+			ladder?.divisions?.[idx]?.teams || {};
 		const inputDrawFunction = (func: DrawFunction) => {
 			let newDrawFunctions = [...drawFunctions];
 			newDrawFunctions[idx] = func;
@@ -151,33 +123,19 @@ const Draw = () => {
 		};
 
 		const updateRooms = (rooms: string[]) => {
-			if (ladder?.divisions && ladder.divisions > 1) {
-				const newLadder = { ...ladder };
-				if (
-					!newLadder.teams ||
-					!Array.isArray(newLadder.teams) ||
-					newLadder.teams.length < idx
-				) {
-					newLadder.teams = divisionNames.map(division => ({
-						division,
-						teams: {}
-					}));
-				}
-				newLadder.teams[idx].rooms = rooms;
-				ladderService.editLadder(newLadder);
-			} else {
-				ladderService.editLadder({ ...ladder, rooms });
+			ladder.divisions = divisionNames.map(division => ({
+				division,
+				teams: {}
+			}));
+			if (ladder?.divisions?.[idx]) {
+				ladder.divisions[idx].rooms = rooms;
 			}
+			ladderService.editLadder(ladder);
 		};
 
-		const savedRooms =
-			ladder.rooms ||
-			(ladder.teams &&
-				Array.isArray(ladder.teams) &&
-				ladder.teams[idx].rooms) ||
-			[];
-		switch (ladder?.draw) {
-			case 0: // old fashioned
+		const savedRooms = ladder?.divisions?.[idx]?.rooms || [];
+		switch (ladder?.drawType) {
+			case DrawType.TRADITIONAL:
 				return (
 					<section className="draw-division">
 						<OldFashionedDraw
@@ -200,7 +158,7 @@ const Draw = () => {
 						/>
 						<AddRooms
 							divisionOrTournament={
-								ladder.divisions && ladder.divisions > 1
+								ladder?.divisions && ladder.divisions.length > 1
 									? "division"
 									: "tournament"
 							}
@@ -209,7 +167,7 @@ const Draw = () => {
 						/>
 					</section>
 				);
-			case 1: // virtual choose
+			case DrawType.CLICK:
 				return (
 					<section className="draw-division">
 						<ChooseDraw
@@ -232,7 +190,7 @@ const Draw = () => {
 						/>
 						<AddRooms
 							divisionOrTournament={
-								ladder.divisions && ladder.divisions > 1
+								ladder?.divisions && ladder.divisions.length > 1
 									? "division"
 									: "tournament"
 							}
@@ -241,7 +199,7 @@ const Draw = () => {
 						/>
 					</section>
 				);
-			case 2: // random assignment
+			case DrawType.RANDOM:
 				return (
 					<section className="draw-division">
 						<RandomDraw
@@ -264,7 +222,7 @@ const Draw = () => {
 						/>
 						<AddRooms
 							divisionOrTournament={
-								ladder.divisions && ladder.divisions > 1
+								ladder?.divisions && ladder.divisions.length > 1
 									? "division"
 									: "tournament"
 							}
@@ -284,7 +242,7 @@ const Draw = () => {
 
 	return (
 		<section>
-			{ladder.divisions && ladder.divisions > 1 ? (
+			{ladder.divisions && ladder.divisions.length > 1 ? (
 				<nav className="divisions tabs">
 					<ul>
 						{divisionNames.map((name, idx) => (

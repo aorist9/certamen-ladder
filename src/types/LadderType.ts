@@ -168,6 +168,13 @@ export class Ladder implements LadderTypeV2 {
 		}
 		return roundsPlayed;
 	}
+
+	isSwiss(): boolean {
+		return (
+			this.ladderType === LadderStyle.SWISS ||
+			this.ladderType === LadderStyle.SWISS_BY_POINTS
+		);
+	}
 }
 
 export default LadderType;

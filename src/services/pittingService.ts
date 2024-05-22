@@ -1,4 +1,5 @@
-import LadderType from "../types/LadderType";
+import { LadderStyle } from "../constants";
+import { Ladder } from "../types/LadderType";
 import calculateScores, {
 	ScoreRow,
 	sortScores
@@ -15,14 +16,26 @@ const pushIfTeam = (team: string, array: string[]) => {
 };
 
 const pittingService = {
-	generateInitialPittings: (ladder: LadderType | undefined): string[][][] => {
-		if (!ladder?.teams || Object.keys(ladder.teams).length < 2) {
+	generateInitialPittings: (
+		ladder: Ladder | undefined,
+		divisionNumber: number
+	): string[][][] => {
+		if (
+			!ladder?.divisions ||
+			ladder.divisions.length <= divisionNumber ||
+			Object.keys(ladder.divisions[divisionNumber].teams).length < 2
+		) {
 			return [];
 		}
-		const orderedTeams: string[] = Object.keys(ladder.teams)
+
+		const division = ladder.divisions[divisionNumber];
+
+		const orderedTeams: string[] = Object.keys(division.teams)
 			.sort()
-			// @ts-ignore
-			.map((letter: string) => ladder.teams[letter]);
+			.map(
+				(letter: string) =>
+					ladder.divisions?.[divisionNumber].teams[letter] as string
+			);
 		const originalOrderedTeams = [...orderedTeams];
 
 		if (orderedTeams.length % 3 !== 0) {
@@ -30,7 +43,7 @@ const pittingService = {
 			if (orderedTeams.length % 3 !== 0) {
 				orderedTeams.splice(orderedTeams.length - 5, 0, NOT_A_TEAM);
 			}
-		} else if (orderedTeams.length === 6 && ladder.threeRooms) {
+		} else if (orderedTeams.length === 6 && division.threeRooms) {
 			orderedTeams.push(NOT_A_TEAM);
 			orderedTeams.splice(2, 0, NOT_A_TEAM);
 			orderedTeams.splice(5, 0, NOT_A_TEAM);
@@ -47,18 +60,17 @@ const pittingService = {
 			result[0].push(pitting);
 		}
 
-		// traditional ladder
-		if (ladder.type === 0 && ladder.rounds > 1) {
+		if (ladder.ladderType === LadderStyle.TRADITIONAL && ladder.numRounds > 1) {
 			if (isSpecialCase(originalOrderedTeams.length)) {
 				result.push(
 					...handleSpecialCase(
 						originalOrderedTeams.length,
 						originalOrderedTeams,
-						ladder.threeRooms
+						division.threeRooms
 					)
 				);
 			} else {
-				for (let i = 1; i < ladder.rounds; i++) {
+				for (let i = 1; i < ladder.numRounds; i++) {
 					let round: string[][] = [];
 					for (let j = 2; j < orderedTeams.length; j += 3) {
 						let teams: string[] = [];
@@ -80,8 +92,18 @@ const pittingService = {
 
 		return result;
 	},
-	generateNextSwissRound: (ladder: LadderType): string[][] => {
-		const teams: ScoreRow[] = calculateScores(ladder).sort(sortScores);
+	generateNextSwissRound: (
+		ladder: Ladder,
+		divisionNumber: number
+	): string[][] => {
+		const division = ladder?.divisions?.[divisionNumber];
+		if (!division) {
+			return [];
+		}
+
+		const teams: ScoreRow[] = calculateScores(ladder, divisionNumber).sort(
+			sortScores
+		);
 		let round: string[][] = [];
 		for (let i = 0; i < teams.length; i += 3) {
 			const room = [teams[i].team];
@@ -99,8 +121,8 @@ const pittingService = {
 			round.push(room);
 		}
 
-		if (ladder.matches) {
-			round = new Deconflicter(ladder.matches).deconflictRound(
+		if (division.matches) {
+			round = new Deconflicter(division.matches).deconflictRound(
 				round.map((room, roomIdx) =>
 					room.map((team, teamIdx) => ({
 						team,

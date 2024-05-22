@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
-import LadderType from "../types/LadderType";
-import Matches from "../types/Matches";
+import { Ladder } from "../types/LadderType";
+import { MatchesV2 } from "../types/Matches";
 import DisplayedLadder from "../components/DisplayLadder/DisplayedLadder";
 import "./LadderDisplay.css";
 
 export const retrievePublicOrPrivateLadder = (
 	ladderId: string | null,
-	setLadder: React.Dispatch<React.SetStateAction<LadderType | undefined>>,
+	setLadder: React.Dispatch<React.SetStateAction<Ladder | undefined>>,
 	publicId: string | null
 ) => {
 	if (ladderId) {
@@ -21,7 +21,7 @@ export const retrievePublicOrPrivateLadder = (
 const LadderDisplay = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const publicId: string | null = useSearchParams()[0].get("publicId");
-	const [ladder, setLadder] = useState<LadderType | undefined>();
+	const [ladder, setLadder] = useState<Ladder | undefined>();
 
 	useEffect(
 		() => retrievePublicOrPrivateLadder(ladderId, setLadder, publicId),
@@ -37,22 +37,7 @@ const LadderDisplay = () => {
 			return true;
 		}
 
-		let canStillGoBack = true;
-		if (
-			ladder.divisions &&
-			ladder.divisions > 1 &&
-			Array.isArray(ladder.teams)
-		) {
-			ladder.teams.forEach(div => {
-				if (div.matches) {
-					canStillGoBack = false;
-				}
-			});
-		} else {
-			canStillGoBack = !ladder.matches;
-		}
-
-		return canStillGoBack;
+		return ladder?.divisions?.some(div => div.matches) ?? true;
 	}, [ladder]);
 
 	if (ladder) {
@@ -81,56 +66,29 @@ const LadderDisplay = () => {
 							Add/Remove Teams
 						</Link>
 					)}
-				{Array.isArray(ladder.teams) ? (
-					<section className="multi-ladder-display">
-						{ladder.teams.map((team, idx) => (
-							<DisplayedLadder
-								divisionNumber={idx}
-								key={team.division}
-								name={team.division}
-								ladder={{
-									...ladder,
-									rooms: team.rooms,
-									teams: team.teams,
-									matches: team.matches,
-									threeRooms: team.threeRooms
-								}}
-								updateMatches={(matches: Matches) => {
-									// @ts-ignore
-									const newTeams = [...ladder.teams];
-									newTeams[idx].matches = matches;
-									const newLadder: LadderType = {
-										...ladder,
-										teams: newTeams
-									};
-									ladderService.editLadder(newLadder);
-								}}
-								updateRooms={(rooms: string[]) => {
-									// @ts-ignore
-									const newTeams = [...ladder.teams];
-									newTeams[idx].rooms = rooms;
-									const newLadder: LadderType = {
-										...ladder,
-										teams: newTeams
-									};
-									ladderService.editLadder(newLadder);
-								}}
-								hideIfPublic={hideIfPublic}
-							/>
-						))}
-					</section>
-				) : (
-					<DisplayedLadder
-						ladder={ladder}
-						updateMatches={(matches: Matches) => {
-							ladderService.editLadder({ ...ladder, matches });
-						}}
-						updateRooms={(rooms: string[]) => {
-							ladderService.editLadder({ ...ladder, rooms });
-						}}
-						hideIfPublic={hideIfPublic}
-					/>
-				)}
+				<section className="multi-ladder-display">
+					{ladder?.divisions?.map((division, idx) => (
+						<DisplayedLadder
+							divisionNumber={idx}
+							key={division.division}
+							name={division.division}
+							ladder={ladder}
+							updateMatches={(matches: MatchesV2) => {
+								if (ladder?.divisions) {
+									ladder.divisions[idx].matches = matches;
+									ladderService.editLadder(ladder);
+								}
+							}}
+							updateRooms={(rooms: string[]) => {
+								if (ladder?.divisions) {
+									ladder.divisions[idx].rooms = rooms;
+									ladderService.editLadder(ladder);
+								}
+							}}
+							hideIfPublic={hideIfPublic}
+						/>
+					))}
+				</section>
 			</section>
 		);
 	} else {

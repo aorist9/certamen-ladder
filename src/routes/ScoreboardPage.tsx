@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import LadderType from "../types/LadderType";
+import { Ladder } from "../types/LadderType";
 import Scoreboard from "../components/Scoreboard";
 import "./ScoreboardPage.css";
 import { retrievePublicOrPrivateLadder } from "./LadderDisplay";
@@ -8,7 +8,7 @@ import { retrievePublicOrPrivateLadder } from "./LadderDisplay";
 const ScoreboardPage = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const publicId: string | null = useSearchParams()[0].get("publicId");
-	const [ladder, setLadder] = useState<LadderType | undefined>();
+	const [ladder, setLadder] = useState<Ladder | undefined>();
 
 	useEffect(
 		() => retrievePublicOrPrivateLadder(ladderId, setLadder, publicId),
@@ -30,31 +30,24 @@ const ScoreboardPage = () => {
 		</section>
 	);
 
-	if (ladder?.matches) {
-		return (
-			<section className="App-page scoreboard">
-				{header}
-				<Scoreboard ladder={ladder} />
-			</section>
-		);
-		// @ts-ignore
-	} else if (ladder?.teams?.length && ladder.teams[0].matches?.length) {
+	if (
+		ladder?.divisions?.length &&
+		ladder.divisions?.some(d => d.matches?.length)
+	) {
 		return (
 			<section className="App-page scoreboard">
 				{header}
 				<section
 					style={{ display: "flex", flexWrap: "wrap", columnGap: "1em" }}
 				>
-					{
-						// @ts-ignore
-						ladder.teams.map(d => (
-							<Scoreboard
-								key={d.division}
-								name={d.division}
-								ladder={{ ...ladder, matches: d.matches, teams: d.teams }}
-							/>
-						))
-					}
+					{ladder.divisions.map((d, idx) => (
+						<Scoreboard
+							key={d.division}
+							name={d.division}
+							ladder={ladder}
+							divisionNumber={idx}
+						/>
+					))}
 				</section>
 			</section>
 		);

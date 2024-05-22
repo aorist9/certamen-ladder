@@ -3,6 +3,7 @@ import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
 import features from "../../features.json";
+import { RoomV2 } from "../../types/Matches";
 
 type RoomDisplayProps = {
 	divisionNumber?: number;
@@ -18,7 +19,7 @@ type RoomDisplayProps = {
 		j: number,
 		k: number
 	) => (e: ChangeEvent<HTMLInputElement>) => void;
-	pitting: { team: string; score?: number; swissPoints?: number }[];
+	pitting: RoomV2;
 	roomNumber: number;
 	roundNumber: number;
 	startDrag: () => void;
@@ -71,7 +72,7 @@ const DraggableRoomDisplay = ({
 					}
 				}}
 			>
-				{pitting?.map(({ team, score, swissPoints }, idx) => (
+				{pitting?.teams.map(({ team, score, swissPoints }, idx) => (
 					<TeamDisplay
 						key={team}
 						onScoreChange={onScoreChange(roomNumber, roundNumber, idx)}

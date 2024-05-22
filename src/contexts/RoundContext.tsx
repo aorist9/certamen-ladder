@@ -7,8 +7,6 @@ import React, {
 import Round, { Question, Team } from "../types/Round";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
-import Teams from "../types/Teams";
-import Matches from "../types/Matches";
 
 const RoundContext = createContext<{
 	questions: Question[];
@@ -37,24 +35,11 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
 	const inputTeams = isDemo
 		? ["Team", "Other Team", "Yet Another Team"]
-		: (ladder?.divisions
-				? divisionIdx && roomIdx && roundIdx
-					? (
-							ladder?.teams as {
-								division: string;
-								teams: Teams;
-								threeRooms?: boolean;
-								rooms?: string[];
-								matches?: Matches;
-							}[]
-					  )?.[parseInt(divisionIdx)]?.matches?.[parseInt(roundIdx)]?.[
-							parseInt(roomIdx)
-					  ]
-					: []
-				: roundIdx && roomIdx
-				? ladder?.matches?.[parseInt(roundIdx)]?.[parseInt(roomIdx)]
-				: []
-		  )?.map(team => team.team);
+		: roomIdx && roundIdx
+		? ladder?.divisions?.[divisionIdx ? parseInt(divisionIdx) : 0]?.matches?.[
+				parseInt(roundIdx)
+		  ]?.[parseInt(roomIdx)]?.teams?.map(team => team.team)
+		: [];
 
 	const [teams, setTeams] = useState(
 		inputTeams?.map(team => ({

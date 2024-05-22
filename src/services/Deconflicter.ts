@@ -1,4 +1,4 @@
-import Matches from "../types/Matches";
+import { MatchesV2 } from "../types/Matches";
 
 type Conflict = { total: number; roundConflicts: number[] };
 export type TeamEntry = { team: string; rank: number };
@@ -29,9 +29,9 @@ export const swapTeams = (
 };
 
 class Deconflicter {
-	private matches: Matches;
+	private matches: MatchesV2;
 
-	constructor(matches: Matches) {
+	constructor(matches: MatchesV2) {
 		this.matches = matches;
 	}
 
@@ -40,7 +40,7 @@ class Deconflicter {
 			(acc, round) =>
 				acc +
 				round.reduce((roundAcc, matchup) => {
-					let rawConflict: number = matchup.reduce(
+					let rawConflict: number = matchup.teams.reduce(
 						(pittingAcc, team) =>
 							pitting.includes(team.team) ? pittingAcc + 1 : pittingAcc,
 						0
@@ -74,7 +74,7 @@ class Deconflicter {
 	deconflictRound(round: TeamEntry[][]): string[][] {
 		const currentConflict: Conflict = this.calculateConflict(round);
 		const totalTeams = this.matches[0].reduce(
-			(acc, room) => acc + room.length,
+			(acc, room) => acc + room.teams.length,
 			0
 		);
 

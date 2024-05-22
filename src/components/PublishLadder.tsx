@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
-import LadderType from "../types/LadderType";
+import { Ladder } from "../types/LadderType";
 import QRCode from "react-qr-code";
 
 const PublishLadder = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const [loading, setLoading] = useState<boolean>(false);
-	const ladder: LadderType | undefined = useMemo(
+	const ladder: Ladder | undefined = useMemo(
 		() => (ladderId ? ladderService.getLadder(ladderId) : undefined),
 		[ladderId]
 	);
@@ -40,9 +40,7 @@ const PublishLadder = () => {
 				style={{ fontSize: "1.4rem", marginTop: "1em", marginLeft: "0.5em" }}
 				onClick={() => {
 					setLoading(true);
-					const lddr: LadderType | undefined = ladderService.getLadder(
-						ladder.id
-					);
+					const lddr: Ladder | undefined = ladderService.getLadder(ladder.id);
 					if (!lddr) {
 						throw new Error("umm... there's no ladder");
 					}

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import Matches from "../../types/Matches";
+import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
@@ -22,15 +22,15 @@ type LadderTableProps = {
 	) => string | JSX.Element | JSX.Element[];
 	isSwiss: boolean;
 	isSwissByPoints: boolean;
-	matches?: Matches;
-	pittings: Matches;
+	matches?: MatchesV2;
+	pittings: MatchesV2;
 	roomEditStatus: EditingStatus;
 	rooms: string[];
 	roundScoreEditStatuses: EditingStatus[];
-	setPittings: (pittings: Matches) => void;
+	setPittings: (pittings: MatchesV2) => void;
 	setRooms: (rooms: string[]) => void;
 	setRoundScoreEditStatuses: (roundScoreEditStatuses: EditingStatus[]) => void;
-	updateMatches: (matches: Matches) => void;
+	updateMatches: (matches: MatchesV2) => void;
 };
 
 const LadderTable = (props: LadderTableProps) => {
@@ -41,7 +41,7 @@ const LadderTable = (props: LadderTableProps) => {
 			const newPitting: {
 				team: string;
 				score?: number;
-			}[] = [...props.pittings[j][i]];
+			}[] = [...props.pittings[j][i].teams];
 			newPitting[k].score = parseInt(e.target.value);
 			for (let idx = 0; idx < newPitting.length; idx++) {
 				if (!newPitting[idx].score) {
@@ -53,7 +53,7 @@ const LadderTable = (props: LadderTableProps) => {
 				...props.pittings.slice(0, j),
 				[
 					...props.pittings[j].slice(0, i),
-					newPitting,
+					{ teams: newPitting },
 					...props.pittings[j].slice(i + 1)
 				],
 				...props.pittings.slice(j + 1)
@@ -132,7 +132,7 @@ const LadderTable = (props: LadderTableProps) => {
 										return;
 									}
 
-									const newPittings: Matches = [...props.pittings];
+									const newPittings: MatchesV2 = [...props.pittings];
 									let newRound;
 									if (sourceIdx < i) {
 										newRound = [
