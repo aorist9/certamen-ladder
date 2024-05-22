@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import ScoreboardPage from "./ScoreboardPage";
 import ladderService from "../services/ladderService";
+import { Ladder } from "../types/LadderType";
 
 jest.mock("../services/ladderService", () => ({
 	addLadder: jest.fn(),
@@ -27,51 +28,53 @@ describe("Scoreboard", () => {
 	describe("Single Division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 0,
-				name: "My Ladder",
-				rounds: 3,
-				type: 0,
-				teams: {
-					G: "C",
-					B: "D",
-					A: "A",
-					C: "B"
-				},
-				matches: [
-					[
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 0,
+					name: "My Ladder",
+					rounds: 3,
+					type: 0,
+					teams: {
+						G: "C",
+						B: "D",
+						A: "A",
+						C: "B"
+					},
+					matches: [
 						[
-							{ team: "A", score: 50 },
-							{ team: "B", score: 25 }
+							[
+								{ team: "A", score: 50 },
+								{ team: "B", score: 25 }
+							],
+							[
+								{ team: "C", score: 150 },
+								{ team: "D", score: 35 }
+							]
 						],
 						[
-							{ team: "C", score: 150 },
-							{ team: "D", score: 35 }
-						]
-					],
-					[
-						[
-							{ team: "A", score: 50 },
-							{ team: "C", score: 25 }
+							[
+								{ team: "A", score: 50 },
+								{ team: "C", score: 25 }
+							],
+							[
+								{ team: "B", score: 150 },
+								{ team: "D", score: 35 }
+							]
 						],
 						[
-							{ team: "B", score: 150 },
-							{ team: "D", score: 35 }
-						]
-					],
-					[
-						[
-							{ team: "A", score: 50 },
-							{ team: "D", score: 25 }
-						],
-						[
-							{ team: "B", score: 150 },
-							{ team: "C", score: 35 }
+							[
+								{ team: "A", score: 50 },
+								{ team: "D", score: 25 }
+							],
+							[
+								{ team: "B", score: 150 },
+								{ team: "C", score: 35 }
+							]
 						]
 					]
-				]
-			});
+				})
+			);
 		});
 
 		test("should show ladder name", () => {
@@ -116,80 +119,83 @@ describe("Scoreboard", () => {
 	describe("Multiple Divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 0,
-				name: "My Ladder",
-				rounds: 3,
-				type: 0,
-				teams: [
-					{
-						division: "Novice",
-						teams: {
-							G: "C",
-							B: "D",
-							A: "A",
-							C: "B"
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 0,
+					name: "My Ladder",
+					divisions: 2,
+					rounds: 3,
+					type: 0,
+					teams: [
+						{
+							division: "Novice",
+							teams: {
+								G: "C",
+								B: "D",
+								A: "A",
+								C: "B"
+							},
+							matches: [
+								[
+									[
+										{ team: "A", score: 50 },
+										{ team: "B", score: 25 }
+									],
+									[
+										{ team: "C", score: 150 },
+										{ team: "D", score: 35 }
+									]
+								],
+								[
+									[
+										{ team: "A", score: 50 },
+										{ team: "C", score: 25 }
+									],
+									[
+										{ team: "B", score: 150 },
+										{ team: "D", score: 35 }
+									]
+								],
+								[
+									[
+										{ team: "A", score: 50 },
+										{ team: "D", score: 25 }
+									],
+									[
+										{ team: "B", score: 150 },
+										{ team: "C", score: 35 }
+									]
+								]
+							]
 						},
-						matches: [
-							[
+						{
+							division: "Advanced",
+							teams: { A: "Z", B: "Y" },
+							matches: [
 								[
-									{ team: "A", score: 50 },
-									{ team: "B", score: 25 }
+									[
+										{ team: "Z", score: 10 },
+										{ team: "Y", score: 15 }
+									]
 								],
 								[
-									{ team: "C", score: 150 },
-									{ team: "D", score: 35 }
-								]
-							],
-							[
-								[
-									{ team: "A", score: 50 },
-									{ team: "C", score: 25 }
+									[
+										{ team: "Z", score: 100 },
+										{ team: "Y", score: 25 }
+									]
 								],
 								[
-									{ team: "B", score: 150 },
-									{ team: "D", score: 35 }
-								]
-							],
-							[
-								[
-									{ team: "A", score: 50 },
-									{ team: "D", score: 25 }
-								],
-								[
-									{ team: "B", score: 150 },
-									{ team: "C", score: 35 }
+									[
+										{ team: "Z", score: 20 },
+										{ team: "Y", score: 35 }
+									]
 								]
 							]
-						]
-					},
-					{
-						division: "Advanced",
-						teams: { A: "Z", B: "Y" },
-						matches: [
-							[
-								[
-									{ team: "Z", score: 10 },
-									{ team: "Y", score: 15 }
-								]
-							],
-							[
-								[
-									{ team: "Z", score: 100 },
-									{ team: "Y", score: 25 }
-								]
-							],
-							[
-								[
-									{ team: "Z", score: 20 },
-									{ team: "Y", score: 35 }
-								]
-							]
-						]
-					}
-				]
-			});
+						}
+					]
+				})
+			);
 		});
 
 		test("should show ladder and division names", () => {

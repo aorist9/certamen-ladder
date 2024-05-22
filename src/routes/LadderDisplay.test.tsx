@@ -4,6 +4,7 @@ import LadderDisplay from "./LadderDisplay";
 import { HashRouter } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import userEvent from "@testing-library/user-event";
+import { Ladder } from "../types/LadderType";
 
 jest.mock("../services/ladderService", () => ({
 	addLadder: jest.fn(),
@@ -35,21 +36,23 @@ describe("LadderDisplay", () => {
 	describe("single division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 0,
-				name: "My Ladder",
-				rounds: 17,
-				type: 0,
-				teams: {
-					G: "Georgya",
-					B: "Bama",
-					A: "Arizona",
-					C: "Capitol One",
-					H: "Highlanders",
-					Z: "Zebras"
-				}
-			});
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 0,
+					name: "My Ladder",
+					rounds: 17,
+					type: 0,
+					teams: {
+						G: "Georgya",
+						B: "Bama",
+						A: "Arizona",
+						C: "Capitol One",
+						H: "Highlanders",
+						Z: "Zebras"
+					}
+				})
+			);
 		});
 
 		test("should display the ladder name", () => {
@@ -111,35 +114,37 @@ describe("LadderDisplay", () => {
 	describe("multiple divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				divisions: 3,
-				draw: 0,
-				name: "My Ladder",
-				rounds: 17,
-				type: 0,
-				teams: [
-					{
-						division: "The Div",
-						teams: {
-							G: "Georgya",
-							B: "Bama",
-							A: "Arizona",
-							C: "Capitol One",
-							H: "Highlanders",
-							Z: "Zebras"
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					divisions: 3,
+					draw: 0,
+					name: "My Ladder",
+					rounds: 17,
+					type: 0,
+					teams: [
+						{
+							division: "The Div",
+							teams: {
+								G: "Georgya",
+								B: "Bama",
+								A: "Arizona",
+								C: "Capitol One",
+								H: "Highlanders",
+								Z: "Zebras"
+							}
+						},
+						{
+							division: "The Other Div",
+							teams: {
+								A: "A",
+								Z: "Z",
+								Y: "Y"
+							}
 						}
-					},
-					{
-						division: "The Other Div",
-						teams: {
-							A: "A",
-							Z: "Z",
-							Y: "Y"
-						}
-					}
-				]
-			});
+					]
+				})
+			);
 		});
 
 		test("should display the ladder name", () => {

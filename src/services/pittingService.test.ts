@@ -1,21 +1,21 @@
-import { Ladder } from "../types/LadderType";
+import LadderType, { Ladder } from "../types/LadderType";
 import pittingService from "./pittingService";
 
-const BASE_LADDER: Ladder = new Ladder({
+const BASE_LADDER: LadderType = {
 	id: "123",
 	draw: 0,
 	name: "Ladder",
 	rounds: 3,
 	type: 0
-});
+};
 
 describe("Pitting Service", () => {
 	describe("generateInitialPittings", () => {
 		test("should return an empty array when there is not enough information", () => {
 			expect(pittingService.generateInitialPittings(undefined, 0)).toEqual([]);
-			expect(pittingService.generateInitialPittings(BASE_LADDER, 0)).toEqual(
-				[]
-			);
+			expect(
+				pittingService.generateInitialPittings(new Ladder(BASE_LADDER), 0)
+			).toEqual([]);
 			expect(
 				pittingService.generateInitialPittings(
 					new Ladder({

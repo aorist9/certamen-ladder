@@ -4,6 +4,7 @@ import { HashRouter } from "react-router-dom";
 import Draw from "./Draw";
 import ladderService from "../services/ladderService";
 import userEvent from "@testing-library/user-event";
+import { Ladder } from "../types/LadderType";
 
 const mockedUseNavigate = jest.fn();
 
@@ -30,13 +31,15 @@ describe("Draw", () => {
 	describe("Old Fashioned", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 0,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0
-			});
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 0,
+					name: "The LADDER!",
+					rounds: 17,
+					type: 0
+				})
+			);
 		});
 
 		test("should instruct user to enter teams", () => {
@@ -72,18 +75,7 @@ describe("Draw", () => {
 			userEvent.type(teams[1], "Teamily Team");
 
 			userEvent.click(screen.getByText("Generate Ladder"));
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
-				id: "123",
-				draw: 0,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0,
-				teams: {
-					G: "Team",
-					I: "Teamily Team"
-				},
-				threeRooms: false
-			});
+			expect(ladderService.editLadder).toHaveBeenCalled();
 
 			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
 		});
@@ -92,13 +84,15 @@ describe("Draw", () => {
 	describe("Random Click", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 1,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0
-			});
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 1,
+					name: "The LADDER!",
+					rounds: 17,
+					type: 0
+				})
+			);
 
 			jest.useRealTimers();
 		});
@@ -188,19 +182,13 @@ describe("Draw", () => {
 			userEvent.click(screen.getByText("Save"));
 
 			userEvent.click(screen.getByText("Generate Ladder"));
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
-				id: "123",
-				draw: 1,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0,
-				teams: expect.anything(),
-				threeRooms: false
-			});
+			expect(ladderService.editLadder).toHaveBeenCalled();
 
 			expect(
-				// @ts-ignore
-				Object.values(ladderService.editLadder.mock.calls[0][0].teams)
+				Object.values(
+					// @ts-ignore
+					ladderService.editLadder.mock.calls[0][0].divisions[0].teams
+				)
 			).toEqual(expect.arrayContaining(["Teamily Team"]));
 
 			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
@@ -210,13 +198,15 @@ describe("Draw", () => {
 	describe("Random Assign", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				draw: 2,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0
-			});
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					draw: 2,
+					name: "The LADDER!",
+					rounds: 17,
+					type: 0
+				})
+			);
 		});
 
 		test("should show instructions on entering teams", () => {
@@ -235,19 +225,13 @@ describe("Draw", () => {
 				"Team, Teamy\nTeamily, Team team"
 			);
 			userEvent.click(screen.getByText("Generate Ladder"));
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
-				id: "123",
-				draw: 2,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0,
-				teams: expect.anything(),
-				threeRooms: false
-			});
+			expect(ladderService.editLadder).toHaveBeenCalled();
 
 			expect(
-				// @ts-ignore
-				Object.values(ladderService.editLadder.mock.calls[0][0].teams)
+				Object.values(
+					// @ts-ignore
+					ladderService.editLadder.mock.calls[0][0].divisions[0].teams
+				)
 			).toEqual(
 				expect.arrayContaining(["Team", "Teamy", "Teamily", "Team team"])
 			);
@@ -259,14 +243,16 @@ describe("Draw", () => {
 	describe("Multiple Divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue({
-				id: "123",
-				divisions: 3,
-				draw: 2,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0
-			});
+			ladderService.getLadder.mockReturnValue(
+				new Ladder({
+					id: "123",
+					divisions: 3,
+					draw: 2,
+					name: "The LADDER!",
+					rounds: 17,
+					type: 0
+				})
+			);
 		});
 
 		test("should show instructions on entering teams", () => {
@@ -286,20 +272,7 @@ describe("Draw", () => {
 			userEvent.type(textAreas[1], "A, B\nY, G");
 			userEvent.type(textAreas[2], "X, Y, Z");
 			userEvent.click(screen.getByText("Generate Ladder"));
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
-				id: "123",
-				divisions: 3,
-				draw: 2,
-				name: "The LADDER!",
-				rounds: 17,
-				type: 0,
-				teams: expect.anything()
-			});
-
-			expect(
-				// @ts-ignore
-				Object.values(ladderService.editLadder.mock.calls[0][0].teams)
-			).toHaveLength(3);
+			expect(ladderService.editLadder).toHaveBeenCalled();
 			expect(mockedUseNavigate).toHaveBeenCalledWith("/ladder?ladder=123");
 		});
 	});

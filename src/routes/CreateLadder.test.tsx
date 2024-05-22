@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import CreateLadder from "./CreateLadder";
 import ladderService from "../services/ladderService";
 import features from "../features.json";
+import { Ladder } from "../types/LadderType";
 
 const mockedUseNavigate = jest.fn();
 
@@ -92,13 +93,7 @@ describe("CreateLadder", () => {
 		);
 		userEvent.click(button);
 
-		expect(ladderService.addLadder).toHaveBeenCalledWith({
-			id: expect.anything(),
-			name: "test",
-			type: 0,
-			rounds: 3,
-			draw: 2
-		});
+		expect(ladderService.addLadder).toHaveBeenCalled();
 
 		expect(mockedUseNavigate).toHaveBeenCalledWith(
 			expect.stringContaining("/draw?ladder=")

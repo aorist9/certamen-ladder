@@ -79,23 +79,30 @@ export class Ladder implements LadderTypeV2 {
 			this.numRounds = ladder.rounds;
 			if (ladder.divisions) {
 				// multi-division
-				this.divisions = (
-					ladder.teams as {
-						division: string;
-						teams: Teams;
-						threeRooms?: boolean;
-						rooms?: string[];
-						matches?: Matches;
-					}[]
-				)?.map(division => ({
-					division: division.division,
-					teams: division.teams,
-					threeRooms: division.threeRooms,
-					rooms: division.rooms,
-					matches: division.matches?.map(round =>
-						round.map(room => ({ teams: room.map(team => team) }))
-					)
-				}));
+				if (ladder.teams) {
+					this.divisions = (
+						ladder.teams as {
+							division: string;
+							teams: Teams;
+							threeRooms?: boolean;
+							rooms?: string[];
+							matches?: Matches;
+						}[]
+					)?.map(division => ({
+						division: division.division,
+						teams: division.teams,
+						threeRooms: division.threeRooms,
+						rooms: division.rooms,
+						matches: division.matches?.map(round =>
+							round.map(room => ({ teams: room.map(team => team) }))
+						)
+					}));
+				} else {
+					this.divisions = [];
+					for (let i = 0; i < ladder.divisions; i++) {
+						this.divisions.push({ teams: {} });
+					}
+				}
 			} else {
 				// single division
 				this.divisions = [
