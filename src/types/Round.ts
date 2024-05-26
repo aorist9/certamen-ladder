@@ -12,6 +12,7 @@ export interface Question {
 	buzzes: { team: string; player: number }[];
 	correctTeam?: string;
 	boni: boolean[];
+	comments?: string;
 }
 
 export const LETTERS: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];

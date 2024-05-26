@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { LETTERS, Question } from "../../types/Round";
 import { useRoundContext } from "../../contexts/RoundContext";
 import BonusCheckboxSection from "./BonusCheckboxSection";
+import CommentSection from "./CommentSection";
 
 const LEFT_ARROW = "\u2190";
 const RIGHT_ARROW = "\u2192";
@@ -51,6 +52,15 @@ const CurrentQuestion = ({
 					/>
 					<section className="timer-section"></section>
 				</section>
+				<CommentSection
+					comment={questions[currentQuestion].comments}
+					setComment={(comments: string) => {
+						updateCurrentQuestion({
+							...questions[currentQuestion],
+							comments
+						});
+					}}
+				/>
 			</section>
 		);
 	} else if (buzzer) {
@@ -84,6 +94,15 @@ const CurrentQuestion = ({
 				>
 					Incorrect
 				</button>
+				<CommentSection
+					comment={questions[currentQuestion].comments}
+					setComment={(comments: string) => {
+						updateCurrentQuestion({
+							...questions[currentQuestion],
+							comments
+						});
+					}}
+				/>
 			</section>
 		);
 	} else {
@@ -146,6 +165,15 @@ const CurrentQuestion = ({
 						))}
 					</section>
 				))}
+				<CommentSection
+					comment={questions[currentQuestion].comments}
+					setComment={(comments: string) => {
+						updateCurrentQuestion({
+							...questions[currentQuestion],
+							comments
+						});
+					}}
+				/>
 			</section>
 		);
 	}

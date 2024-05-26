@@ -16,6 +16,7 @@ const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
 					<th>TU (10)</th>
 					<th>B1 (5)</th>
 					<th>B2 (5)</th>
+					<th>Comments</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -48,6 +49,7 @@ const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
 						<td>
 							{question.boni?.length > 1 ? (question.boni[1] ? CHECK : X) : ""}
 						</td>
+						<td>{question.comments}</td>
 					</tr>
 				))}
 			</tbody>

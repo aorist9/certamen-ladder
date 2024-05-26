@@ -20,7 +20,6 @@ const pittingService = {
 		ladder: Ladder | undefined,
 		divisionNumber: number
 	): string[][][] => {
-		console.log(ladder);
 		if (
 			!ladder?.divisions ||
 			ladder.divisions.length <= divisionNumber ||
