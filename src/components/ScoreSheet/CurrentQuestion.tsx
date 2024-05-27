@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LETTERS, Question } from "../../types/Round";
 import { useRoundContext } from "../../contexts/RoundContext";
 import BonusCheckboxSection from "./BonusCheckboxSection";
@@ -31,10 +31,18 @@ const CurrentQuestion = ({
 		]);
 	};
 
+	const headerRef = useRef<HTMLHeadingElement>(null);
+
+	useEffect(() => {
+		if (buzzer || state === State.BONI) {
+			headerRef.current?.scrollTo();
+		}
+	}, [buzzer, state, headerRef]);
+
 	if (state === State.BONI) {
 		return (
 			<section className="current-tossup boni">
-				<h3>
+				<h3 ref={headerRef}>
 					Tossup {currentQuestion + 1}: Boni to{" "}
 					{questions[currentQuestion].correctTeam}
 				</h3>
@@ -66,7 +74,7 @@ const CurrentQuestion = ({
 	} else if (buzzer) {
 		return (
 			<section className="current-tossup buzzed">
-				<h3>
+				<h3 ref={headerRef}>
 					Tossup {currentQuestion + 1}: {buzzer} Buzzed
 				</h3>
 				<button
@@ -110,7 +118,7 @@ const CurrentQuestion = ({
 			<>
 				<section className="current-tossup-header">
 					<section>
-						<h3>Tossup {currentQuestion + 1}</h3>
+						<h3 ref={headerRef}>Tossup {currentQuestion + 1}</h3>
 						<p>Who Buzzed?</p>
 					</section>
 					<section>
