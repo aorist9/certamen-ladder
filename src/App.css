@@ -75,6 +75,14 @@ button {
 	color: rgb(34, 16, 16);
 }
 
+.success {
+	color: darkgreen;
+}
+
+.failure {
+	color: darkred;
+}
+
 .menu-btn {
 	background-color: #282c34;
 	color: white;
@@ -156,5 +164,13 @@ button {
 	button:disabled {
 		background-color: #111;
 		color: grey;
+	}
+
+	.success {
+		color: lightgreen;
+	}
+
+	.error {
+		color: lightcoral;
 	}
 }

@@ -54,7 +54,9 @@
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	margin: 1em 0;
+	padding: 1em 0;
+	position: sticky;
+	top: 102.25px;
 }
 
 .score-sheet .total-scores .team-total-score {
@@ -97,7 +99,16 @@
 }
 
 .score-sheet .current-tossup {
-	margin: 1em 0;
+	margin-bottom: 1em;
+}
+
+.score-sheet .current-tossup-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: sticky;
+	top: 185px;
+	margin-top: 1em;
 }
 
 .score-sheet .buzzer-section {
@@ -122,4 +133,14 @@
 	font-size: 18pt;
 	padding: 0.5em;
 	margin: 0.5em;
+}
+
+@media (min-width: 768px) {
+	.score-sheet .total-scores {
+		top: 0;
+	}
+
+	.score-sheet .current-tossup-header {
+		top: 75px;
+	}
 }

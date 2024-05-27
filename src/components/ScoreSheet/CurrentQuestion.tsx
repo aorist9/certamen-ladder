@@ -107,14 +107,8 @@ const CurrentQuestion = ({
 		);
 	} else {
 		return (
-			<section className="current-tossup">
-				<section
-					style={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "space-between"
-					}}
-				>
+			<>
+				<section className="current-tossup-header">
 					<section>
 						<h3>Tossup {currentQuestion + 1}</h3>
 						<p>Who Buzzed?</p>
@@ -136,45 +130,47 @@ const CurrentQuestion = ({
 						</button>
 					</section>
 				</section>
-				{teams.map((team, teamIdx) => (
-					<section key={team.name} className="buzzer-section">
-						{team.players.map((player, playerIdx) => (
-							<button
-								key={playerIdx}
-								className="buzzer-button"
-								disabled={questions[currentQuestion].buzzes.some(
-									b => b.team === teams[teamIdx].name
-								)}
-								onClick={() => {
-									setBuzzer(`${LETTERS[teamIdx]}${playerIdx + 1}`);
-									updateCurrentQuestion({
-										...questions[currentQuestion],
-										buzzes: [
-											...questions[currentQuestion].buzzes,
-											{
-												team: teams[teamIdx].name,
-												player: playerIdx
-											}
-										]
-									});
-								}}
-							>
-								{LETTERS[teamIdx]}
-								{playerIdx + 1}
-							</button>
-						))}
-					</section>
-				))}
-				<CommentSection
-					comment={questions[currentQuestion].comments}
-					setComment={(comments: string) => {
-						updateCurrentQuestion({
-							...questions[currentQuestion],
-							comments
-						});
-					}}
-				/>
-			</section>
+				<section className="current-tossup">
+					{teams.map((team, teamIdx) => (
+						<section key={team.name} className="buzzer-section">
+							{team.players.map((player, playerIdx) => (
+								<button
+									key={playerIdx}
+									className="buzzer-button"
+									disabled={questions[currentQuestion].buzzes.some(
+										b => b.team === teams[teamIdx].name
+									)}
+									onClick={() => {
+										setBuzzer(`${LETTERS[teamIdx]}${playerIdx + 1}`);
+										updateCurrentQuestion({
+											...questions[currentQuestion],
+											buzzes: [
+												...questions[currentQuestion].buzzes,
+												{
+													team: teams[teamIdx].name,
+													player: playerIdx
+												}
+											]
+										});
+									}}
+								>
+									{LETTERS[teamIdx]}
+									{playerIdx + 1}
+								</button>
+							))}
+						</section>
+					))}
+					<CommentSection
+						comment={questions[currentQuestion].comments}
+						setComment={(comments: string) => {
+							updateCurrentQuestion({
+								...questions[currentQuestion],
+								comments
+							});
+						}}
+					/>
+				</section>
+			</>
 		);
 	}
 };

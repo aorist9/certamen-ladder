@@ -5,6 +5,31 @@ import { useRoundContext } from "../../contexts/RoundContext";
 const CHECK = "\u2713";
 const X = "X";
 
+const NEUTRAL_CELL = <td></td>;
+const SUCCESS_CELL = (
+	<td>
+		<span className="success">{CHECK}</span>
+	</td>
+);
+const FAILURE_CELL = (
+	<td>
+		<span className="failure">{X}</span>
+	</td>
+);
+
+const renderQuestionCell = (
+	successCondition: boolean,
+	failureCondition: boolean
+) => {
+	if (successCondition) {
+		return SUCCESS_CELL;
+	} else if (failureCondition) {
+		return FAILURE_CELL;
+	} else {
+		return NEUTRAL_CELL;
+	}
+};
+
 const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
 	const { questions, teams } = useRoundContext();
 	return (
@@ -40,15 +65,15 @@ const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
 								</span>
 							))}
 						</td>
-						<td>
-							{question.correctTeam ? CHECK : currentQuestion > idx ? X : ""}
-						</td>
-						<td>
-							{question.boni?.length ? (question.boni[0] ? CHECK : X) : ""}
-						</td>
-						<td>
-							{question.boni?.length > 1 ? (question.boni[1] ? CHECK : X) : ""}
-						</td>
+						{renderQuestionCell(!!question.correctTeam, currentQuestion > idx)}
+						{renderQuestionCell(
+							!!question.boni?.length && question.boni[0],
+							!!question.boni?.length
+						)}
+						{renderQuestionCell(
+							question.boni?.length > 1 && question.boni[1],
+							question.boni?.length > 1
+						)}
 						<td>{question.comments}</td>
 					</tr>
 				))}
