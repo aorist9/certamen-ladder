@@ -30,7 +30,13 @@ const renderQuestionCell = (
 	}
 };
 
-const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
+const QuestionsTable = ({
+	currentQuestion,
+	setCurrentQuestion
+}: {
+	currentQuestion: number;
+	setCurrentQuestion: (number: number) => void;
+}) => {
 	const { questions, teams } = useRoundContext();
 	return (
 		<table className="questions-table">
@@ -47,7 +53,18 @@ const QuestionsTable = ({ currentQuestion }: { currentQuestion: number }) => {
 			<tbody>
 				{questions.map((question, idx) => (
 					<tr key={idx}>
-						<td>{idx + 1}</td>
+						<td>
+							{currentQuestion === idx ? (
+								idx + 1
+							) : (
+								<button
+									className="link-button"
+									onClick={() => setCurrentQuestion(idx)}
+								>
+									{idx + 1}
+								</button>
+							)}
+						</td>
 						<td>
 							{question.buzzes.map(buzz => (
 								<span

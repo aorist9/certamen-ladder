@@ -48,6 +48,18 @@ textarea {
 
 button {
 	border-radius: 15px;
+	padding: 0.5em;
+}
+
+button.link-button {
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+}
+
+button.link-button:hover,
+button.link-button:active {
+	font-weight: bold;
 }
 
 .radio-group {

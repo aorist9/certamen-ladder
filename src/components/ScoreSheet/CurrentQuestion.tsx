@@ -3,13 +3,13 @@ import { LETTERS, Question } from "../../types/Round";
 import { useRoundContext } from "../../contexts/RoundContext";
 import BonusCheckboxSection from "./BonusCheckboxSection";
 import CommentSection from "./CommentSection";
-
-const LEFT_ARROW = "\u2190";
-const RIGHT_ARROW = "\u2192";
+import NavigationPanel from "./NavigationPanel";
+import EditSection from "./EditSection";
 
 enum State {
 	TOSSUP,
-	BONI
+	BONI,
+	EDITING
 }
 
 const CurrentQuestion = ({
@@ -58,8 +58,33 @@ const CurrentQuestion = ({
 							setBuzzer(undefined);
 						}}
 					/>
-					<section className="timer-section"></section>
+					<section className="timer-section">{/* TODO */}</section>
 				</section>
+				<CommentSection
+					comment={questions[currentQuestion].comments}
+					setComment={(comments: string) => {
+						updateCurrentQuestion({
+							...questions[currentQuestion],
+							comments
+						});
+					}}
+				/>
+			</section>
+		);
+	} else if (state === State.EDITING) {
+		return (
+			<section className="current-tossup editing">
+				<h3 ref={headerRef}>Tossup {currentQuestion + 1}: Editing</h3>
+				<EditSection
+					cancel={() => setState(State.TOSSUP)}
+					save={(question: Question) => {
+						updateCurrentQuestion({
+							...question,
+							comments: questions[currentQuestion].comments
+						});
+						setState(State.TOSSUP);
+					}}
+				/>
 				<CommentSection
 					comment={questions[currentQuestion].comments}
 					setComment={(comments: string) => {
@@ -121,22 +146,18 @@ const CurrentQuestion = ({
 						<h3 ref={headerRef}>Tossup {currentQuestion + 1}</h3>
 						<p>Who Buzzed?</p>
 					</section>
-					<section>
-						<button
-							className="btn-info question-nav-button"
-							disabled={currentQuestion === 0}
-							onClick={() => setCurrentQuestion(currentQuestion - 1)}
-						>
-							{LEFT_ARROW}
-						</button>
-						<button
-							className="btn-info question-nav-button"
-							disabled={currentQuestion >= 19}
-							onClick={() => setCurrentQuestion(currentQuestion + 1)}
-						>
-							{RIGHT_ARROW}
-						</button>
-					</section>
+					<NavigationPanel
+						currentQuestion={currentQuestion}
+						nextQuestion={() => {
+							setCurrentQuestion(currentQuestion + 1);
+							setState(State.TOSSUP);
+						}}
+						previousQuestion={() => {
+							setCurrentQuestion(currentQuestion - 1);
+							setState(State.TOSSUP);
+						}}
+						setEditing={() => setState(State.EDITING)}
+					/>
 				</section>
 				<section className="current-tossup">
 					{teams.map((team, teamIdx) => (

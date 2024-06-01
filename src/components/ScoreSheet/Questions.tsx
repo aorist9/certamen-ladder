@@ -11,7 +11,10 @@ const Questions = () => {
 				currentQuestion={currentQuestion}
 				setCurrentQuestion={setCurrentQuestion}
 			/>
-			<QuestionsTable currentQuestion={currentQuestion} />
+			<QuestionsTable
+				currentQuestion={currentQuestion}
+				setCurrentQuestion={setCurrentQuestion}
+			/>
 		</section>
 	);
 };
