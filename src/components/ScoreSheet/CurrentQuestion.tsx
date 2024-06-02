@@ -5,6 +5,7 @@ import BonusCheckboxSection from "./BonusCheckboxSection";
 import CommentSection from "./CommentSection";
 import NavigationPanel from "./NavigationPanel";
 import EditSection from "./EditSection";
+import TimerSection from "./TimerSection";
 
 enum State {
 	TOSSUP,
@@ -46,7 +47,13 @@ const CurrentQuestion = ({
 					Tossup {currentQuestion + 1}: Boni to{" "}
 					{questions[currentQuestion].correctTeam}
 				</h3>
-				<section style={{ display: "flex" }}>
+				<section
+					style={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center"
+					}}
+				>
 					<BonusCheckboxSection
 						done={(boni: boolean[]) => {
 							updateCurrentQuestion({
@@ -58,7 +65,7 @@ const CurrentQuestion = ({
 							setBuzzer(undefined);
 						}}
 					/>
-					<section className="timer-section">{/* TODO */}</section>
+					<TimerSection />
 				</section>
 				<CommentSection
 					comment={questions[currentQuestion].comments}

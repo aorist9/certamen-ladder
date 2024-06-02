@@ -9,7 +9,7 @@ const BonusCheckboxSection = ({
 	const [bonus2, setBonus2] = useState(false);
 
 	return (
-		<section className="bonus-checkbox-section">
+		<section className="bonus-checkbox-section" style={{ marginBottom: "1em" }}>
 			<p>
 				<label htmlFor="bonus1" onClick={() => setBonus1(!bonus1)}>
 					<input type="checkbox" name="bonus1" checked={bonus1} />
