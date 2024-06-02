@@ -77,6 +77,7 @@ const CurrentQuestion = ({
 				<h3 ref={headerRef}>Tossup {currentQuestion + 1}: Editing</h3>
 				<EditSection
 					cancel={() => setState(State.TOSSUP)}
+					question={questions[currentQuestion]}
 					save={(question: Question) => {
 						updateCurrentQuestion({
 							...question,

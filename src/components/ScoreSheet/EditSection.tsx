@@ -5,19 +5,51 @@ import { useRoundContext } from "../../contexts/RoundContext";
 
 const EditSection = ({
 	cancel,
+	question,
 	save
 }: {
 	cancel: VoidFunction;
+	question: Question;
 	save: (question: Question) => void;
 }) => {
-	const [buzz1, setBuzz1] = useState<string | undefined>();
-	const [buzz2, setBuzz2] = useState<string | undefined>();
-	const [buzz3, setBuzz3] = useState<string | undefined>();
-	const [correct, setCorrect] = useState<number | undefined>();
-	const [bonus1, setBonus1] = useState(false);
-	const [bonus2, setBonus2] = useState(false);
-
 	const { teams } = useRoundContext();
+
+	const [buzz1, setBuzz1] = useState<string | undefined>(
+		question.buzzes.length
+			? `${
+					LETTERS[
+						teams.findIndex(team => team.name === question.buzzes[0].team)
+					]
+			  }${question.buzzes[0].player + 1}`
+			: undefined
+	);
+	const [buzz2, setBuzz2] = useState<string | undefined>(
+		question.buzzes.length > 1
+			? `${
+					LETTERS[
+						teams.findIndex(team => team.name === question.buzzes[1].team)
+					]
+			  }${question.buzzes[1].player + 1}`
+			: undefined
+	);
+	const [buzz3, setBuzz3] = useState<string | undefined>(
+		question.buzzes.length > 2
+			? `${
+					LETTERS[
+						teams.findIndex(team => team.name === question.buzzes[2].team)
+					]
+			  }${question.buzzes[2].player + 1}`
+			: undefined
+	);
+	const [correct, setCorrect] = useState<number | undefined>(
+		question.buzzes.findIndex(team => team.team === question.correctTeam)
+	);
+	const [bonus1, setBonus1] = useState(
+		question.boni.length ? question.boni[0] : false
+	);
+	const [bonus2, setBonus2] = useState(
+		question.boni.length > 1 ? question.boni[1] : false
+	);
 
 	const mapBuzzer = (
 		buzzer: string | undefined
