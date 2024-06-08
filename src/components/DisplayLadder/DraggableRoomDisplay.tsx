@@ -1,4 +1,5 @@
 import React, { useState, DragEvent, ChangeEvent } from "react";
+import { v4 as uuid } from "uuid";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
@@ -6,7 +7,7 @@ import features from "../../features.json";
 import { RoomV2 } from "../../types/Matches";
 
 type RoomDisplayProps = {
-	divisionNumber?: number;
+	createScoreSheet: (id: string) => void;
 	editStatus: EditingStatus;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
@@ -26,7 +27,7 @@ type RoomDisplayProps = {
 };
 
 const DraggableRoomDisplay = ({
-	divisionNumber,
+	createScoreSheet,
 	editStatus,
 	hideIfPublic,
 	isDraggedRound,
@@ -41,6 +42,7 @@ const DraggableRoomDisplay = ({
 	const [isDragHovered, setIsDragHovered] = useState<boolean>(false);
 	const [query] = useSearchParams();
 	const canEdit = !query.get("publicId");
+	const actualScoreSheetId = pitting?.scoresheetId || uuid();
 
 	return (
 		<td
@@ -88,10 +90,13 @@ const DraggableRoomDisplay = ({
 					<Link
 						to={`/score-sheet?ladder=${query.get(
 							"ladder"
-						)}&round=${roundNumber}&room=${roomNumber}${
-							divisionNumber === undefined ? "" : `&division=${divisionNumber}`
-						}`}
-						onClick={lockPittings}
+						)}&round=${actualScoreSheetId}`}
+						onClick={() => {
+							lockPittings();
+							if (!pitting.scoresheetId) {
+								createScoreSheet(actualScoreSheetId);
+							}
+						}}
 					>
 						Score Sheet
 					</Link>

@@ -18,11 +18,13 @@ export interface Question {
 export const LETTERS: ("A" | "B" | "C" | "D")[] = ["A", "B", "C", "D"];
 
 export default class Round {
+	public id: string;
 	private _questions: Question[] = [];
 	private _teams: Record<string, Team> = {};
 	private _teamOrder: string[] = [];
 
-	constructor(teams: Team[], questions: Question[]) {
+	constructor(id: string, teams: Team[], questions: Question[]) {
+		this.id = id;
 		this._questions = questions;
 		this._teams = teams.reduce(
 			(acc, team) => ({ ...acc, [team.name]: team }),
@@ -73,4 +75,18 @@ export default class Round {
 		);
 		this._teamOrder = teams.map(team => team.name);
 	}
+
+	public toOutputObject(): RoundOutput {
+		return {
+			id: this.id,
+			questions: this._questions,
+			teams: this.teams
+		};
+	}
+}
+
+export interface RoundOutput {
+	id: string;
+	questions: Question[];
+	teams: Team[];
 }

@@ -2,11 +2,15 @@ import React, {
 	createContext,
 	PropsWithChildren,
 	useContext,
+	useEffect,
+	useMemo,
 	useState
 } from "react";
 import Round, { Question, Team } from "../types/Round";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
+import scoreSheetService from "../services/scoreSheetService";
+import { EMPTY_QUESTIONS } from "../constants";
 
 const RoundContext = createContext<{
 	questions: Question[];
@@ -27,33 +31,39 @@ const RoundContext = createContext<{
 export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	const [query] = useSearchParams();
 
-	const roundIdx = query.get("round");
-	const roomIdx = query.get("room");
-	const divisionIdx = query.get("division");
+	const roundId = query.get("round");
 	const isDemo = !!query.get("demo");
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
-	const inputTeams = isDemo
-		? ["Team", "Other Team", "Yet Another Team"]
-		: roomIdx && roundIdx
-		? ladder?.divisions?.[divisionIdx ? parseInt(divisionIdx) : 0]?.matches?.[
-				parseInt(roundIdx)
-		  ]?.[parseInt(roomIdx)]?.teams?.map(team => team.team)
-		: [];
+	const scoreSheet = roundId
+		? scoreSheetService.getScoreSheet(roundId)
+		: undefined;
 
 	const [teams, setTeams] = useState(
-		inputTeams?.map(team => ({
-			name: team,
-			players: Array(4).fill({ name: "", isCaptain: false })
-		}))
+		isDemo
+			? ["Team", "Other Team", "Yet Another Team"].map(team => ({
+					name: team,
+					players: Array(4).fill({ name: "", isCaptain: false })
+			  }))
+			: scoreSheet?.teams
 	);
 	const [questions, setQuestions] = useState(
-		Array(20).fill({ buzzes: [], boni: [] })
+		scoreSheet?.questions || EMPTY_QUESTIONS
 	);
 
-	if (teams && teams.length) {
-		const round = new Round(teams, questions);
+	const round = useMemo(
+		() => new Round(roundId || "demo", teams || [], questions),
+		[roundId, teams, questions]
+	);
 
+	const isPublic = !!ladder?.publicId;
+	useEffect(() => {
+		if (scoreSheet && scoreSheet.id !== "demo" && teams && teams.length) {
+			scoreSheetService.updateScoreSheet(scoreSheet.id, round, isPublic);
+		}
+	}, [isPublic, round, scoreSheet, teams]);
+
+	if (teams && teams.length && (roundId || isDemo)) {
 		return (
 			<RoundContext.Provider
 				value={{

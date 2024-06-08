@@ -3,6 +3,8 @@ import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
+import { EMPTY_QUESTIONS } from "../../constants";
+import scoreSheetService from "../../services/scoreSheetService";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
 	switch (status) {
@@ -16,7 +18,6 @@ const determineAddScoresButtonText = (status: EditingStatus) => {
 };
 
 type LadderTableProps = {
-	divisionNumber?: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
@@ -33,98 +34,134 @@ type LadderTableProps = {
 	updateMatches: (matches: MatchesV2) => void;
 };
 
-const LadderTable = (props: LadderTableProps) => {
+const updatePittingScores = (
+	pittings: any,
+	i: number,
+	j: number,
+	k: number,
+	value: number
+) => {
+	const newPitting = [...pittings[j][i].teams].map(
+		(team: any, idx: number) => ({
+			...team,
+			score: idx === k ? value : team.score || 0
+		})
+	);
+
+	return newPitting;
+};
+
+const LadderTable = ({
+	hideIfPublic,
+	isSwiss,
+	isSwissByPoints,
+	matches,
+	pittings,
+	roomEditStatus,
+	rooms,
+	roundScoreEditStatuses,
+	setPittings,
+	setRooms,
+	setRoundScoreEditStatuses,
+	updateMatches
+}: LadderTableProps) => {
 	const [draggedRound, setDraggedRound] = useState<number | undefined>();
 
 	const onScoreChange =
 		(i: number, j: number, k: number) => (e: ChangeEvent<HTMLInputElement>) => {
-			const newPitting: {
-				team: string;
-				score?: number;
-			}[] = [...props.pittings[j][i].teams];
-			newPitting[k].score = parseInt(e.target.value);
-			for (let idx = 0; idx < newPitting.length; idx++) {
-				if (!newPitting[idx].score) {
-					newPitting[idx].score = 0;
-				}
-			}
+			const value = parseInt(e.target.value);
+			const newPitting = updatePittingScores(pittings, i, j, k, value);
 
 			const newPittings = [
-				...props.pittings.slice(0, j),
+				...pittings.slice(0, j),
 				[
-					...props.pittings[j].slice(0, i),
+					...pittings[j].slice(0, i),
 					{ teams: newPitting },
-					...props.pittings[j].slice(i + 1)
+					...pittings[j].slice(i + 1)
 				],
-				...props.pittings.slice(j + 1)
+				...pittings.slice(j + 1)
 			];
-			props.updateMatches(newPittings);
-			props.setPittings(newPittings);
+			updateMatches(newPittings);
+			setPittings(newPittings);
 		};
 
 	return (
 		<table>
 			<thead>
 				<tr>
-					{props.pittings.map((_, i: number) => (
+					{pittings.map((_, i: number) => (
 						<th key={i} style={{ padding: "0 10px" }}>
 							Round {i + 1}
-							{props.hideIfPublic(
+							{hideIfPublic(
 								<button
 									style={{ marginLeft: "1.5em" }}
 									onClick={() => {
 										if (
-											props.roundScoreEditStatuses[i] ===
-												EditingStatus.EDITING &&
-											props.isSwiss
+											roundScoreEditStatuses[i] === EditingStatus.EDITING &&
+											isSwiss
 										) {
 											let newPittings = [
-												...props.pittings.slice(0, i),
-												props.pittings[i].map(
-													props.isSwissByPoints
-														? room =>
-																addSwissByPointsPoints(room, props.pittings[i])
+												...pittings.slice(0, i),
+												pittings[i].map(
+													isSwissByPoints
+														? room => addSwissByPointsPoints(room, pittings[i])
 														: addSwissPoints
 												),
-												...props.pittings.slice(i + 1)
+												...pittings.slice(i + 1)
 											];
 
-											props.updateMatches(newPittings);
-											props.setPittings(newPittings);
+											updateMatches(newPittings);
+											setPittings(newPittings);
 										}
 
-										props.setRoundScoreEditStatuses([
-											...props.roundScoreEditStatuses.slice(0, i),
-											props.roundScoreEditStatuses[i] === EditingStatus.EDITING
+										setRoundScoreEditStatuses([
+											...roundScoreEditStatuses.slice(0, i),
+											roundScoreEditStatuses[i] === EditingStatus.EDITING
 												? EditingStatus.EDITED
 												: EditingStatus.EDITING,
-											...props.roundScoreEditStatuses.slice(i + 1)
+											...roundScoreEditStatuses.slice(i + 1)
 										]);
 									}}
 								>
-									{determineAddScoresButtonText(
-										props.roundScoreEditStatuses[i]
-									)}
+									{determineAddScoresButtonText(roundScoreEditStatuses[i])}
 								</button>
 							)}
 						</th>
 					))}
-					{props.roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
+					{roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
 				</tr>
 			</thead>
 			<tbody>
-				{props.pittings[0].map((_, i: number) => (
+				{pittings[0].map((_, i: number) => (
 					<tr key={i}>
-						{props.pittings.map((_, j: number) => (
+						{pittings.map((_, j: number) => (
 							<DraggableRoomDisplay
 								key={`${j}:${i}`}
-								divisionNumber={props.divisionNumber}
-								editStatus={props.roundScoreEditStatuses[j]}
-								hideIfPublic={props.hideIfPublic}
+								createScoreSheet={(id: string) => {
+									scoreSheetService.addScoreSheet({
+										id,
+										teams: pittings[j][i].teams.map(team => ({
+											name: team.team,
+											players: Array(4).fill("")
+										})),
+										questions: EMPTY_QUESTIONS
+									});
+									updateMatches([
+										...pittings.slice(0, j),
+										[
+											...pittings[j].slice(0, i),
+											{ teams: pittings[j][i].teams, scoresheetId: id },
+											...pittings[j].slice(i + 1)
+										],
+										...pittings.slice(j + 1)
+									]);
+								}}
+								editStatus={roundScoreEditStatuses[j]}
+								hideIfPublic={hideIfPublic}
 								isDraggedRound={draggedRound === j}
 								lockPittings={() => {
-									if (!props.matches) {
-										props.updateMatches(props.pittings);
+									if (!matches) {
+										updateMatches(pittings);
 									}
 								}}
 								moveRoom={(sourceIdx: number) => {
@@ -132,52 +169,52 @@ const LadderTable = (props: LadderTableProps) => {
 										return;
 									}
 
-									const newPittings: MatchesV2 = [...props.pittings];
+									const newPittings: MatchesV2 = [...pittings];
 									let newRound;
 									if (sourceIdx < i) {
 										newRound = [
-											...props.pittings[j].slice(0, sourceIdx),
-											...props.pittings[j].slice(sourceIdx + 1, i + 1),
-											props.pittings[j][sourceIdx],
-											...props.pittings[j].slice(i + 1)
+											...pittings[j].slice(0, sourceIdx),
+											...pittings[j].slice(sourceIdx + 1, i + 1),
+											pittings[j][sourceIdx],
+											...pittings[j].slice(i + 1)
 										];
 									} else {
 										newRound = [
-											...props.pittings[j].slice(0, i),
-											props.pittings[j][sourceIdx],
-											...props.pittings[j].slice(i, sourceIdx),
-											...props.pittings[j].slice(sourceIdx + 1)
+											...pittings[j].slice(0, i),
+											pittings[j][sourceIdx],
+											...pittings[j].slice(i, sourceIdx),
+											...pittings[j].slice(sourceIdx + 1)
 										];
 									}
 									newPittings[j] = newRound;
-									props.setPittings(newPittings);
-									props.updateMatches(newPittings);
+									setPittings(newPittings);
+									updateMatches(newPittings);
 								}}
 								onScoreChange={onScoreChange}
-								pitting={props.pittings[j][i]}
+								pitting={pittings[j][i]}
 								roomNumber={i}
 								roundNumber={j}
 								startDrag={() => setDraggedRound(j)}
 							/>
 						))}
-						{props.roomEditStatus === EditingStatus.NEW ? (
+						{roomEditStatus === EditingStatus.NEW ? (
 							""
 						) : (
 							<td className="room-cell" data-testid="room">
-								{props.roomEditStatus === EditingStatus.EDITING ? (
+								{roomEditStatus === EditingStatus.EDITING ? (
 									<textarea
 										data-testid="room-input"
-										value={props.rooms[i]}
+										value={rooms[i]}
 										onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-											props.setRooms([
-												...props.rooms.slice(0, i),
+											setRooms([
+												...rooms.slice(0, i),
 												e.target.value,
-												...props.rooms.slice(i + 1)
+												...rooms.slice(i + 1)
 											])
 										}
 									/>
 								) : (
-									props.rooms[i]
+									rooms[i]
 								)}
 							</td>
 						)}

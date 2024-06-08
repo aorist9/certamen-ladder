@@ -1,3 +1,5 @@
+import { Question } from "./types/Round";
+
 export const drawTypes: string[] = [
 	"I wanna use scraps of paper like my ancestors did",
 	"Have teams click a button to draw a letter",
@@ -68,3 +70,8 @@ export const letters: string[] = [
 	"\u03bf",
 	"\u03c0"
 ];
+
+export const EMPTY_QUESTIONS: Question[] = Array(20).fill({
+	buzzes: [],
+	boni: []
+});
