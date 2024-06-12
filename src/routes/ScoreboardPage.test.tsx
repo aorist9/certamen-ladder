@@ -1,15 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import ScoreboardPage from "./ScoreboardPage";
-import ladderService from "../services/ladderService";
+import { useLadder } from "../services/ladderService";
 import { Ladder } from "../types/LadderType";
 
-jest.mock("../services/ladderService", () => ({
-	addLadder: jest.fn(),
-	editLadder: jest.fn(),
-	getLadders: jest.fn(),
-	getLadder: jest.fn()
-}));
+jest.mock("../services/ladderService");
+const mockUseLadder = jest.mocked(useLadder);
 
 jest.mock("react-router-dom", () => ({
 	...(jest.requireActual("react-router-dom") as object),
@@ -28,7 +24,7 @@ describe("Scoreboard", () => {
 	describe("Single Division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue(
+			mockUseLadder.mockReturnValue(
 				new Ladder({
 					id: "123",
 					draw: 0,
@@ -119,7 +115,7 @@ describe("Scoreboard", () => {
 	describe("Multiple Divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue(
+			mockUseLadder.mockReturnValue(
 				new Ladder({
 					id: "123",
 					draw: 0,

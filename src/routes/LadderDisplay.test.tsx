@@ -2,16 +2,14 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import LadderDisplay from "./LadderDisplay";
 import { HashRouter } from "react-router-dom";
-import ladderService from "../services/ladderService";
+import ladderService, { useLadder } from "../services/ladderService";
 import userEvent from "@testing-library/user-event";
 import { Ladder } from "../types/LadderType";
 
-jest.mock("../services/ladderService", () => ({
-	addLadder: jest.fn(),
-	editLadder: jest.fn(),
-	getLadders: jest.fn(),
-	getLadder: jest.fn()
-}));
+jest.mock("../services/ladderService");
+const mockUseLadder = jest.mocked(useLadder);
+const mockLadderService = jest.mocked(ladderService);
+
 jest.mock("react-router-dom", () => ({
 	...(jest.requireActual("react-router-dom") as object),
 	useSearchParams: () => [{ get: () => "123" }]
@@ -36,7 +34,7 @@ describe("LadderDisplay", () => {
 	describe("single division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue(
+			mockUseLadder.mockReturnValue(
 				new Ladder({
 					id: "123",
 					draw: 0,
@@ -92,7 +90,7 @@ describe("LadderDisplay", () => {
 			expect(screen.getByText("abra")).toBeInTheDocument();
 			expect(screen.getByText("kadabra")).toBeInTheDocument();
 			expect(screen.getByText("presto")).toBeInTheDocument();
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
+			expect(mockLadderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
 				draw: 0,
 				name: "My Ladder",
@@ -114,7 +112,7 @@ describe("LadderDisplay", () => {
 	describe("multiple divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			ladderService.getLadder.mockReturnValue(
+			mockUseLadder.mockReturnValue(
 				new Ladder({
 					id: "123",
 					divisions: 3,
@@ -176,7 +174,7 @@ describe("LadderDisplay", () => {
 			expect(screen.getByText("abra")).toBeInTheDocument();
 			expect(screen.getByText("kadabra")).toBeInTheDocument();
 			expect(screen.getByText("presto")).toBeInTheDocument();
-			expect(ladderService.editLadder).toHaveBeenCalledWith({
+			expect(mockLadderService.editLadder).toHaveBeenCalledWith({
 				id: "123",
 				divisions: 3,
 				draw: 0,
