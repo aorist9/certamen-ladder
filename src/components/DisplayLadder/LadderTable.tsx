@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";

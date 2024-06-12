@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import LadderType, { Ladder } from "../types/LadderType";
 
 const STORAGE_ITEM = "certamen-ladder.ladders";
@@ -91,6 +92,34 @@ const ladderService = {
 		);
 	},
 	publishLadder
+};
+
+export const useLadder = ({
+	ladderId,
+	publicLadderId
+}: {
+	ladderId?: string | null;
+	publicLadderId?: string | null;
+}) => {
+	const [ladder, setLadder] = useState<Ladder | undefined>();
+	const updateLadder = () => {
+		if (ladderId) {
+			setLadder(ladderService.getLadder(ladderId));
+		} else if (publicLadderId) {
+			ladderService.getPublicLadder(publicLadderId).then(setLadder);
+		}
+	};
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(updateLadder, []);
+
+	useEffect(() => {
+		const timeout = setInterval(updateLadder, 30000);
+		return () => clearTimeout(timeout);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ladderId, publicLadderId, setLadder]);
+
+	return ladder;
 };
 
 export default ladderService;

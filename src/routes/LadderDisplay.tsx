@@ -1,32 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import ladderService from "../services/ladderService";
-import { Ladder } from "../types/LadderType";
+import ladderService, { useLadder } from "../services/ladderService";
 import { MatchesV2 } from "../types/Matches";
 import DisplayedLadder from "../components/DisplayLadder/DisplayedLadder";
 import "./LadderDisplay.css";
 
-export const retrievePublicOrPrivateLadder = (
-	ladderId: string | null,
-	setLadder: React.Dispatch<React.SetStateAction<Ladder | undefined>>,
-	publicId: string | null
-) => {
-	if (ladderId) {
-		setLadder(ladderService.getLadder(ladderId));
-	} else if (publicId) {
-		ladderService.getPublicLadder(publicId).then(setLadder);
-	}
-};
-
 const LadderDisplay = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const publicId: string | null = useSearchParams()[0].get("publicId");
-	const [ladder, setLadder] = useState<Ladder | undefined>();
-
-	useEffect(
-		() => retrievePublicOrPrivateLadder(ladderId, setLadder, publicId),
-		[ladderId, publicId]
-	);
+	const ladder = useLadder({ ladderId, publicLadderId: publicId });
 
 	const hideIfPublic = (
 		elem: string | JSX.Element | JSX.Element[]

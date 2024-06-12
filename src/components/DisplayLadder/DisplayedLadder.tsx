@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ladder } from "../../types/LadderType";
 import { MatchesV2 } from "../../types/Matches";
 import pittingService from "../../services/pittingService";
@@ -44,14 +44,21 @@ const DisplayedLadder = ({
 			: EditingStatus.NEW
 	);
 
+	const { matches } = division;
 	const [pittings, setPittings] = useState<MatchesV2>(
-		division.matches ||
+		matches ||
 			pittingService
 				.generateInitialPittings(ladder, divisionNumber || 0)
 				.map(round =>
 					round.map(room => ({ teams: room.map(team => ({ team })) }))
 				)
 	);
+
+	useEffect(() => {
+		if (matches) {
+			setPittings(matches);
+		}
+	}, [matches]);
 
 	const [rooms, setRooms] = useState<string[]>(
 		division.rooms || (pittings.length ? pittings[0].map(() => "") : [])
