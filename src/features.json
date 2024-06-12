@@ -4,5 +4,5 @@
 	"pointsSwissLadder": true,
 	"chooseRounds": false,
 	"publishLadder": true,
-	"codeSheet": true
+	"codeSheet": false
 }

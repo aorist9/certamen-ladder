@@ -1,13 +1,39 @@
 import { useEffect, useState } from "react";
 import LadderType, { Ladder } from "../types/LadderType";
+import scoreSheetService from "./scoreSheetService";
 
 const STORAGE_ITEM = "certamen-ladder.ladders";
 
 const getLadders = (): Ladder[] => {
 	const laddersJson: string | null = window.localStorage.getItem(STORAGE_ITEM);
-	return JSON.parse(laddersJson || "[]").map(
+	const ladders = JSON.parse(laddersJson || "[]").map(
 		(ladder: LadderType) => new Ladder(ladder)
 	);
+
+	return ladders.map((ladder: Ladder) => {
+		ladder.divisions = ladder.divisions?.map(division => {
+			division.matches = division.matches?.map(round => {
+				return round.map(room => {
+					if (room.scoresheetId) {
+						const scoreSheet = scoreSheetService.getScoreSheet(
+							room.scoresheetId
+						);
+						if (scoreSheet) {
+							const scores = scoreSheet.scores;
+							room.teams = scoreSheet.teams.map((team, idx) => ({
+								team: team.name,
+								score: scores[idx]
+							}));
+						}
+					}
+					return room;
+				});
+			});
+			return division;
+		});
+
+		return ladder;
+	});
 };
 
 const addLadder = (ladder: Ladder): void => {
