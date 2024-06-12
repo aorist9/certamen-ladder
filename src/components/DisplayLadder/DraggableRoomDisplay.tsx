@@ -12,6 +12,7 @@ type RoomDisplayProps = {
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
+	isAnyRoundEditingScore: boolean;
 	isDraggedRound: boolean;
 	lockPittings: VoidFunction;
 	moveRoom: (sourceIdx: number) => void;
@@ -30,6 +31,7 @@ const DraggableRoomDisplay = ({
 	createScoreSheet,
 	editStatus,
 	hideIfPublic,
+	isAnyRoundEditingScore,
 	isDraggedRound,
 	lockPittings,
 	moveRoom,
@@ -97,6 +99,7 @@ const DraggableRoomDisplay = ({
 								createScoreSheet(actualScoreSheetId);
 							}
 						}}
+						tabIndex={isAnyRoundEditingScore ? 2 : undefined}
 					>
 						Score Sheet
 					</Link>

@@ -157,6 +157,9 @@ const LadderTable = ({
 									]);
 								}}
 								editStatus={roundScoreEditStatuses[j]}
+								isAnyRoundEditingScore={roundScoreEditStatuses.some(
+									round => round === EditingStatus.EDITING
+								)}
 								hideIfPublic={hideIfPublic}
 								isDraggedRound={draggedRound === j}
 								lockPittings={() => {
