@@ -354,8 +354,8 @@ describe("Pitting Service", () => {
 						expect.arrayContaining(["B", "C"])
 					]),
 					expect.arrayContaining([
-						expect.arrayContaining(["B", "D", "E"]),
-						expect.arrayContaining(["A", "C"])
+						expect.arrayContaining(["B", "C", "D"]),
+						expect.arrayContaining(["A", "E"])
 					])
 				]);
 			});

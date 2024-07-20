@@ -15,8 +15,8 @@ const SPECIAL_CASES: { [teamNum: number]: number[][][] } = {
 			[1, 2]
 		],
 		[
-			[1, 3, 4],
-			[0, 2]
+			[1, 2, 3],
+			[0, 4]
 		]
 	],
 	6: [
