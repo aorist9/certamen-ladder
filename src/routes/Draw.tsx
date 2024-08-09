@@ -22,7 +22,9 @@ const determineInitialDivisions = (divisions: number | undefined): string[] => {
 		"Intermediate",
 		"Advanced"
 	];
-	if (divisions <= 4) {
+	if (divisions === 1) {
+		return [""];
+	} else if (divisions <= 4) {
 		return basicDivisions.slice(4 - divisions);
 	} else {
 		let result = [...basicDivisions];
