@@ -119,14 +119,32 @@ const EditSection = ({
 			/>
 			<section className="bonus-checkbox-section">
 				<p>
-					<label htmlFor="bonus1" onClick={() => setBonus1(!bonus1)}>
-						<input type="checkbox" name="bonus1" checked={bonus1} />
+					<label
+						htmlFor="bonus1"
+						onClick={() => setBonus1(!bonus1)}
+						className="bonus-checkbox-label"
+					>
+						<input
+							type="checkbox"
+							name="bonus1"
+							checked={bonus1}
+							className="bonus-checkbox"
+						/>
 						&nbsp; Bonus 1
 					</label>
 				</p>
 				<p>
-					<label htmlFor="bonus2" onClick={() => setBonus2(!bonus2)}>
-						<input type="checkbox" name="bonus2" checked={bonus2} />
+					<label
+						htmlFor="bonus2"
+						onClick={() => setBonus2(!bonus2)}
+						className="bonus-checkbox-label"
+					>
+						<input
+							type="checkbox"
+							name="bonus2"
+							checked={bonus2}
+							className="bonus-checkbox"
+						/>
 						&nbsp; Bonus 2
 					</label>
 				</p>

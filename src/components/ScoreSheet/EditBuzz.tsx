@@ -18,10 +18,11 @@ const EditBuzz = ({
 	values: string[];
 }) => {
 	return (
-		<div style={{ display: "flex", gap: "1em" }}>
+		<div style={{ display: "flex", gap: "1em", fontSize: "x-large" }}>
 			<label id={label.toLowerCase().replace(" ", "")}>{label}:</label>
 			<select
 				name={label.toLowerCase().replace(" ", "")}
+				className="buzz-dropdown"
 				value={value}
 				onChange={(e: ChangeEvent<HTMLSelectElement>) =>
 					setValue(e.target.value === "" ? undefined : e.target.value)
@@ -39,6 +40,7 @@ const EditBuzz = ({
 					type="checkbox"
 					id={label.replace("Buzz ", "correct")}
 					checked={isCorrect}
+					className="correct-checkbox"
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						if (isCorrect) {
 							clearCorrect();

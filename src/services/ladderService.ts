@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import LadderType, { Ladder } from "../types/LadderType";
 import scoreSheetService from "./scoreSheetService";
+import Round, { RoundOutput } from "../types/Round";
+
+export const BACKEND_URL =
+	process.env.NODE_ENV === "production"
+		? "https://txclassics.org"
+		: "http://localhost";
 
 const STORAGE_ITEM = "certamen-ladder.ladders";
 
-const getLadders = (): Ladder[] => {
+const getLadders = (skipEdit?: boolean): Ladder[] => {
 	const laddersJson: string | null = window.localStorage.getItem(STORAGE_ITEM);
 	const ladders = JSON.parse(laddersJson || "[]").map(
 		(ladder: LadderType) => new Ladder(ladder)
 	);
 
 	return ladders.map((ladder: Ladder) => {
+		let edited = false;
 		ladder.divisions = ladder.divisions?.map(division => {
 			division.matches = division.matches?.map(round => {
 				return round.map(room => {
@@ -24,6 +31,7 @@ const getLadders = (): Ladder[] => {
 								team: team.name,
 								score: scores[idx]
 							}));
+							edited = true;
 						}
 					}
 					return room;
@@ -31,6 +39,10 @@ const getLadders = (): Ladder[] => {
 			});
 			return division;
 		});
+
+		if (edited && !skipEdit) {
+			editLadder(ladder);
+		}
 
 		return ladder;
 	});
@@ -44,7 +56,7 @@ const addLadder = (ladder: Ladder): void => {
 };
 
 const editLadder = (ladder: Ladder): void => {
-	const ladders: Ladder[] = getLadders();
+	const ladders: Ladder[] = getLadders(true);
 	const existingLadder: Ladder | undefined = ladders.find(
 		l => l.id === ladder.id
 	);
@@ -70,11 +82,6 @@ const editLadder = (ladder: Ladder): void => {
 	}
 };
 
-const BACKEND_URL =
-	process.env.NODE_ENV === "production"
-		? "https://txclassics.org"
-		: "http://localhost";
-
 const publishLadder = async (ladder: Ladder): Promise<Ladder> => {
 	const response = await window.fetch(
 		`${BACKEND_URL}/api/certamen/ladders.php`,
@@ -92,23 +99,42 @@ const publishLadder = async (ladder: Ladder): Promise<Ladder> => {
 	return ladder;
 };
 
+const saveScoreSheets = (scoreSheets: RoundOutput[]) => {
+	scoreSheets.forEach((scoreSheet: RoundOutput) => {
+		if (scoreSheet) {
+			scoreSheetService.updateScoreSheet(
+				scoreSheet.id,
+				new Round(scoreSheet.id, scoreSheet.teams, scoreSheet.questions)
+			);
+		}
+	});
+};
+
+const getPublicLadder = async (id: string): Promise<Ladder | undefined> => {
+	const response = await window.fetch(
+		`${BACKEND_URL}/api/certamen/ladders.php?id=${id}&expand=scoreSheets`,
+		{
+			method: "GET"
+		}
+	);
+
+	const json = await response.json();
+	if (json.scoreSheets) {
+		saveScoreSheets(json.scoreSheets);
+	}
+	return new Ladder(json.ladder);
+};
+
 const ladderService = {
 	getLadders,
 	addLadder,
-	getLadder: (id: string): Ladder | undefined => {
+	getLadder: (id: string, publicId?: string): Ladder | undefined => {
+		if (publicId) {
+			getPublicLadder(publicId);
+		}
 		return getLadders().find(l => l.id === id);
 	},
-	getPublicLadder: async (id: string): Promise<Ladder | undefined> => {
-		const response = await window.fetch(
-			`${BACKEND_URL}/api/certamen/ladders.php?id=${id}`,
-			{
-				method: "GET"
-			}
-		);
-
-		const json = await response.json();
-		return new Ladder(json.ladder);
-	},
+	getPublicLadder,
 	editLadder,
 	deleteLadder: (id: string) => {
 		const ladders: Ladder[] = getLadders();

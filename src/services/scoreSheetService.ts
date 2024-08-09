@@ -1,4 +1,5 @@
 import Round, { RoundOutput } from "../types/Round";
+import { BACKEND_URL } from "./ladderService";
 
 const STORAGE_ITEM = "certamen-ladder.score-sheets";
 
@@ -11,7 +12,7 @@ const getScoreSheets = (): Round[] => {
 	);
 };
 
-const addScoreSheet = (scoreSheet: RoundOutput) => {
+const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 	window.localStorage.setItem(
 		STORAGE_ITEM,
 		JSON.stringify([
@@ -19,6 +20,18 @@ const addScoreSheet = (scoreSheet: RoundOutput) => {
 			...getScoreSheets().map(s => s.toOutputObject())
 		])
 	);
+
+	if (ladderId) {
+		window.fetch(`${BACKEND_URL}/api/certamen/score-sheets.php`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				id: scoreSheet.id,
+				scoreSheet,
+				ladderId
+			})
+		});
+	}
 };
 
 const scoreSheetService = {
@@ -26,7 +39,7 @@ const scoreSheetService = {
 	getScoreSheet: (id: string): Round | undefined => {
 		return getScoreSheets().find(scoreSheet => scoreSheet.id === id);
 	},
-	updateScoreSheet: (id: string, scoreSheet: Round, isPublic: boolean) => {
+	updateScoreSheet: (id: string, scoreSheet: Round, ladderId?: string) => {
 		const scoreSheets = getScoreSheets();
 		const existingScoreScheet = scoreSheets.find(
 			scoreSheet => scoreSheet.id === id
@@ -41,8 +54,20 @@ const scoreSheetService = {
 					...scoreSheets.slice(idx + 1).map(s => s.toOutputObject())
 				])
 			);
+
+			if (ladderId) {
+				window.fetch(`${BACKEND_URL}/api/certamen/score-sheets.php`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						id: scoreSheet.id,
+						scoreSheet: scoreSheet.toOutputObject(),
+						ladderId
+					})
+				});
+			}
 		} else {
-			addScoreSheet(scoreSheet.toOutputObject());
+			addScoreSheet(scoreSheet.toOutputObject(), ladderId);
 		}
 	}
 };

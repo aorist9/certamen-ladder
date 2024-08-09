@@ -145,7 +145,8 @@ export class Ladder implements LadderTypeV2 {
 		}
 
 		return this.divisions.reduce(
-			(acc, division) => acc + Object.keys(division.teams).length,
+			(acc, division) =>
+				acc + (division.teams ? Object.keys(division.teams).length : 0),
 			0
 		);
 	}

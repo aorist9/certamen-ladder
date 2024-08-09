@@ -5,6 +5,7 @@ import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
 import { EMPTY_QUESTIONS } from "../../constants";
 import scoreSheetService from "../../services/scoreSheetService";
+import { useSearchParams } from "react-router-dom";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
 	switch (status) {
@@ -23,8 +24,10 @@ type LadderTableProps = {
 	) => string | JSX.Element | JSX.Element[];
 	isSwiss: boolean;
 	isSwissByPoints: boolean;
+	ladderId: string;
 	matches?: MatchesV2;
 	pittings: MatchesV2;
+	publicLadderId?: string;
 	roomEditStatus: EditingStatus;
 	rooms: string[];
 	roundScoreEditStatuses: EditingStatus[];
@@ -55,8 +58,10 @@ const LadderTable = ({
 	hideIfPublic,
 	isSwiss,
 	isSwissByPoints,
+	ladderId,
 	matches,
 	pittings,
+	publicLadderId,
 	roomEditStatus,
 	rooms,
 	roundScoreEditStatuses,
@@ -66,6 +71,7 @@ const LadderTable = ({
 	updateMatches
 }: LadderTableProps) => {
 	const [draggedRound, setDraggedRound] = useState<number | undefined>();
+	const [query] = useSearchParams();
 
 	const onScoreChange =
 		(i: number, j: number, k: number) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -138,14 +144,19 @@ const LadderTable = ({
 							<DraggableRoomDisplay
 								key={`${j}:${i}`}
 								createScoreSheet={(id: string) => {
-									scoreSheetService.addScoreSheet({
-										id,
-										teams: pittings[j][i].teams.map(team => ({
-											name: team.team,
-											players: Array(4).fill("")
-										})),
-										questions: EMPTY_QUESTIONS
-									});
+									scoreSheetService.addScoreSheet(
+										{
+											id,
+											teams: pittings[j][i].teams.map(team => ({
+												name: team.team,
+												players: Array(4).fill("")
+											})),
+											questions: EMPTY_QUESTIONS
+										},
+										query.get("publicId") || !publicLadderId
+											? undefined
+											: ladderId
+									);
 									updateMatches([
 										...pittings.slice(0, j),
 										[

@@ -122,8 +122,10 @@ const DisplayedLadder = ({
 					hideIfPublic={hideIfPublic}
 					isSwiss={ladder.isSwiss()}
 					isSwissByPoints={ladder.ladderType === LadderStyle.SWISS_BY_POINTS}
+					ladderId={ladder.id}
 					matches={division.matches}
 					pittings={pittings}
+					publicLadderId={ladder.publicId}
 					roomEditStatus={roomEditStatus}
 					rooms={rooms}
 					roundScoreEditStatuses={roundScoreEditStatuses}

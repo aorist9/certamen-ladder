@@ -135,6 +135,22 @@
 	margin: 0.5em;
 }
 
+.bonus-checkbox-label {
+	font-size: x-large;
+}
+
+.bonus-checkbox,
+.correct-checkbox {
+	width: 25px;
+	height: 25px;
+}
+
+.buzz-dropdown {
+	min-height: 50px;
+	min-width: 75px;
+	font-size: inherit;
+}
+
 @media (min-width: 768px) {
 	.score-sheet .total-scores {
 		top: 0;

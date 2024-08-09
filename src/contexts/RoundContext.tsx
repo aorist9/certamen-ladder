@@ -56,12 +56,12 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		[roundId, teams, questions]
 	);
 
-	const isPublic = !!ladder?.publicId;
+	const ladderId = ladder?.id;
 	useEffect(() => {
 		if (scoreSheet && scoreSheet.id !== "demo" && teams && teams.length) {
-			scoreSheetService.updateScoreSheet(scoreSheet.id, round, isPublic);
+			scoreSheetService.updateScoreSheet(scoreSheet.id, round, ladderId);
 		}
-	}, [isPublic, round, scoreSheet, teams]);
+	}, [ladderId, round, scoreSheet, teams]);
 
 	if (teams && teams.length && (roundId || isDemo)) {
 		return (

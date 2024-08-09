@@ -10,7 +10,7 @@ const Questions = () => {
 		(question: Question) => question.buzzes.length > 0
 	);
 	const [currentQuestion, setCurrentQuestion] = useState(
-		lastQuestionWithBuzzesIndex + 1
+		(lastQuestionWithBuzzesIndex + 1) % questions.length
 	);
 
 	return (

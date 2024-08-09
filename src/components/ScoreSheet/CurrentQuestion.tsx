@@ -61,7 +61,9 @@ const CurrentQuestion = ({
 								boni
 							});
 							setState(State.TOSSUP);
-							setCurrentQuestion(currentQuestion + 1);
+							if (questions.length - currentQuestion > 1) {
+								setCurrentQuestion(currentQuestion + 1);
+							}
 							setBuzzer(undefined);
 						}}
 					/>
@@ -134,6 +136,20 @@ const CurrentQuestion = ({
 					onClick={() => setBuzzer(undefined)}
 				>
 					Incorrect
+				</button>
+				<button
+					onClick={() => {
+						updateCurrentQuestion({
+							...questions[currentQuestion],
+							buzzes: questions[currentQuestion].buzzes.slice(
+								0,
+								questions[currentQuestion].buzzes.length - 1
+							)
+						});
+						setBuzzer(undefined);
+					}}
+				>
+					Cancel
 				</button>
 				<CommentSection
 					comment={questions[currentQuestion].comments}
