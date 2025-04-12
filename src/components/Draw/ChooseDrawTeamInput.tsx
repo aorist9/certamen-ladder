@@ -1,27 +1,32 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 const ChooseDrawTeamInput = (props: {
 	addTeam: (teamName: string) => void;
 }) => {
 	const [teamName, setTeamName] = useState<string | undefined>();
+
+	useEffect(() => {
+		document.getElementById("team-name")?.focus();
+	}, []);
+
 	return (
 		<form
 			onSubmit={(e: FormEvent) => {
 				e.preventDefault();
 				if (teamName) {
 					props.addTeam(teamName);
-					setTeamName('');
+					setTeamName("");
 				}
 			}}
-			style={{ display: 'flex', columnGap: '1em' }}
+			style={{ display: "flex", columnGap: "1em" }}
 		>
 			<section className="form-field">
 				<label htmlFor="team-name">Team Name:</label>
 				<input
 					type="text"
 					id="team-name"
-					value={teamName || ''}
-					style={{ minWidth: '30rem' }}
+					value={teamName || ""}
+					style={{ minWidth: "30rem" }}
 					placeholder="Enter Your Team's Name (make sure to include Purple/Gold, A/B, if necessary)"
 					onChange={(e: ChangeEvent<HTMLInputElement>) =>
 						setTeamName(e.target.value)
