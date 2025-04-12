@@ -19,6 +19,7 @@ const RoundContext = createContext<{
 	setTeams: (teams: Team[]) => void;
 	teamOrder: string[];
 	teams: Team[];
+	isReadOnly?: boolean;
 }>({
 	questions: [],
 	scores: [],
@@ -33,6 +34,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 
 	const roundId = query.get("round");
 	const isDemo = !!query.get("demo");
+	const isReadOnly = !!query.get("publicId"); // FIXME
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
 	const scoreSheet = roundId
@@ -76,7 +78,8 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 					},
 					setTeams,
 					teamOrder: round.teamOrder,
-					teams: round.teams
+					teams: round.teams,
+					isReadOnly
 				}}
 			>
 				{children}

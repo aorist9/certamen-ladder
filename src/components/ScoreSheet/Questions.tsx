@@ -5,7 +5,7 @@ import { useRoundContext } from "../../contexts/RoundContext";
 import { Question } from "../../types/Round";
 
 const Questions = () => {
-	const { questions } = useRoundContext();
+	const { questions, isReadOnly } = useRoundContext();
 	const lastQuestionWithBuzzesIndex = questions.findLastIndex(
 		(question: Question) => question.buzzes.length > 0
 	);
@@ -15,10 +15,12 @@ const Questions = () => {
 
 	return (
 		<section className="questions">
-			<CurrentQuestion
-				currentQuestion={currentQuestion}
-				setCurrentQuestion={setCurrentQuestion}
-			/>
+			{!isReadOnly && (
+				<CurrentQuestion
+					currentQuestion={currentQuestion}
+					setCurrentQuestion={setCurrentQuestion}
+				/>
+			)}
 			<QuestionsTable
 				currentQuestion={currentQuestion}
 				setCurrentQuestion={setCurrentQuestion}
