@@ -13,22 +13,6 @@ const Home = () => (
 			Certamen Ladder allows you to create ladders for Certamen tournaments,
 			including help doing the draw, setting the pittings, and keeping score.
 		</p>
-		{features.codeSheet && (
-			<>
-				<h2>Score Sheets</h2>
-				<p>
-					You wanna keep score on the app? Good news, that is now available. You
-					will see a scoresheet link for each round on the ladder, you will be
-					able to send a link to someone who can then keep score on their phone
-					or on a laptop, and the score will be automatically reflected on the
-					ladder and scoreboard pages.
-					<br />
-					N.B. You should <i>either</i> set scores on the ladder page <i>or</i>{" "}
-					use the scoresheet, since the scoresheet will repeatedly overwrite
-					scores set from the ladder page.
-				</p>
-			</>
-		)}
 		{features.publishLadder ? (
 			<p>
 				Ladders can now be made public to share via a link; watch the sidebar
@@ -45,6 +29,22 @@ const Home = () => (
 				designed to be printed out for sharing purposes, but as of now there's
 				no way to share your ladder via this app.
 			</p>
+		)}
+		{features.codeSheet && (
+			<>
+				<h2>Score Sheets</h2>
+				<p>
+					You wanna keep score on the app? Good news, that is now available. You
+					will see a scoresheet link for each round on the ladder, you will be
+					able to send a link to someone who can then keep score on their phone
+					or on a laptop, and the score will be automatically reflected on the
+					ladder and scoreboard pages.
+					<br />
+					N.B. You should <i>either</i> set scores on the ladder page <i>or</i>{" "}
+					use the scoresheet, since the scoresheet will repeatedly overwrite
+					scores set from the ladder page.
+				</p>
+			</>
 		)}
 		{features.swissLadder ? (
 			<>

@@ -69,7 +69,11 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 				value={{
 					questions: round.questions,
 					scores: round.scores,
-					setQuestions,
+					setQuestions: (questions: Question[]) => {
+						setQuestions(questions);
+						round.questions = questions;
+						scoreSheetService.updateScoreSheet(round.id, round, ladderId);
+					},
 					setTeams,
 					teamOrder: round.teamOrder,
 					teams: round.teams
