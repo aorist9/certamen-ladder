@@ -65,6 +65,23 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		}
 	}, [ladderId, round, scoreSheet, teams]);
 
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (isReadOnly && roundId) {
+				scoreSheetService
+					.getScoreSheetAsync(roundId)
+					.then(updatedScoreSheet => {
+						if (updatedScoreSheet) {
+							setTeams(updatedScoreSheet.teams);
+							setQuestions(updatedScoreSheet.questions);
+						}
+					});
+			}
+		}, 10000);
+
+		return () => clearInterval(interval);
+	});
+
 	if (teams && teams.length && (roundId || isDemo)) {
 		return (
 			<RoundContext.Provider

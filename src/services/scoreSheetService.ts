@@ -34,11 +34,48 @@ const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 	}
 };
 
+const getScoreSheetAsync = async (id: string): Promise<Round | undefined> => {
+	let scoresheet;
+	try {
+		const response = await window.fetch(
+			`${BACKEND_URL}/api/certamen/score-sheets.php?id=${id}`,
+			{
+				method: "GET",
+				headers: { "Content-Type": "application/json" }
+			}
+		);
+		const json = await response.json();
+		scoresheet = json.scoreSheet;
+	} catch (error) {
+		console.error("Error fetching scoresheet:", error);
+	}
+
+	if (scoresheet) {
+		const scoreSheet = new Round(
+			scoresheet.id,
+			scoresheet.teams,
+			scoresheet.questions
+		);
+		window.localStorage.setItem(
+			STORAGE_ITEM,
+			JSON.stringify([
+				scoreSheet.toOutputObject(),
+				...getScoreSheets()
+					.filter(r => r.id !== scoreSheet.id)
+					.map(s => s.toOutputObject())
+			])
+		);
+		return scoreSheet;
+	}
+};
+
 const scoreSheetService = {
 	addScoreSheet,
 	getScoreSheet: (id: string): Round | undefined => {
+		getScoreSheetAsync(id);
 		return getScoreSheets().find(scoreSheet => scoreSheet.id === id);
 	},
+	getScoreSheetAsync,
 	updateScoreSheet: (id: string, scoreSheet: Round, ladderId?: string) => {
 		const scoreSheets = getScoreSheets();
 		const existingScoreScheet = scoreSheets.find(
