@@ -2,6 +2,12 @@
 	padding: 0;
 }
 
+.score-sheet .score-sheet-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .score-sheet .team-select-item {
 	list-style-type: none;
 	display: flex;
