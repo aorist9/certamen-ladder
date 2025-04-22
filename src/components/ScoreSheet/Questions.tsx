@@ -5,7 +5,7 @@ import { useRoundContext } from "../../contexts/RoundContext";
 import { Question } from "../../types/Round";
 
 const Questions = () => {
-	const { questions, isReadOnly } = useRoundContext();
+	const { questions, isEditMode } = useRoundContext();
 	const lastQuestionWithBuzzesIndex = questions.findLastIndex(
 		(question: Question) => question.buzzes.length > 0
 	);
@@ -15,7 +15,7 @@ const Questions = () => {
 
 	return (
 		<section className="questions">
-			{!isReadOnly && (
+			{isEditMode && (
 				<CurrentQuestion
 					currentQuestion={currentQuestion}
 					setCurrentQuestion={setCurrentQuestion}

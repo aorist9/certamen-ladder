@@ -5,6 +5,7 @@ import { RoundContextProvider } from "../contexts/RoundContext";
 import TotalScores from "../components/ScoreSheet/TotalScores";
 import Questions from "../components/ScoreSheet/Questions";
 import { Link, useSearchParams } from "react-router-dom";
+import ScoreSheetHeader from "../components/ScoreSheet/ScoreSheetHeader";
 
 export interface Player {
 	name: string;
@@ -19,17 +20,7 @@ const ScoreSheet = () => {
 	return (
 		<section className="App-page score-sheet">
 			<RoundContextProvider>
-				<header className="score-sheet-header">
-					<h2>Code Sheet</h2>
-					<Link
-						className="do-not-print"
-						to={`/ladder?${
-							ladderId ? `ladder=${ladderId}` : `publicId=${publicId}`
-						}`}
-					>
-						Return to Ladder
-					</Link>
-				</header>
+				<ScoreSheetHeader ladderId={ladderId} publicId={publicId} />
 				<Teams />
 				<TotalScores />
 				<Questions />

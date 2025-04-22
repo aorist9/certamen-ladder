@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import scoreSheetService from "../services/scoreSheetService";
 import { EMPTY_QUESTIONS } from "../constants";
+import PasswordInput from "../components/ScoreSheet/PasswordInput";
 
 const RoundContext = createContext<{
 	questions: Question[];
@@ -19,14 +20,19 @@ const RoundContext = createContext<{
 	setTeams: (teams: Team[]) => void;
 	teamOrder: string[];
 	teams: Team[];
-	isReadOnly?: boolean;
+	isEditMode: boolean;
+	setIsEditMode: (isEditMode: boolean) => void;
+	setPassword: (password: string) => void;
 }>({
 	questions: [],
 	scores: [],
 	setQuestions: () => {},
 	setTeams: () => {},
 	teamOrder: [],
-	teams: []
+	teams: [],
+	setPassword: () => {},
+	isEditMode: false,
+	setIsEditMode: (isEditMode: boolean): void => {}
 });
 
 export const RoundContextProvider = ({ children }: PropsWithChildren) => {
@@ -34,7 +40,9 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 
 	const roundId = query.get("round");
 	const isDemo = !!query.get("demo");
-	const isReadOnly = !!query.get("publicId"); // FIXME
+
+	const [isEditMode, setIsEditMode] = useState(false);
+	const [editModeError, setEditModeError] = useState<string | undefined>();
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
 	const scoreSheet = roundId
@@ -53,9 +61,27 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		scoreSheet?.questions || EMPTY_QUESTIONS
 	);
 
+	const [password, setPassword] = useState<string | undefined>(
+		scoreSheet?.password
+	);
+
+	useEffect(() => {
+		if (roundId && password) {
+			scoreSheetService.confirmPassword(roundId, password).then(success => {
+				if (success) {
+					setEditModeError(undefined);
+				} else {
+					setEditModeError("Unauthorized");
+					setIsEditMode(false);
+					setPassword(undefined);
+				}
+			});
+		}
+	}, [password, roundId]);
+
 	const round = useMemo(
-		() => new Round(roundId || "demo", teams || [], questions),
-		[roundId, teams, questions]
+		() => new Round(roundId || "demo", teams || [], questions, password),
+		[roundId, teams, questions, password]
 	);
 
 	const ladderId = ladder?.id;
@@ -67,7 +93,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			if (isReadOnly && roundId) {
+			if (!isEditMode && roundId) {
 				scoreSheetService
 					.getScoreSheetAsync(roundId)
 					.then(updatedScoreSheet => {
@@ -77,10 +103,10 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 						}
 					});
 			}
-		}, 10000);
+		}, 60000);
 
 		return () => clearInterval(interval);
-	});
+	}, [isEditMode, roundId]);
 
 	if (teams && teams.length && (roundId || isDemo)) {
 		return (
@@ -96,10 +122,19 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 					setTeams,
 					teamOrder: round.teamOrder,
 					teams: round.teams,
-					isReadOnly
+					isEditMode,
+					setIsEditMode,
+					setPassword
 				}}
 			>
-				{children}
+				{isEditMode && !round.password ? (
+					<PasswordInput />
+				) : (
+					<>
+						<p className="error">{editModeError}</p>
+						{children}
+					</>
+				)}
 			</RoundContext.Provider>
 		);
 	} else {

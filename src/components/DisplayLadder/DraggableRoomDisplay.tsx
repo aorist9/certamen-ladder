@@ -87,23 +87,22 @@ const DraggableRoomDisplay = ({
 					/>
 				))}
 			</ul>
-			{features.codeSheet &&
-				hideIfPublic(
-					<Link
-						to={`/score-sheet?ladder=${query.get(
-							"ladder"
-						)}&round=${actualScoreSheetId}`}
-						onClick={() => {
-							lockPittings();
-							if (!pitting.scoresheetId) {
-								createScoreSheet(actualScoreSheetId);
-							}
-						}}
-						tabIndex={isAnyRoundEditingScore ? 2 : undefined}
-					>
-						Score Sheet
-					</Link>
-				)}
+			{features.codeSheet && (
+				<Link
+					to={`/score-sheet?ladder=${query.get(
+						"ladder"
+					)}&round=${actualScoreSheetId}`}
+					onClick={() => {
+						lockPittings();
+						if (!pitting.scoresheetId) {
+							createScoreSheet(actualScoreSheetId);
+						}
+					}}
+					tabIndex={isAnyRoundEditingScore ? 2 : undefined}
+				>
+					Score Sheet
+				</Link>
+			)}
 		</td>
 	);
 };

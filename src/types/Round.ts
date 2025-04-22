@@ -22,8 +22,14 @@ export default class Round {
 	private _questions: Question[] = [];
 	private _teams: Record<string, Team> = {};
 	private _teamOrder: string[] = [];
+	private _password?: string;
 
-	constructor(id: string, teams: Team[], questions: Question[]) {
+	constructor(
+		id: string,
+		teams: Team[],
+		questions: Question[],
+		password?: string
+	) {
 		this.id = id;
 		this._questions = questions;
 		this._teams = teams.reduce(
@@ -31,6 +37,7 @@ export default class Round {
 			{}
 		);
 		this._teamOrder = teams.map(team => team.name);
+		this._password = password;
 	}
 
 	public set teamOrder(value: string[]) {
@@ -76,11 +83,16 @@ export default class Round {
 		this._teamOrder = teams.map(team => team.name);
 	}
 
+	get password(): string | undefined {
+		return this._password;
+	}
+
 	public toOutputObject(): RoundOutput {
 		return {
 			id: this.id,
 			questions: this._questions,
-			teams: this.teams
+			teams: this.teams,
+			password: this._password
 		};
 	}
 }
@@ -89,4 +101,5 @@ export interface RoundOutput {
 	id: string;
 	questions: Question[];
 	teams: Team[];
+	password?: string;
 }

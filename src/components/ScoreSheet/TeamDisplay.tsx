@@ -17,14 +17,14 @@ const TeamDisplay = ({
 	moveUp?: VoidFunction;
 	team: string;
 }) => {
-	const { isReadOnly } = useRoundContext();
+	const { isEditMode } = useRoundContext();
 
 	return (
 		<li className="team-select-item">
 			<label htmlFor={`team-${letter}-select`}>Team {letter}</label>
 			<section id={`team-${letter}-select`} className="team-assignment">
 				{team}
-				{!isReadOnly && (
+				{isEditMode && (
 					<section className="button-section">
 						<button
 							disabled={!moveUp}
@@ -43,7 +43,7 @@ const TeamDisplay = ({
 					</section>
 				)}
 			</section>
-			{!isReadOnly && (
+			{isEditMode && (
 				<button className="btn-info hide-print" onClick={addPlayers}>
 					Add Players
 				</button>
