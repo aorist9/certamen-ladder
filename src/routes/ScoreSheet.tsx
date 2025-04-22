@@ -4,7 +4,7 @@ import Teams from "../components/ScoreSheet/Teams";
 import { RoundContextProvider } from "../contexts/RoundContext";
 import TotalScores from "../components/ScoreSheet/TotalScores";
 import Questions from "../components/ScoreSheet/Questions";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ScoreSheetHeader from "../components/ScoreSheet/ScoreSheetHeader";
 
 export interface Player {
