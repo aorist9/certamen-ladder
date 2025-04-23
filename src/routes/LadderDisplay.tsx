@@ -15,11 +15,7 @@ const LadderDisplay = () => {
 	): string | JSX.Element | JSX.Element[] => (ladderId ? elem : "");
 
 	const canStillGoBack = useMemo(() => {
-		if (!ladder) {
-			return true;
-		}
-
-		return ladder?.divisions?.some(div => div.matches) ?? true;
+		return !ladder?.divisions?.some(div => div.matches);
 	}, [ladder]);
 
 	if (ladder) {

@@ -143,30 +143,6 @@ const LadderTable = ({
 						{pittings.map((_, j: number) => (
 							<DraggableRoomDisplay
 								key={`${j}:${i}`}
-								createScoreSheet={(id: string) => {
-									scoreSheetService.addScoreSheet(
-										{
-											id,
-											teams: pittings[j][i].teams.map(team => ({
-												name: team.team,
-												players: Array(4).fill("")
-											})),
-											questions: EMPTY_QUESTIONS
-										},
-										query.get("publicId") || !publicLadderId
-											? undefined
-											: ladderId
-									);
-									updateMatches([
-										...pittings.slice(0, j),
-										[
-											...pittings[j].slice(0, i),
-											{ teams: pittings[j][i].teams, scoresheetId: id },
-											...pittings[j].slice(i + 1)
-										],
-										...pittings.slice(j + 1)
-									]);
-								}}
 								editStatus={roundScoreEditStatuses[j]}
 								isAnyRoundEditingScore={roundScoreEditStatuses.some(
 									round => round === EditingStatus.EDITING

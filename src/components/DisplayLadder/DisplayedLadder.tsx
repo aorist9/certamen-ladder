@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import features from "../../features.json";
 import { Ladder } from "../../types/LadderType";
 import { MatchesV2 } from "../../types/Matches";
 import pittingService from "../../services/pittingService";
 import LadderTable from "./LadderTable";
 import Teams from "../../types/Teams";
-import { LadderStyle } from "../../constants";
+import { EMPTY_QUESTIONS, LadderStyle } from "../../constants";
+import { v4 as uuid } from "uuid";
+import scoreSheetService from "../../services/scoreSheetService";
 
 type DisplayedLadderProps = {
 	divisionNumber?: number;
@@ -88,6 +91,61 @@ const DisplayedLadder = ({
 							{roomEditStatus}
 						</button>
 					)}
+					{features.codeSheet &&
+						pittings.every(round => round.every(room => !room.scoresheetId)) &&
+						hideIfPublic(
+							<button
+								style={{ marginLeft: "1em" }}
+								onClick={async () => {
+									if (
+										// eslint-disable-next-line no-restricted-globals
+										confirm(
+											"Are you sure you want to create scoresheets? You will not be able to add or remove teams from the ladder once you create scoresheets, and any scores you have already entered will be wiped out, though you'll be able to re-enter them."
+										)
+									) {
+										const newPittings = pittings.map(round =>
+											round.map(room => {
+												const scoresheetId = uuid();
+												scoreSheetService.addScoreSheet({
+													id: scoresheetId,
+													teams: room.teams.map(team => ({
+														name: team.team,
+														players: Array(4).fill("")
+													})),
+													questions: EMPTY_QUESTIONS
+												});
+												return {
+													...room,
+													scoresheetId
+												};
+											})
+										);
+										updateMatches(
+											pittings.map(round =>
+												round.map(room => {
+													const scoresheetId = uuid();
+													scoreSheetService.addScoreSheet({
+														id: scoresheetId,
+														teams: room.teams.map(team => ({
+															name: team.team,
+															players: Array(4).fill("")
+														})),
+														questions: EMPTY_QUESTIONS
+													});
+													return {
+														...room,
+														scoresheetId
+													};
+												})
+											)
+										);
+										setPittings(newPittings);
+									}
+								}}
+							>
+								Use Score Sheets
+							</button>
+						)}
 					{ladder.isSwiss() &&
 					pittings[pittings.length - 1][0].teams[0].swissPoints !== undefined &&
 					ladder.numRounds > pittings.length

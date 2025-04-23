@@ -27,7 +27,7 @@ const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 	);
 
 	if (ladderId) {
-		window
+		return window
 			.fetch(`${BACKEND_URL}/api/certamen/score-sheets.php`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -39,15 +39,17 @@ const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 			})
 			.then(response => {
 				response.json().then(json => {
+					let retval;
 					const scoreSheetsString = window.localStorage.getItem(STORAGE_ITEM);
 					if (json.password && scoreSheetsString) {
 						let scoreSheets = JSON.parse(scoreSheetsString);
 						scoreSheets = scoreSheets.map((s: RoundOutput) => {
 							if (s.id === scoreSheet.id) {
-								return {
+								retval = {
 									...s,
 									password: json.password
 								};
+								return retval;
 							}
 							return s;
 						});
@@ -56,6 +58,7 @@ const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 							JSON.stringify(scoreSheets)
 						);
 					}
+					return retval;
 				});
 			});
 	}
