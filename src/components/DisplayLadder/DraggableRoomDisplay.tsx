@@ -1,9 +1,10 @@
-import React, { useState, DragEvent, ChangeEvent } from "react";
+import React, { useState, DragEvent, ChangeEvent, useEffect } from "react";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
 import features from "../../features.json";
 import { RoomV2 } from "../../types/Matches";
+import scoreSheetService from "../../services/scoreSheetService";
 
 type RoomDisplayProps = {
 	editStatus: EditingStatus;
@@ -12,7 +13,6 @@ type RoomDisplayProps = {
 	) => string | JSX.Element | JSX.Element[];
 	isAnyRoundEditingScore: boolean;
 	isDraggedRound: boolean;
-	lockPittings: VoidFunction;
 	moveRoom: (sourceIdx: number) => void;
 	onScoreChange: (
 		i: number,
@@ -30,7 +30,6 @@ const DraggableRoomDisplay = ({
 	hideIfPublic,
 	isAnyRoundEditingScore,
 	isDraggedRound,
-	lockPittings,
 	moveRoom,
 	onScoreChange,
 	pitting,
@@ -41,6 +40,29 @@ const DraggableRoomDisplay = ({
 	const [isDragHovered, setIsDragHovered] = useState<boolean>(false);
 	const [query] = useSearchParams();
 	const canEdit = !query.get("publicId");
+	const [password, setPassword] = useState<string | undefined>();
+
+	const { scoresheetId } = pitting;
+	useEffect(() => {
+		let timer: NodeJS.Timeout;
+		const checkForPassword = () => {
+			if (scoresheetId && canEdit && !password) {
+				const scoreSheet = scoreSheetService.getScoreSheet(scoresheetId);
+				const password = scoreSheet?.password;
+				if (password) {
+					setPassword(password);
+				} else {
+					timer = setTimeout(checkForPassword, 2000);
+				}
+			}
+		};
+		checkForPassword();
+		return () => {
+			if (timer) {
+				clearTimeout(timer);
+			}
+		};
+	}, [canEdit, scoresheetId, password]);
 
 	return (
 		<td
@@ -83,18 +105,24 @@ const DraggableRoomDisplay = ({
 					/>
 				))}
 			</ul>
-			{pitting?.scoresheetId && features.codeSheet ? (
+			{scoresheetId && features.codeSheet ? (
 				<Link
-					to={`/score-sheet?ladder=${query.get("ladder")}&round=${
-						pitting.scoresheetId
-					}`}
+					to={`/score-sheet?ladder=${query.get(
+						"ladder"
+					)}&round=${scoresheetId}`}
 					tabIndex={isAnyRoundEditingScore ? 2 : undefined}
+					className="hide-print"
 				>
 					Score Sheet
 				</Link>
 			) : (
 				""
 			)}
+			{features.codeSheet &&
+				password &&
+				hideIfPublic(
+					<p className="password-display hide-print">Password: {password}</p>
+				)}
 		</td>
 	);
 };

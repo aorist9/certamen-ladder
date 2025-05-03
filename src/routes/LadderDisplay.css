@@ -33,6 +33,10 @@
 	max-width: 3em;
 }
 
+.password-display {
+	font-size: 0.75rem;
+}
+
 @media print {
 	.ladder-display button {
 		display: none;

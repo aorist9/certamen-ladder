@@ -10,42 +10,38 @@ export const BACKEND_URL =
 
 const STORAGE_ITEM = "certamen-ladder.ladders";
 
+const updateScoresheets = (ladder: Ladder, skipEdit?: boolean) => {
+	let edited = false;
+	ladder.divisions = ladder.divisions?.map(division => {
+		division.matches = division.matches?.map(round => {
+			return round.map(room => {
+				if (room.scoresheetId) {
+					const scoreSheet = scoreSheetService.getScoreSheet(room.scoresheetId);
+					if (scoreSheet) {
+						const scores = scoreSheet.scores;
+						room.teams = scoreSheet.teams.map((team, idx) => ({
+							team: team.name,
+							score: scores[idx]
+						}));
+						edited = true;
+					}
+				}
+				return room;
+			});
+		});
+		return division;
+	});
+
+	if (edited && !skipEdit) {
+		editLadder(ladder);
+	}
+};
+
 const getLadders = (skipEdit?: boolean): Ladder[] => {
 	const laddersJson: string | null = window.localStorage.getItem(STORAGE_ITEM);
-	const ladders = JSON.parse(laddersJson || "[]").map(
+	return JSON.parse(laddersJson || "[]").map(
 		(ladder: LadderType) => new Ladder(ladder)
 	);
-
-	return ladders.map((ladder: Ladder) => {
-		let edited = false;
-		ladder.divisions = ladder.divisions?.map(division => {
-			division.matches = division.matches?.map(round => {
-				return round.map(room => {
-					if (room.scoresheetId) {
-						const scoreSheet = scoreSheetService.getScoreSheet(
-							room.scoresheetId
-						);
-						if (scoreSheet) {
-							const scores = scoreSheet.scores;
-							room.teams = scoreSheet.teams.map((team, idx) => ({
-								team: team.name,
-								score: scores[idx]
-							}));
-							edited = true;
-						}
-					}
-					return room;
-				});
-			});
-			return division;
-		});
-
-		if (edited && !skipEdit) {
-			editLadder(ladder);
-		}
-
-		return ladder;
-	});
 };
 
 const addLadder = (ladder: Ladder): void => {
@@ -101,10 +97,11 @@ const publishLadder = async (ladder: Ladder): Promise<Ladder> => {
 
 const saveScoreSheets = (scoreSheets: RoundOutput[]) => {
 	scoreSheets.forEach((scoreSheet: RoundOutput) => {
-		if (scoreSheet) {
+		if (scoreSheet && scoreSheet.password) {
 			scoreSheetService.updateScoreSheet(
 				scoreSheet.id,
-				new Round(scoreSheet.id, scoreSheet.teams, scoreSheet.questions)
+				new Round(scoreSheet.id, scoreSheet.teams, scoreSheet.questions),
+				scoreSheet.password
 			);
 		}
 	});
@@ -132,7 +129,8 @@ const ladderService = {
 		if (publicId) {
 			getPublicLadder(publicId);
 		}
-		return getLadders().find(l => l.id === id);
+		const ladder = getLadders().find(l => l.id === id);
+		return ladder;
 	},
 	getPublicLadder,
 	editLadder,
@@ -160,18 +158,25 @@ export const useLadder = ({
 		} else if (publicLadderId) {
 			ladderService.getPublicLadder(publicLadderId).then(setLadder);
 		}
+
+		if (ladder) {
+			updateScoresheets(ladder);
+		}
 	};
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useEffect(updateLadder, []);
-
 	useEffect(() => {
-		const timeout = setInterval(updateLadder, 30000);
-		return () => clearTimeout(timeout);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ladderId, publicLadderId, setLadder]);
+		const updateAndSchedule = () => {
+			updateLadder();
+			const timeout = setTimeout(updateAndSchedule, 10000);
+			return () => clearTimeout(timeout);
+		};
 
-	return ladder;
+		const cleanup = updateAndSchedule();
+		return cleanup;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return { ladder, updateLadder };
 };
 
 export default ladderService;

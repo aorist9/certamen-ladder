@@ -18,14 +18,6 @@ const getScoreSheets = (): Round[] => {
 };
 
 const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
-	window.localStorage.setItem(
-		STORAGE_ITEM,
-		JSON.stringify([
-			scoreSheet,
-			...getScoreSheets().map(s => s.toOutputObject())
-		])
-	);
-
 	if (ladderId) {
 		return window
 			.fetch(`${BACKEND_URL}/api/certamen/score-sheets.php`, {
@@ -38,29 +30,27 @@ const addScoreSheet = (scoreSheet: RoundOutput, ladderId?: string) => {
 				})
 			})
 			.then(response => {
+				let retval;
 				response.json().then(json => {
-					let retval;
-					const scoreSheetsString = window.localStorage.getItem(STORAGE_ITEM);
-					if (json.password && scoreSheetsString) {
-						let scoreSheets = JSON.parse(scoreSheetsString);
-						scoreSheets = scoreSheets.map((s: RoundOutput) => {
-							if (s.id === scoreSheet.id) {
-								retval = {
-									...s,
-									password: json.password
-								};
-								return retval;
-							}
-							return s;
-						});
-						window.localStorage.setItem(
-							STORAGE_ITEM,
-							JSON.stringify(scoreSheets)
-						);
-					}
+					retval = { ...scoreSheet, password: json.password };
+					window.localStorage.setItem(
+						STORAGE_ITEM,
+						JSON.stringify([
+							retval,
+							...getScoreSheets().map(s => s.toOutputObject())
+						])
+					);
 					return retval;
 				});
 			});
+	} else {
+		window.localStorage.setItem(
+			STORAGE_ITEM,
+			JSON.stringify([
+				scoreSheet,
+				...getScoreSheets().map(s => s.toOutputObject())
+			])
+		);
 	}
 };
 
@@ -135,7 +125,12 @@ const scoreSheetService = {
 		return getScoreSheets().find(scoreSheet => scoreSheet.id === id);
 	},
 	getScoreSheetAsync,
-	updateScoreSheet: (id: string, scoreSheet: Round, ladderId?: string) => {
+	updateScoreSheet: (
+		id: string,
+		scoreSheet: Round,
+		password: string,
+		ladderId?: string
+	) => {
 		const scoreSheets = getScoreSheets();
 		const existingScoreScheet = scoreSheets.find(
 			scoreSheet => scoreSheet.id === id
@@ -151,18 +146,18 @@ const scoreSheetService = {
 				])
 			);
 
-			if (ladderId) {
+			if (password) {
 				window.fetch(`${BACKEND_URL}/api/certamen/score-sheets.php`, {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						id: scoreSheet.id,
 						scoreSheet: scoreSheet.toOutputObject(),
-						ladderId
+						password
 					})
 				});
 			}
-		} else {
+		} else if (ladderId) {
 			addScoreSheet(scoreSheet.toOutputObject(), ladderId);
 		}
 	}

@@ -24,8 +24,8 @@ describe("Scoreboard", () => {
 	describe("Single Division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			mockUseLadder.mockReturnValue(
-				new Ladder({
+			mockUseLadder.mockReturnValue({
+				ladder: new Ladder({
 					id: "123",
 					draw: 0,
 					name: "My Ladder",
@@ -69,8 +69,9 @@ describe("Scoreboard", () => {
 							]
 						]
 					]
-				})
-			);
+				}),
+				updateLadder: jest.fn()
+			});
 		});
 
 		test("should show ladder name", () => {
@@ -115,8 +116,8 @@ describe("Scoreboard", () => {
 	describe("Multiple Divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			mockUseLadder.mockReturnValue(
-				new Ladder({
+			mockUseLadder.mockReturnValue({
+				ladder: new Ladder({
 					id: "123",
 					draw: 0,
 					name: "My Ladder",
@@ -190,8 +191,9 @@ describe("Scoreboard", () => {
 							]
 						}
 					]
-				})
-			);
+				}),
+				updateLadder: jest.fn()
+			});
 		});
 
 		test("should show ladder and division names", () => {

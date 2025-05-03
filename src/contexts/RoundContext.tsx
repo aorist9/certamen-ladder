@@ -86,10 +86,21 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 
 	const ladderId = ladder?.id;
 	useEffect(() => {
-		if (scoreSheet && scoreSheet.id !== "demo" && teams && teams.length) {
-			scoreSheetService.updateScoreSheet(scoreSheet.id, round, ladderId);
+		if (
+			scoreSheet &&
+			scoreSheet.id !== "demo" &&
+			teams &&
+			teams.length &&
+			password
+		) {
+			scoreSheetService.updateScoreSheet(
+				scoreSheet.id,
+				round,
+				password,
+				ladderId
+			);
 		}
-	}, [ladderId, round, scoreSheet, teams]);
+	}, [ladderId, round, scoreSheet, teams, password]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -117,7 +128,14 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 					setQuestions: (questions: Question[]) => {
 						setQuestions(questions);
 						round.questions = questions;
-						scoreSheetService.updateScoreSheet(round.id, round, ladderId);
+						if (password) {
+							scoreSheetService.updateScoreSheet(
+								round.id,
+								round,
+								password,
+								ladderId
+							);
+						}
 					},
 					setTeams,
 					teamOrder: round.teamOrder,

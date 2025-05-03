@@ -3,9 +3,6 @@ import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
-import { EMPTY_QUESTIONS } from "../../constants";
-import scoreSheetService from "../../services/scoreSheetService";
-import { useSearchParams } from "react-router-dom";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
 	switch (status) {
@@ -71,7 +68,6 @@ const LadderTable = ({
 	updateMatches
 }: LadderTableProps) => {
 	const [draggedRound, setDraggedRound] = useState<number | undefined>();
-	const [query] = useSearchParams();
 
 	const onScoreChange =
 		(i: number, j: number, k: number) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -98,40 +94,42 @@ const LadderTable = ({
 					{pittings.map((_, i: number) => (
 						<th key={i} style={{ padding: "0 10px" }}>
 							Round {i + 1}
-							{hideIfPublic(
-								<button
-									style={{ marginLeft: "1.5em" }}
-									onClick={() => {
-										if (
-											roundScoreEditStatuses[i] === EditingStatus.EDITING &&
-											isSwiss
-										) {
-											let newPittings = [
-												...pittings.slice(0, i),
-												pittings[i].map(
-													isSwissByPoints
-														? room => addSwissByPointsPoints(room, pittings[i])
-														: addSwissPoints
-												),
-												...pittings.slice(i + 1)
-											];
+							{(!matches || matches[i].some(room => !room.scoresheetId)) &&
+								hideIfPublic(
+									<button
+										style={{ marginLeft: "1.5em" }}
+										onClick={() => {
+											if (
+												roundScoreEditStatuses[i] === EditingStatus.EDITING &&
+												isSwiss
+											) {
+												let newPittings = [
+													...pittings.slice(0, i),
+													pittings[i].map(
+														isSwissByPoints
+															? room =>
+																	addSwissByPointsPoints(room, pittings[i])
+															: addSwissPoints
+													),
+													...pittings.slice(i + 1)
+												];
 
-											updateMatches(newPittings);
-											setPittings(newPittings);
-										}
+												updateMatches(newPittings);
+												setPittings(newPittings);
+											}
 
-										setRoundScoreEditStatuses([
-											...roundScoreEditStatuses.slice(0, i),
-											roundScoreEditStatuses[i] === EditingStatus.EDITING
-												? EditingStatus.EDITED
-												: EditingStatus.EDITING,
-											...roundScoreEditStatuses.slice(i + 1)
-										]);
-									}}
-								>
-									{determineAddScoresButtonText(roundScoreEditStatuses[i])}
-								</button>
-							)}
+											setRoundScoreEditStatuses([
+												...roundScoreEditStatuses.slice(0, i),
+												roundScoreEditStatuses[i] === EditingStatus.EDITING
+													? EditingStatus.EDITED
+													: EditingStatus.EDITING,
+												...roundScoreEditStatuses.slice(i + 1)
+											]);
+										}}
+									>
+										{determineAddScoresButtonText(roundScoreEditStatuses[i])}
+									</button>
+								)}
 						</th>
 					))}
 					{roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
@@ -149,11 +147,6 @@ const LadderTable = ({
 								)}
 								hideIfPublic={hideIfPublic}
 								isDraggedRound={draggedRound === j}
-								lockPittings={() => {
-									if (!matches) {
-										updateMatches(pittings);
-									}
-								}}
 								moveRoom={(sourceIdx: number) => {
 									if (sourceIdx === i) {
 										return;

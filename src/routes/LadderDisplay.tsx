@@ -8,7 +8,10 @@ import "./LadderDisplay.css";
 const LadderDisplay = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const publicId: string | null = useSearchParams()[0].get("publicId");
-	const ladder = useLadder({ ladderId, publicLadderId: publicId });
+	const { ladder, updateLadder } = useLadder({
+		ladderId,
+		publicLadderId: publicId
+	});
 
 	const hideIfPublic = (
 		elem: string | JSX.Element | JSX.Element[]
@@ -63,6 +66,7 @@ const LadderDisplay = () => {
 									ladderService.editLadder(ladder);
 								}
 							}}
+							updateLadder={updateLadder}
 							hideIfPublic={hideIfPublic}
 						/>
 					))}

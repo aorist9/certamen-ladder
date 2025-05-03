@@ -6,7 +6,7 @@ import { useLadder } from "../services/ladderService";
 const ScoreboardPage = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const publicId: string | null = useSearchParams()[0].get("publicId");
-	const ladder = useLadder({ ladderId, publicLadderId: publicId });
+	const { ladder } = useLadder({ ladderId, publicLadderId: publicId });
 
 	const header = (
 		<section style={{ display: "flex", columnGap: "2em" }}>

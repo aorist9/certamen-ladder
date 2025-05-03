@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoundContext } from "../../contexts/RoundContext";
 import "./PasswordInput.css";
 
@@ -10,17 +10,24 @@ const PasswordInput: React.FC = () => {
 		setPassword(password);
 	};
 
+	useEffect(() => {
+		document.getElementById("password-input")?.focus();
+	}, []);
+
 	return (
-		<div className="password">
-			<input
-				type="password"
-				className="password-input"
-				value={password}
-				onChange={e => setLocalPassword(e.target.value)}
-				placeholder="Enter the password"
-			/>
-			<button onClick={handleSubmit}>Ok</button>
-		</div>
+		<form onSubmit={handleSubmit}>
+			<div className="password">
+				<input
+					type="password"
+					className="password-input"
+					id="password-input"
+					value={password}
+					onChange={e => setLocalPassword(e.target.value)}
+					placeholder="Enter the password"
+				/>
+				<button type="submit">Ok</button>
+			</div>
+		</form>
 	);
 };
 

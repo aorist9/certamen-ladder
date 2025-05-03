@@ -8,6 +8,7 @@ import Teams from "../../types/Teams";
 import { EMPTY_QUESTIONS, LadderStyle } from "../../constants";
 import { v4 as uuid } from "uuid";
 import scoreSheetService from "../../services/scoreSheetService";
+import ladderService from "../../services/ladderService";
 
 type DisplayedLadderProps = {
 	divisionNumber?: number;
@@ -16,6 +17,7 @@ type DisplayedLadderProps = {
 	) => string | JSX.Element | JSX.Element[];
 	ladder: Ladder;
 	name?: string;
+	updateLadder: VoidFunction;
 	updateMatches: (matches: MatchesV2) => void;
 	updateRooms: (rooms: string[]) => void;
 };
@@ -31,6 +33,7 @@ const DisplayedLadder = ({
 	hideIfPublic,
 	ladder,
 	name,
+	updateLadder,
 	updateMatches,
 	updateRooms
 }: DisplayedLadderProps) => {
@@ -95,16 +98,32 @@ const DisplayedLadder = ({
 						pittings.every(round => round.every(room => !room.scoresheetId)) &&
 						hideIfPublic(
 							<button
+								className="hide-print"
 								style={{ marginLeft: "1em" }}
 								onClick={async () => {
 									if (
 										// eslint-disable-next-line no-restricted-globals
 										confirm(
-											"Are you sure you want to create scoresheets? You will not be able to add or remove teams from the ladder once you create scoresheets, and any scores you have already entered will be wiped out, though you'll be able to re-enter them."
+											`Are you sure you want to create scoresheets?
+                      You will not be able to add or remove teams from the ladder once you create scoresheets,
+                      and any scores you have already entered will be wiped out,
+                      though you'll be able to re-enter them. ${
+												ladder.publicId
+													? ""
+													: "This will also cause the ladder to be published."
+											}`
 										)
 									) {
+										if (!ladder.publicId) {
+											await ladderService.publishLadder(ladder);
+										}
+
 										const newPittings = pittings.map(round =>
 											round.map(room => {
+												if (room.scoresheetId) {
+													return room;
+												}
+
 												const scoresheetId = uuid();
 												scoreSheetService.addScoreSheet({
 													id: scoresheetId,
@@ -124,14 +143,17 @@ const DisplayedLadder = ({
 											pittings.map(round =>
 												round.map(room => {
 													const scoresheetId = uuid();
-													scoreSheetService.addScoreSheet({
-														id: scoresheetId,
-														teams: room.teams.map(team => ({
-															name: team.team,
-															players: Array(4).fill("")
-														})),
-														questions: EMPTY_QUESTIONS
-													});
+													scoreSheetService.addScoreSheet(
+														{
+															id: scoresheetId,
+															teams: room.teams.map(team => ({
+																name: team.team,
+																players: Array(4).fill("")
+															})),
+															questions: EMPTY_QUESTIONS
+														},
+														ladder.id
+													);
 													return {
 														...room,
 														scoresheetId
@@ -140,6 +162,7 @@ const DisplayedLadder = ({
 											)
 										);
 										setPittings(newPittings);
+										updateLadder();
 									}
 								}}
 							>

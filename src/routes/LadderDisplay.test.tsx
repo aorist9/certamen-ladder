@@ -34,8 +34,8 @@ describe("LadderDisplay", () => {
 	describe("single division", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			mockUseLadder.mockReturnValue(
-				new Ladder({
+			mockUseLadder.mockReturnValue({
+				ladder: new Ladder({
 					id: "123",
 					draw: 0,
 					name: "My Ladder",
@@ -49,8 +49,9 @@ describe("LadderDisplay", () => {
 						H: "Highlanders",
 						Z: "Zebras"
 					}
-				})
-			);
+				}),
+				updateLadder: jest.fn()
+			});
 		});
 
 		test("should display the ladder name", () => {
@@ -112,8 +113,8 @@ describe("LadderDisplay", () => {
 	describe("multiple divisions", () => {
 		beforeEach(() => {
 			// @ts-ignore
-			mockUseLadder.mockReturnValue(
-				new Ladder({
+			mockUseLadder.mockReturnValue({
+				ladder: new Ladder({
 					id: "123",
 					divisions: 3,
 					draw: 0,
@@ -141,8 +142,9 @@ describe("LadderDisplay", () => {
 							}
 						}
 					]
-				})
-			);
+				}),
+				updateLadder: jest.fn()
+			});
 		});
 
 		test("should display the ladder name", () => {
