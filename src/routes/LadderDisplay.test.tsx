@@ -25,6 +25,10 @@ const renderLadderDisplay = () => {
 
 describe("LadderDisplay", () => {
 	test("should show error message when ladder is not found", () => {
+		mockUseLadder.mockReturnValue({
+			ladder: undefined,
+			updateLadder: jest.fn()
+		});
 		renderLadderDisplay();
 		expect(
 			screen.getByText("You may have reached this page in error")
