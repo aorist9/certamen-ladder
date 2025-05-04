@@ -19,6 +19,7 @@ type RoomDisplayProps = {
 		j: number,
 		k: number
 	) => (e: ChangeEvent<HTMLInputElement>) => void;
+	overrideScoresheet: () => void;
 	pitting: RoomV2;
 	roomNumber: number;
 	roundNumber: number;
@@ -32,6 +33,7 @@ const DraggableRoomDisplay = ({
 	isDraggedRound,
 	moveRoom,
 	onScoreChange,
+	overrideScoresheet,
 	pitting,
 	roomNumber,
 	roundNumber,
@@ -42,7 +44,7 @@ const DraggableRoomDisplay = ({
 	const canEdit = !query.get("publicId");
 	const [password, setPassword] = useState<string | undefined>();
 
-	const { scoresheetId } = pitting;
+	const { scoresheetId, scoresheetOverridden } = pitting;
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
 		const checkForPassword = () => {
@@ -106,19 +108,27 @@ const DraggableRoomDisplay = ({
 				))}
 			</ul>
 			{scoresheetId && features.codeSheet ? (
-				<Link
-					to={`/score-sheet?ladder=${query.get(
-						"ladder"
-					)}&round=${scoresheetId}`}
-					tabIndex={isAnyRoundEditingScore ? 2 : undefined}
-					className="hide-print"
-				>
-					Score Sheet
-				</Link>
+				<section className="score-sheet-link hide-print">
+					<Link
+						to={`/score-sheet?ladder=${query.get(
+							"ladder"
+						)}&round=${scoresheetId}`}
+						tabIndex={isAnyRoundEditingScore ? 2 : undefined}
+						className="hide-print"
+					>
+						Score Sheet
+					</Link>
+					{scoresheetOverridden ? (
+						<span>Overridden</span>
+					) : (
+						<button onClick={overrideScoresheet}>Override</button>
+					)}
+				</section>
 			) : (
 				""
 			)}
 			{features.codeSheet &&
+				!scoresheetOverridden &&
 				password &&
 				hideIfPublic(
 					<p className="password-display hide-print">Password: {password}</p>

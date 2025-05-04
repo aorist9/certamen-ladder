@@ -15,7 +15,7 @@ const updateScoresheets = (ladder: Ladder, skipEdit?: boolean) => {
 	ladder.divisions = ladder.divisions?.map(division => {
 		division.matches = division.matches?.map(round => {
 			return round.map(room => {
-				if (room.scoresheetId) {
+				if (room.scoresheetId && !room.scoresheetOverridden) {
 					const scoreSheet = scoreSheetService.getScoreSheet(room.scoresheetId);
 					if (scoreSheet) {
 						const scores = scoreSheet.scores;
@@ -153,13 +153,17 @@ export const useLadder = ({
 }) => {
 	const [ladder, setLadder] = useState<Ladder | undefined>();
 	const updateLadder = () => {
+		let l;
 		if (ladderId) {
-			setLadder(ladderService.getLadder(ladderId));
+			l = ladderService.getLadder(ladderId);
+			setLadder(l);
 		} else if (publicLadderId) {
 			ladderService.getPublicLadder(publicLadderId).then(setLadder);
 		}
 
-		if (ladder) {
+		if (l) {
+			updateScoresheets(l);
+		} else if (ladder) {
 			updateScoresheets(ladder);
 		}
 	};

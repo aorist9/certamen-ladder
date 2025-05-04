@@ -41,12 +41,14 @@ const updatePittingScores = (
 	k: number,
 	value: number
 ) => {
-	const newPitting = [...pittings[j][i].teams].map(
-		(team: any, idx: number) => ({
+	const newPitting = {
+		teams: pittings[j][i].teams.map((team: any, idx: number) => ({
 			...team,
 			score: idx === k ? value : team.score || 0
-		})
-	);
+		})),
+		scoresheetId: pittings[j][i].scoresheetId,
+		scoresheetOverridden: pittings[j][i].scoresheetOverridden
+	};
 
 	return newPitting;
 };
@@ -76,11 +78,7 @@ const LadderTable = ({
 
 			const newPittings = [
 				...pittings.slice(0, j),
-				[
-					...pittings[j].slice(0, i),
-					{ teams: newPitting },
-					...pittings[j].slice(i + 1)
-				],
+				[...pittings[j].slice(0, i), newPitting, ...pittings[j].slice(i + 1)],
 				...pittings.slice(j + 1)
 			];
 			updateMatches(newPittings);
@@ -94,7 +92,10 @@ const LadderTable = ({
 					{pittings.map((_, i: number) => (
 						<th key={i} style={{ padding: "0 10px" }}>
 							Round {i + 1}
-							{(!matches || matches[i].some(room => !room.scoresheetId)) &&
+							{(!matches ||
+								matches[i].some(
+									room => !room.scoresheetId || room.scoresheetOverridden
+								)) &&
 								hideIfPublic(
 									<button
 										style={{ marginLeft: "1.5em" }}
@@ -141,7 +142,12 @@ const LadderTable = ({
 						{pittings.map((_, j: number) => (
 							<DraggableRoomDisplay
 								key={`${j}:${i}`}
-								editStatus={roundScoreEditStatuses[j]}
+								editStatus={
+									pittings[j][i].scoresheetId &&
+									!pittings[j][i].scoresheetOverridden
+										? EditingStatus.EDITED
+										: roundScoreEditStatuses[j]
+								}
 								isAnyRoundEditingScore={roundScoreEditStatuses.some(
 									round => round === EditingStatus.EDITING
 								)}
@@ -178,6 +184,19 @@ const LadderTable = ({
 								roomNumber={i}
 								roundNumber={j}
 								startDrag={() => setDraggedRound(j)}
+								overrideScoresheet={() => {
+									if (
+										// eslint-disable-next-line no-restricted-globals
+										confirm(
+											"Are you sure you want to override the scoresheet? This can't be undone, but you'll still be able to see the scoresheet"
+										)
+									) {
+										const newPitting = [...pittings];
+										newPitting[j][i].scoresheetOverridden = true;
+										setPittings(newPitting);
+										updateMatches(newPitting);
+									}
+								}}
 							/>
 						))}
 						{roomEditStatus === EditingStatus.NEW ? (

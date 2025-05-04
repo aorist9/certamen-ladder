@@ -104,14 +104,14 @@ const DisplayedLadder = ({
 									if (
 										// eslint-disable-next-line no-restricted-globals
 										confirm(
-											`Are you sure you want to create scoresheets?
-                      You will not be able to add or remove teams from the ladder once you create scoresheets,
-                      and any scores you have already entered will be wiped out,
-                      though you'll be able to re-enter them. ${
-												ladder.publicId
-													? ""
-													: "This will also cause the ladder to be published."
-											}`
+											"Are you sure you want to create scoresheets?" +
+												" You will not be able to add or remove teams from the ladder once you create scoresheets," +
+												" and any scores you have already entered will be wiped out," +
+												` though you'll be able to re-enter them. ${
+													ladder.publicId
+														? ""
+														: "This will also cause the ladder to be published."
+												}`
 										)
 									) {
 										if (!ladder.publicId) {

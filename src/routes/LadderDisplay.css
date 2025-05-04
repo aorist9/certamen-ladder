@@ -37,6 +37,14 @@
 	font-size: 0.75rem;
 }
 
+.score-sheet-link {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	align-items: center;
+	justify-content: space-between;
+}
+
 @media print {
 	.ladder-display button {
 		display: none;
