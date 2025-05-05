@@ -41,7 +41,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	const roundId = query.get("round");
 	const isDemo = !!query.get("demo");
 
-	const [isEditMode, setIsEditMode] = useState(false);
+	const [isEditMode, setIsEditMode] = useState(isDemo);
 	const [editModeError, setEditModeError] = useState<string | undefined>();
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
@@ -145,7 +145,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 					setPassword
 				}}
 			>
-				{isEditMode && !round.password ? (
+				{isEditMode && !round.password && !isDemo ? (
 					<PasswordInput />
 				) : (
 					<>
