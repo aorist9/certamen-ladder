@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import features from "../../features.json";
 import { Ladder } from "../../types/LadderType";
 import { MatchesV2 } from "../../types/Matches";
 import pittingService from "../../services/pittingService";
@@ -9,6 +8,7 @@ import { EMPTY_QUESTIONS, LadderStyle } from "../../constants";
 import { v4 as uuid } from "uuid";
 import scoreSheetService from "../../services/scoreSheetService";
 import ladderService from "../../services/ladderService";
+import { useFeatureFlags } from "../../utils/featureFlagsContext";
 
 type DisplayedLadderProps = {
 	divisionNumber?: number;
@@ -37,6 +37,7 @@ const DisplayedLadder = ({
 	updateMatches,
 	updateRooms
 }: DisplayedLadderProps) => {
+	const { codeSheet: codeSheetFlag } = useFeatureFlags();
 	const division = ladder.divisions?.[divisionNumber || 0] as {
 		division?: string;
 		teams: Teams;
@@ -94,7 +95,7 @@ const DisplayedLadder = ({
 							{roomEditStatus}
 						</button>
 					)}
-					{features.codeSheet &&
+					{codeSheetFlag &&
 						pittings.every(round => round.every(room => !room.scoresheetId)) &&
 						hideIfPublic(
 							<button
@@ -163,6 +164,9 @@ const DisplayedLadder = ({
 										);
 										setPittings(newPittings);
 										updateLadder();
+										setRoundScoreEditStatuses(
+											roundScoreEditStatuses.map(() => EditingStatus.EDITED)
+										);
 									}
 								}}
 							>

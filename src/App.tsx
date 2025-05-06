@@ -11,6 +11,7 @@ import "./App.css";
 import HamburgerIcon from "./icons/Hamburger";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScoreSheet from "./routes/ScoreSheet";
+import { FeatureFlagsProvider } from "./utils/featureFlagsContext";
 
 function App() {
 	const headerRef = useRef<HTMLHeadingElement>(null);
@@ -40,27 +41,29 @@ function App() {
 			</header>
 			<div className="mobile-only" style={{ height: `${height}px` }}></div>
 			<HashRouter>
-				<ErrorBoundary>
-					<section style={{ display: "flex" }}>
-						<Sidebar visible={showSidebar} />
-						<article
-							style={{ flexGrow: 3 }}
-							onClick={() => setShowSidebar(false)}
-						>
-							<ErrorBoundary>
-								<Routes>
-									<Route path="/" element={<Home />} />
-									<Route path="/create" element={<CreateLadder />} />
-									<Route path="/draw" element={<Draw />} />
-									<Route path="/ladder" element={<LadderDisplay />} />
-									<Route path="/ladders" element={<ViewLadders />} />
-									<Route path="/scoreboard" element={<ScoreboardPage />} />
-									<Route path="/score-sheet" element={<ScoreSheet />} />
-								</Routes>
-							</ErrorBoundary>
-						</article>
-					</section>
-				</ErrorBoundary>
+				<FeatureFlagsProvider>
+					<ErrorBoundary>
+						<section style={{ display: "flex" }}>
+							<Sidebar visible={showSidebar} />
+							<article
+								style={{ flexGrow: 3 }}
+								onClick={() => setShowSidebar(false)}
+							>
+								<ErrorBoundary>
+									<Routes>
+										<Route path="/" element={<Home />} />
+										<Route path="/create" element={<CreateLadder />} />
+										<Route path="/draw" element={<Draw />} />
+										<Route path="/ladder" element={<LadderDisplay />} />
+										<Route path="/ladders" element={<ViewLadders />} />
+										<Route path="/scoreboard" element={<ScoreboardPage />} />
+										<Route path="/score-sheet" element={<ScoreSheet />} />
+									</Routes>
+								</ErrorBoundary>
+							</article>
+						</section>
+					</ErrorBoundary>
+				</FeatureFlagsProvider>
 			</HashRouter>
 		</main>
 	);

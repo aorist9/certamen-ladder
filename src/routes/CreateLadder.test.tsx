@@ -4,7 +4,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CreateLadder from "./CreateLadder";
 import ladderService from "../services/ladderService";
-import features from "../features.json";
 import { Ladder } from "../types/LadderType";
 
 const mockedUseNavigate = jest.fn();
@@ -28,33 +27,27 @@ describe("CreateLadder", () => {
 		expect(screen.getByText("Ladder Name:")).toBeInTheDocument();
 	});
 
-	if (features.multipleDivisions) {
-		test("should ask if there are multiple divisions", () => {
-			renderCreateLadder();
-			userEvent.click(screen.getByLabelText("Multiple Division Tournament"));
-			expect(
-				screen.getByText("How many divisions are there?")
-			).toBeInTheDocument();
-		});
-	}
+	test("should ask if there are multiple divisions", () => {
+		renderCreateLadder();
+		userEvent.click(screen.getByLabelText("Multiple Division Tournament"));
+		expect(
+			screen.getByText("How many divisions are there?")
+		).toBeInTheDocument();
+	});
 
-	if (features.swissLadder || features.pointsSwissLadder) {
-		test("should ask for a ladder type", () => {
-			renderCreateLadder();
-			expect(
-				screen.getByText("What type of ladder would you like to create?")
-			).toBeInTheDocument();
-		});
-	}
+	test("should ask for a ladder type", () => {
+		renderCreateLadder();
+		expect(
+			screen.getByText("What type of ladder would you like to create?")
+		).toBeInTheDocument();
+	});
 
-	if (features.chooseRounds) {
-		test("should ask how many rounds", () => {
-			renderCreateLadder();
-			expect(
-				screen.getByText("How many preliminary rounds are you playing?")
-			).toBeInTheDocument();
-		});
-	}
+	test("should ask how many rounds", () => {
+		renderCreateLadder();
+		expect(
+			screen.getByText("How many preliminary rounds are you playing?")
+		).toBeInTheDocument();
+	});
 
 	test("should ask about the draw", () => {
 		renderCreateLadder();

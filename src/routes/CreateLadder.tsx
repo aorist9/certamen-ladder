@@ -5,10 +5,17 @@ import NumberInput from "../components/NumberInput";
 import { DrawType, LadderStyle } from "../constants";
 import ladderService from "../services/ladderService";
 import { Ladder } from "../types/LadderType";
-import features from "../features.json";
 import Teams from "../types/Teams";
+import { useFeatureFlags } from "../utils/featureFlagsContext";
 
 const CreateLadder = () => {
+	const {
+		multipleDivisions: multipleDivisionsFlag,
+		swissLadder: swissLadderFlag,
+		pointsSwissLadder: pointsSwissLadderFlag,
+		chooseRounds: chooseRoundsFlag
+	} = useFeatureFlags();
+
 	const [name, setName] = useState<string>("");
 	const [divisions, setDivisions] = useState<number | undefined>();
 	const [type, setType] = useState<keyof typeof LadderStyle>("TRADITIONAL");
@@ -80,7 +87,7 @@ const CreateLadder = () => {
 						}
 					/>
 				</section>
-				{features.multipleDivisions ? (
+				{multipleDivisionsFlag ? (
 					<>
 						<section className="form-field">
 							<label>
@@ -109,7 +116,7 @@ const CreateLadder = () => {
 				) : (
 					""
 				)}
-				{features.swissLadder || features.pointsSwissLadder ? (
+				{swissLadderFlag || pointsSwissLadderFlag ? (
 					<section className="form-field">
 						<label htmlFor="ladder-type">
 							What type of ladder would you like to create?
@@ -123,9 +130,9 @@ const CreateLadder = () => {
 						>
 							{Object.keys(LadderStyle)
 								.filter(
-									key =>
-										(features.swissLadder || type !== "SWISS") &&
-										(features.pointsSwissLadder || type !== "SWISS_BY_POINTS")
+									type =>
+										(swissLadderFlag || type !== "SWISS") &&
+										(pointsSwissLadderFlag || type !== "SWISS_BY_POINTS")
 								)
 								.map(key => (
 									<option key={key} value={key}>
@@ -137,9 +144,9 @@ const CreateLadder = () => {
 				) : (
 					""
 				)}
-				{features.chooseRounds ||
-				(features.swissLadder && type === "SWISS") ||
-				(features.pointsSwissLadder && type === "SWISS_BY_POINTS") ? (
+				{chooseRoundsFlag ||
+				(swissLadderFlag && type === "SWISS") ||
+				(pointsSwissLadderFlag && type === "SWISS_BY_POINTS") ? (
 					<NumberInput
 						id="rounds"
 						value={rounds}

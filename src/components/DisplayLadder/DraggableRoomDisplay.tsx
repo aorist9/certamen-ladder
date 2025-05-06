@@ -2,9 +2,9 @@ import React, { useState, DragEvent, ChangeEvent, useEffect } from "react";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
-import features from "../../features.json";
 import { RoomV2 } from "../../types/Matches";
 import scoreSheetService from "../../services/scoreSheetService";
+import { useFeatureFlags } from "../../utils/featureFlagsContext";
 
 type RoomDisplayProps = {
 	editStatus: EditingStatus;
@@ -39,6 +39,7 @@ const DraggableRoomDisplay = ({
 	roundNumber,
 	startDrag
 }: RoomDisplayProps) => {
+	const { codeSheet: codeSheetFlag } = useFeatureFlags();
 	const [isDragHovered, setIsDragHovered] = useState<boolean>(false);
 	const [query] = useSearchParams();
 	const canEdit = !query.get("publicId");
@@ -107,7 +108,7 @@ const DraggableRoomDisplay = ({
 					/>
 				))}
 			</ul>
-			{scoresheetId && features.codeSheet ? (
+			{scoresheetId && codeSheetFlag ? (
 				<section className="score-sheet-link hide-print">
 					<Link
 						to={`/score-sheet?ladder=${query.get(
@@ -127,7 +128,7 @@ const DraggableRoomDisplay = ({
 			) : (
 				""
 			)}
-			{features.codeSheet &&
+			{codeSheetFlag &&
 				!scoresheetOverridden &&
 				password &&
 				hideIfPublic(
