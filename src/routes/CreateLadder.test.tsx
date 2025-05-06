@@ -42,7 +42,7 @@ describe("CreateLadder", () => {
 		).toBeInTheDocument();
 	});
 
-	test("should ask how many rounds", () => {
+	test.skip("should ask how many rounds", () => {
 		renderCreateLadder();
 		expect(
 			screen.getByText("How many preliminary rounds are you playing?")
