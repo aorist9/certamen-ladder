@@ -58,23 +58,9 @@ const addLadder = (ladder: Ladder): void => {
 };
 
 const editLadder = (ladder: Ladder): void => {
-	const ladders: Ladder[] = getLadders(true);
-	const existingLadder: Ladder | undefined = ladders.find(
-		l => l.id === ladder.id
-	);
-	if (existingLadder) {
-		const idx = ladders.indexOf(existingLadder);
-		window.localStorage.setItem(
-			STORAGE_ITEM,
-			JSON.stringify([
-				...ladders.slice(0, idx),
-				ladder,
-				...ladders.slice(idx + 1)
-			])
-		);
-	} else {
-		addLadder(ladder);
-	}
+	const ladders = getLadders(true).filter(l => l.id !== ladder.id);
+	ladders.push(ladder);
+	window.localStorage.setItem(STORAGE_ITEM, JSON.stringify(ladders));
 
 	if (ladder.publicId) {
 		window.fetch(`${BACKEND_URL}/api/certamen/ladders.php`, {

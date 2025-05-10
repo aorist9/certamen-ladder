@@ -106,7 +106,7 @@ describe("ladderService", () => {
 
 				expect(localStorage.setItem).toHaveBeenCalledWith(
 					"certamen-ladder.ladders",
-					JSON.stringify([newLadder, ...ladders])
+					JSON.stringify([...ladders, newLadder])
 				);
 			});
 		});
