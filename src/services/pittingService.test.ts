@@ -1,4 +1,5 @@
-import LadderType, { Ladder } from "../types/LadderType";
+import { DrawType, LadderStyle } from "../constants";
+import LadderType, { Ladder, LadderStatus } from "../types/LadderType";
 import pittingService from "./pittingService";
 
 const BASE_LADDER: LadderType = {
@@ -360,11 +361,12 @@ describe("Pitting Service", () => {
 				]);
 			});
 
-			test.skip("should properly seed a 6 team bracket", () => {
+			test("should properly seed a three room, 6 team bracket", () => {
 				expect(
 					pittingService.generateInitialPittings(
 						new Ladder({
 							...BASE_LADDER,
+							threeRooms: true,
 							teams: {
 								A: "A",
 								B: "B",
@@ -559,6 +561,33 @@ describe("Pitting Service", () => {
 			});
 
 			describe("generateNextSwissRound", () => {
+				test("should return an empty array when there is not enough information", () => {
+					expect(
+						pittingService.generateNextSwissRound(
+							{
+								id: "",
+								name: "",
+								drawType: DrawType.TRADITIONAL,
+								ladderType: LadderStyle.TRADITIONAL,
+								numRounds: 0,
+								calculateStatus: function (): LadderStatus {
+									throw new Error("Function not implemented.");
+								},
+								calculateTeams: function (): number | undefined {
+									throw new Error("Function not implemented.");
+								},
+								calculateRoundsPlayed: function (): number | undefined {
+									throw new Error("Function not implemented.");
+								},
+								isSwiss: function (): boolean {
+									throw new Error("Function not implemented.");
+								}
+							},
+							0
+						)
+					).toEqual([]);
+				});
+
 				test("should generate a chalk round when there are no conflicts", () => {
 					expect(
 						pittingService.generateNextSwissRound(

@@ -31,6 +31,7 @@
 		"start": "PORT=3030 react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
+		"test:coverage": "react-scripts test --coverage --watchAll --collectCoverageFrom='src/**/*.{js,jsx,ts,tsx}'",
 		"eject": "react-scripts eject"
 	},
 	"eslintConfig": {
