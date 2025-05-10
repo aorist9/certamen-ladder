@@ -6,7 +6,7 @@ import { DrawType, LadderStyle } from "../constants";
 import ladderService from "../services/ladderService";
 import { Ladder } from "../types/LadderType";
 import Teams from "../types/Teams";
-import { useFeatureFlags } from "../utils/featureFlagsContext";
+import { useFeatureFlags } from "../contexts/featureFlagsContext";
 
 const CreateLadder = () => {
 	const {

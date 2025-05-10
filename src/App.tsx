@@ -11,7 +11,7 @@ import "./App.css";
 import HamburgerIcon from "./icons/Hamburger";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScoreSheet from "./routes/ScoreSheet";
-import { FeatureFlagsProvider } from "./utils/featureFlagsContext";
+import { FeatureFlagsProvider } from "./contexts/featureFlagsContext";
 
 function App() {
 	const headerRef = useRef<HTMLHeadingElement>(null);

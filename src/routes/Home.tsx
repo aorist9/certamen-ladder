@@ -1,6 +1,6 @@
 import React from "react";
 import "./Home.css";
-import { useFeatureFlags } from "../utils/featureFlagsContext";
+import { useFeatureFlags } from "../contexts/featureFlagsContext";
 
 const Home = () => {
 	const {

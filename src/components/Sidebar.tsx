@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PublishLadder from "./PublishLadder";
 import "./Sidebar.css";
-import { useFeatureFlags } from "../utils/featureFlagsContext";
+import { useFeatureFlags } from "../contexts/featureFlagsContext";
 
 type SidebarProps = {
 	visible: boolean;

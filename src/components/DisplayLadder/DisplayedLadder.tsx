@@ -8,7 +8,7 @@ import { EMPTY_QUESTIONS, LadderStyle } from "../../constants";
 import { v4 as uuid } from "uuid";
 import scoreSheetService from "../../services/scoreSheetService";
 import ladderService from "../../services/ladderService";
-import { useFeatureFlags } from "../../utils/featureFlagsContext";
+import { useFeatureFlags } from "../../contexts/featureFlagsContext";
 import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 
 type DisplayedLadderProps = {

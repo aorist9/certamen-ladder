@@ -4,7 +4,7 @@ import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
 import { RoomV2 } from "../../types/Matches";
 import scoreSheetService from "../../services/scoreSheetService";
-import { useFeatureFlags } from "../../utils/featureFlagsContext";
+import { useFeatureFlags } from "../../contexts/featureFlagsContext";
 
 type RoomDisplayProps = {
 	editStatus: EditingStatus;
