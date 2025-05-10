@@ -47,17 +47,19 @@ export enum LadderStatus {
 	DONE = "Done"
 }
 
+export interface Division {
+	division?: string;
+	teams: Teams;
+	threeRooms?: boolean;
+	rooms?: string[];
+	matches?: MatchesV2;
+}
+
 export class Ladder implements LadderTypeV2 {
 	public id: string;
 	public publicId?: string;
 	public name: string;
-	public divisions?: {
-		division?: string;
-		teams: Teams;
-		threeRooms?: boolean;
-		rooms?: string[];
-		matches?: MatchesV2;
-	}[];
+	public divisions?: Division[];
 	public drawType: DrawType;
 	public ladderType: LadderStyle;
 	public numRounds: number;
