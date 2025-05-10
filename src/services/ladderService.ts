@@ -99,18 +99,23 @@ const saveScoreSheets = (scoreSheets: RoundOutput[]) => {
 };
 
 const getPublicLadder = async (id: string): Promise<Ladder | undefined> => {
-	const response = await window.fetch(
-		`${BACKEND_URL}/api/certamen/ladders.php?id=${id}&expand=scoreSheets`,
-		{
-			method: "GET"
-		}
-	);
+	try {
+		const response = await window.fetch(
+			`${BACKEND_URL}/api/certamen/ladders.php?id=${id}&expand=scoreSheets`,
+			{
+				method: "GET"
+			}
+		);
 
-	const json = await response.json();
-	if (json.scoreSheets) {
-		saveScoreSheets(json.scoreSheets);
+		const json = await response.json();
+		if (json.scoreSheets) {
+			saveScoreSheets(json.scoreSheets);
+		}
+		return new Ladder(json.ladder);
+	} catch (error) {
+		console.error("Error fetching public ladder:", error);
+		return undefined;
 	}
-	return new Ladder(json.ladder);
 };
 
 const ladderService = {
