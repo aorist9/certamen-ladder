@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
-import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
@@ -100,25 +99,6 @@ const LadderTable = ({
 									<button
 										style={{ marginLeft: "1.5em" }}
 										onClick={() => {
-											if (
-												roundScoreEditStatuses[i] === EditingStatus.EDITING &&
-												isSwiss
-											) {
-												let newPittings = [
-													...pittings.slice(0, i),
-													pittings[i].map(
-														isSwissByPoints
-															? room =>
-																	addSwissByPointsPoints(room, pittings[i])
-															: addSwissPoints
-													),
-													...pittings.slice(i + 1)
-												];
-
-												updateMatches(newPittings);
-												setPittings(newPittings);
-											}
-
 											setRoundScoreEditStatuses([
 												...roundScoreEditStatuses.slice(0, i),
 												roundScoreEditStatuses[i] === EditingStatus.EDITING

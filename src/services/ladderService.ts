@@ -21,6 +21,8 @@ const updateScoresheets = (ladder: Ladder, skipEdit?: boolean) => {
 						const scores = scoreSheet.scores;
 						room.teams = scoreSheet.teams.map((team, idx) => ({
 							team: team.name,
+							swissPoints: room.teams.find(t => t.team === team.name)
+								?.swissPoints,
 							score: scores[idx]
 						}));
 						edited = true;

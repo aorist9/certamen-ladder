@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import scoreSheetService from "../../services/scoreSheetService";
 import ladderService from "../../services/ladderService";
 import { useFeatureFlags } from "../../utils/featureFlagsContext";
+import addSwissPoints, { addSwissByPointsPoints } from "./addSwissPoints";
 
 type DisplayedLadderProps = {
 	divisionNumber?: number;
@@ -174,31 +175,69 @@ const DisplayedLadder = ({
 							</button>
 						)}
 					{ladder.isSwiss() &&
-					pittings[pittings.length - 1][0].teams[0].swissPoints !== undefined &&
-					ladder.numRounds > pittings.length
+					(pittings[pittings.length - 1][0].teams[0].swissPoints !==
+						undefined ||
+						ladder.numRounds > pittings.length)
 						? hideIfPublic(
 								<button
 									style={{ marginLeft: "1em" }}
 									onClick={() => {
 										let newPittings = [...pittings];
+										newPittings[newPittings.length - 1] = newPittings[
+											newPittings.length - 1
+										].map(room => {
+											if (ladder?.ladderType === LadderStyle.SWISS_BY_POINTS) {
+												return addSwissByPointsPoints(
+													room,
+													newPittings[newPittings.length - 1]
+												);
+											} else {
+												return addSwissPoints(room);
+											}
+										});
+
 										if (ladder?.divisions && ladder.divisions.length) {
 											ladder.divisions[divisionNumber || 0].matches =
 												newPittings;
 										}
-										newPittings.push(
-											pittingService
-												.generateNextSwissRound(ladder, divisionNumber || 0)
-												.map(room => ({ teams: room.map(team => ({ team })) }))
-										);
+										if (ladder.numRounds > pittings.length) {
+											newPittings.push(
+												pittingService
+													.generateNextSwissRound(ladder, divisionNumber || 0)
+													.map(room => {
+														const scoresheetId = uuid();
+														scoreSheetService.addScoreSheet(
+															{
+																id: scoresheetId,
+																teams: room.map(team => ({
+																	name: team,
+																	players: Array(4).fill("")
+																})),
+																questions: EMPTY_QUESTIONS
+															},
+															ladder.id
+														);
+														return {
+															scoresheetId,
+															teams: room.map(team => ({ team }))
+														};
+													})
+											);
+										}
 										updateMatches(newPittings);
 										setPittings(newPittings);
-										setRoundScoreEditStatuses([
-											...roundScoreEditStatuses,
-											EditingStatus.NEW
-										]);
+										if (ladder.numRounds > pittings.length) {
+											setRoundScoreEditStatuses([
+												...roundScoreEditStatuses,
+												EditingStatus.NEW
+											]);
+										}
 									}}
 								>
-									Generate Next Round
+									Finish Round
+									{ladder.numRounds > pittings.length
+										? "/Generate Next Round"
+										: ""}
 								</button>
 						  )
 						: ""}
