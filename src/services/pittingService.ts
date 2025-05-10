@@ -33,6 +33,20 @@ const addPlaceholderTeams = (
 	return teams;
 };
 
+const createPittingGroups = (orderedTeams: string[]): string[][][] => {
+	const result: string[][][] = [[]];
+	for (let i = 0; i < orderedTeams.length; i += TEAMS_PER_ROOM) {
+		let pitting: string[] = [];
+		pushIfTeam(orderedTeams[i], pitting);
+		pushIfTeam(orderedTeams[i + 1], pitting);
+		if (orderedTeams.length > i + 2) {
+			pushIfTeam(orderedTeams[i + 2], pitting);
+		}
+		result[0].push(pitting);
+	}
+	return result;
+};
+
 const pittingService = {
 	generateInitialPittings: (
 		ladder: Ladder | undefined,
@@ -59,16 +73,7 @@ const pittingService = {
 
 		orderedTeams = addPlaceholderTeams(orderedTeams, division.threeRooms);
 
-		const result: string[][][] = [[]];
-		for (let i = 0; i < orderedTeams.length; i += TEAMS_PER_ROOM) {
-			let pitting: string[] = [];
-			pushIfTeam(orderedTeams[i], pitting);
-			pushIfTeam(orderedTeams[i + 1], pitting);
-			if (orderedTeams.length > i + 2) {
-				pushIfTeam(orderedTeams[i + 2], pitting);
-			}
-			result[0].push(pitting);
-		}
+		const result: string[][][] = createPittingGroups(orderedTeams);
 
 		if (ladder.ladderType === LadderStyle.TRADITIONAL && ladder.numRounds > 1) {
 			if (isSpecialCase(originalOrderedTeams.length)) {
