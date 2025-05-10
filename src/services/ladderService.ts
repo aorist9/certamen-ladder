@@ -8,6 +8,10 @@ export const BACKEND_URL =
 		? "https://txclassics.org"
 		: "http://localhost";
 
+const HEADERS = {
+	"content-type": "application/json"
+};
+
 const STORAGE_ITEM = "certamen-ladder.ladders";
 
 const updateScoresheets = (ladder: Ladder, skipEdit?: boolean) => {
@@ -75,6 +79,7 @@ const editLadder = (ladder: Ladder): void => {
 	if (ladder.publicId) {
 		window.fetch(`${BACKEND_URL}/api/certamen/ladders.php`, {
 			method: "PUT",
+			headers: HEADERS,
 			body: JSON.stringify(ladder)
 		});
 	}
@@ -85,9 +90,7 @@ const publishLadder = async (ladder: Ladder): Promise<Ladder> => {
 		`${BACKEND_URL}/api/certamen/ladders.php`,
 		{
 			method: "POST",
-			headers: {
-				"content-type": "application/json"
-			},
+			headers: HEADERS,
 			body: JSON.stringify(ladder)
 		}
 	);
