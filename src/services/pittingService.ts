@@ -16,6 +16,23 @@ const pushIfTeam = (team: string, array: string[]) => {
 	}
 };
 
+const addPlaceholderTeams = (
+	teams: string[],
+	threeRooms?: boolean
+): string[] => {
+	if (teams.length % TEAMS_PER_ROOM !== 0) {
+		teams.push(NOT_A_TEAM);
+		if (teams.length % TEAMS_PER_ROOM !== 0) {
+			teams.splice(teams.length - 5, 0, NOT_A_TEAM);
+		}
+	} else if (teams.length === 6 && threeRooms) {
+		teams.push(NOT_A_TEAM);
+		teams.splice(2, 0, NOT_A_TEAM);
+		teams.splice(5, 0, NOT_A_TEAM);
+	}
+	return teams;
+};
+
 const pittingService = {
 	generateInitialPittings: (
 		ladder: Ladder | undefined,
@@ -32,7 +49,7 @@ const pittingService = {
 
 		const division = ladder.divisions[divisionNumber];
 
-		const orderedTeams: string[] = Object.keys(division.teams)
+		let orderedTeams: string[] = Object.keys(division.teams)
 			.sort()
 			.map(
 				(letter: string) =>
@@ -40,16 +57,7 @@ const pittingService = {
 			);
 		const originalOrderedTeams = [...orderedTeams];
 
-		if (orderedTeams.length % TEAMS_PER_ROOM !== 0) {
-			orderedTeams.push(NOT_A_TEAM);
-			if (orderedTeams.length % TEAMS_PER_ROOM !== 0) {
-				orderedTeams.splice(orderedTeams.length - 5, 0, NOT_A_TEAM);
-			}
-		} else if (orderedTeams.length === 6 && division.threeRooms) {
-			orderedTeams.push(NOT_A_TEAM);
-			orderedTeams.splice(2, 0, NOT_A_TEAM);
-			orderedTeams.splice(5, 0, NOT_A_TEAM);
-		}
+		orderedTeams = addPlaceholderTeams(orderedTeams, division.threeRooms);
 
 		const result: string[][][] = [[]];
 		for (let i = 0; i < orderedTeams.length; i += TEAMS_PER_ROOM) {
