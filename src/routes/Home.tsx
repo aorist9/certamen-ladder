@@ -46,10 +46,6 @@ const Home = () => {
 						will be able to send a link to someone who can then keep score on
 						their phone or on a laptop, and the score will be automatically
 						reflected on the ladder and scoreboard pages.
-						<br />
-						N.B. You should <i>either</i> set scores on the ladder page{" "}
-						<i>or</i> use the scoresheet, since the scoresheet will repeatedly
-						overwrite scores set from the ladder page.
 					</p>
 				</>
 			)}
