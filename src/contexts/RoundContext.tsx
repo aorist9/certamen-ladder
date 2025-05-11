@@ -43,6 +43,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isEditMode, setIsEditMode] = useState(isDemo);
 	const [editModeError, setEditModeError] = useState<string | undefined>();
+	const [loading, setLoading] = useState(true);
 
 	const ladder = ladderService.getLadder(query.get("ladder") || "");
 	const scoreSheet = roundId
@@ -103,6 +104,15 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	}, [ladderId, round, scoreSheet, teams, password]);
 
 	useEffect(() => {
+		if (roundId) {
+			scoreSheetService.getScoreSheetAsync(roundId).then(updatedScoreSheet => {
+				if (updatedScoreSheet) {
+					setTeams(updatedScoreSheet.teams);
+					setQuestions(updatedScoreSheet.questions);
+				}
+				setLoading(false);
+			});
+		}
 		const interval = setInterval(() => {
 			if (!isEditMode && roundId) {
 				scoreSheetService
@@ -155,6 +165,8 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 				)}
 			</RoundContext.Provider>
 		);
+	} else if (loading) {
+		return <p>Loading...</p>;
 	} else {
 		return <p>You may have reached this page in error</p>;
 	}
