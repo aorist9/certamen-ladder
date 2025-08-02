@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import { Ladder } from "../types/LadderType";
@@ -7,10 +7,10 @@ import QRCode from "react-qr-code";
 const PublishLadder = () => {
 	const ladderId: string | null = useSearchParams()[0].get("ladder");
 	const [loading, setLoading] = useState<boolean>(false);
-	const ladder: Ladder | undefined = useMemo(
-		() => (ladderId ? ladderService.getLadder(ladderId) : undefined),
-		[ladderId]
+	const [ladder, setLadder] = useState<Ladder | undefined>(
+		ladderId ? ladderService.getLadder(ladderId) : undefined
 	);
+
 	if (loading) {
 		return <section>Processing...</section>;
 	} else if (ladder?.publicId) {
@@ -43,7 +43,12 @@ const PublishLadder = () => {
 					const lddr: Ladder | undefined = ladderService.getLadder(ladder.id);
 					if (!lddr) {
 						throw new Error("umm... there's no ladder");
+					} else if (lddr.publicId) {
+						setLadder(lddr);
+						setLoading(false);
+						return;
 					}
+
 					ladderService
 						.publishLadder(lddr)
 						.then(newLadder => {
