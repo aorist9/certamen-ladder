@@ -101,7 +101,7 @@ const saveScoreSheets = (scoreSheets: RoundOutput[]) => {
 const getPublicLadder = async (id: string): Promise<Ladder | undefined> => {
 	try {
 		const response = await window.fetch(
-			`${BACKEND_URL}/api/certamen/ladders.php?id=${id}`,
+			`${BACKEND_URL}/api/certamen/ladders.php?id=${id}&expand=scoreSheets`,
 			{
 				method: "GET"
 			}
