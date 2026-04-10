@@ -6,10 +6,14 @@ const ScoreSheetHeader: React.FC<{
 	ladderId?: string | null;
 	publicId?: string | null;
 }> = ({ ladderId, publicId }) => {
-	const { isEditMode, setIsEditMode } = useRoundContext();
+	const { isEditMode, ladderName, roomName, setIsEditMode } = useRoundContext();
 	return (
 		<header className="score-sheet-header">
-			<h2>Code Sheet</h2>
+      <section>
+  			<h2>Code Sheet</h2>
+        {ladderName && <div><strong>{ladderName}</strong></div>}
+        {roomName && <div>Room: {roomName}</div>}
+      </section>
 			<label
 				htmlFor="edit-mode"
 				className="do-not-print"

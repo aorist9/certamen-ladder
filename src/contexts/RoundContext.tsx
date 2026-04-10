@@ -14,25 +14,29 @@ import { EMPTY_QUESTIONS } from "../constants";
 import PasswordInput from "../components/ScoreSheet/PasswordInput";
 
 const RoundContext = createContext<{
+	isEditMode: boolean;
+  ladderName: string | undefined;
 	questions: Question[];
+  roomName: string | undefined;
 	scores: number[];
-	setQuestions: (questions: Question[]) => void;
-	setTeams: (teams: Team[]) => void;
 	teamOrder: string[];
 	teams: Team[];
-	isEditMode: boolean;
 	setIsEditMode: (isEditMode: boolean) => void;
 	setPassword: (password: string) => void;
+	setQuestions: (questions: Question[]) => void;
+	setTeams: (teams: Team[]) => void;
 }>({
+  isEditMode: false,
+  ladderName: undefined,
 	questions: [],
+  roomName: undefined,
 	scores: [],
-	setQuestions: () => {},
-	setTeams: () => {},
 	teamOrder: [],
 	teams: [],
+	setIsEditMode: (isEditMode: boolean): void => {},
 	setPassword: () => {},
-	isEditMode: false,
-	setIsEditMode: (isEditMode: boolean): void => {}
+	setQuestions: () => {},
+	setTeams: () => {},
 });
 
 export const RoundContextProvider = ({ children }: PropsWithChildren) => {
@@ -85,6 +89,21 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		[roundId, teams, questions, password]
 	);
 
+  const roomName: string | undefined = useMemo(() => {
+    if (ladder?.divisions) {
+      for (let i = 0; i < ladder.divisions.length; i++) {
+        if (!ladder.divisions[i].rooms) {
+          continue;
+        }
+
+        let index = ladder.divisions[i].matches?.findIndex(match => match.some(r => r.scoresheetId === roundId));
+        if (index !== undefined && index >= 0) {
+          return ladder.divisions[i].rooms?.[index];
+        }
+      }
+    }
+  }, [ladder?.divisions, roundId]);
+
 	const ladderId = ladder?.id;
 	useEffect(() => {
 		if (
@@ -133,7 +152,9 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		return (
 			<RoundContext.Provider
 				value={{
+          ladderName: ladder?.name,
 					questions: round.questions,
+          roomName,
 					scores: round.scores,
 					setQuestions: (questions: Question[]) => {
 						setQuestions(questions);

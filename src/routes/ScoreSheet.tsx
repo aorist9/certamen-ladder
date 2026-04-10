@@ -1,11 +1,11 @@
 import React from "react";
-import "./ScoreSheet.css";
 import Teams from "../components/ScoreSheet/Teams";
 import { RoundContextProvider } from "../contexts/RoundContext";
 import TotalScores from "../components/ScoreSheet/TotalScores";
 import Questions from "../components/ScoreSheet/Questions";
 import { useSearchParams } from "react-router-dom";
 import ScoreSheetHeader from "../components/ScoreSheet/ScoreSheetHeader";
+import "./ScoreSheet.css";
 
 export interface Player {
 	name: string;
