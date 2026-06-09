@@ -18,6 +18,7 @@ const RoundContext = createContext<{
   ladderName: string | undefined;
 	questions: Question[];
   roomName: string | undefined;
+  roundNumber: number | undefined;
 	scores: number[];
 	teamOrder: string[];
 	teams: Team[];
@@ -30,6 +31,7 @@ const RoundContext = createContext<{
   ladderName: undefined,
 	questions: [],
   roomName: undefined,
+  roundNumber: undefined,
 	scores: [],
 	teamOrder: [],
 	teams: [],
@@ -89,19 +91,30 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		[roundId, teams, questions, password]
 	);
 
-  const roomName: string | undefined = useMemo(() => {
+  const { roomName, roundNumber }: {roomName: string | undefined; roundNumber: number | undefined} = useMemo(() => {
     if (ladder?.divisions) {
       for (let i = 0; i < ladder.divisions.length; i++) {
         if (!ladder.divisions[i].rooms) {
           continue;
         }
 
-        let index = ladder.divisions[i].matches?.findIndex(match => match.some(r => r.scoresheetId === roundId));
+        let roundNumber;
+        let index = ladder.divisions[i].matches?.findIndex(match => {
+          let matched = match.findIndex(r => r.scoresheetId === roundId);
+          if (matched !== undefined && matched >= 0) {
+            roundNumber = matched + 1;
+            return true;
+          } else {
+            return false;
+          }
+        });
         if (index !== undefined && index >= 0) {
-          return ladder.divisions[i].rooms?.[index];
+          return { roomName: ladder.divisions[i].rooms?.[index], roundNumber };
         }
       }
     }
+
+    return { roomName: undefined, roundNumber: undefined };
   }, [ladder?.divisions, roundId]);
 
 	const ladderId = ladder?.id;
@@ -155,6 +168,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
           ladderName: ladder?.name,
 					questions: round.questions,
           roomName,
+          roundNumber,
 					scores: round.scores,
 					setQuestions: (questions: Question[]) => {
 						setQuestions(questions);

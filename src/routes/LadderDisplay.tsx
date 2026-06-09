@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import ladderService, { useLadder } from "../services/ladderService";
 import { MatchesV2 } from "../types/Matches";
 import DisplayedLadder from "../components/DisplayLadder/DisplayedLadder";
+// @ts-ignore
 import "./LadderDisplay.css";
 
 const LadderDisplay = () => {

@@ -243,6 +243,7 @@ const DisplayedLadder = ({
 						: ""}
 				</h3>
 				<LadderTable
+          divisionIdx={divisionNumber || 0}
 					hideIfPublic={hideIfPublic}
 					isSwiss={ladder.isSwiss()}
 					isSwissByPoints={ladder.ladderType === LadderStyle.SWISS_BY_POINTS}

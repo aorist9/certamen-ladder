@@ -7,11 +7,12 @@ import ViewLadders from "./routes/ViewLadders";
 import Draw from "./routes/Draw";
 import LadderDisplay from "./routes/LadderDisplay";
 import ScoreboardPage from "./routes/ScoreboardPage";
-import "./App.css";
+import LadderRow from "./routes/LadderRow";
 import HamburgerIcon from "./icons/Hamburger";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScoreSheet from "./routes/ScoreSheet";
 import { FeatureFlagsProvider } from "./contexts/featureFlagsContext";
+import "./App.css";
 
 function App() {
 	const headerRef = useRef<HTMLHeadingElement>(null);
@@ -56,6 +57,7 @@ function App() {
 										<Route path="/draw" element={<Draw />} />
 										<Route path="/ladder" element={<LadderDisplay />} />
 										<Route path="/ladders" element={<ViewLadders />} />
+										<Route path="/ladder-row" element={<LadderRow />} />
 										<Route path="/scoreboard" element={<ScoreboardPage />} />
 										<Route path="/score-sheet" element={<ScoreSheet />} />
 									</Routes>

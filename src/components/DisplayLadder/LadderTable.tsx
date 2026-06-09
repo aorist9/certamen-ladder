@@ -2,6 +2,8 @@ import { ChangeEvent, useState } from "react";
 import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
+import { Link } from "react-router-dom";
+import RoomLinkCell from "./RoomLinkCell";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
 	switch (status) {
@@ -15,6 +17,7 @@ const determineAddScoresButtonText = (status: EditingStatus) => {
 };
 
 type LadderTableProps = {
+  divisionIdx: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
@@ -53,6 +56,7 @@ const updatePittingScores = (
 };
 
 const LadderTable = ({
+  divisionIdx = 0,
 	hideIfPublic,
 	isSwiss,
 	isSwissByPoints,
@@ -114,6 +118,7 @@ const LadderTable = ({
 						</th>
 					))}
 					{roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
+          {matches?.some(round => round.some(room => room.scoresheetId)) && <th className="hide-print">Room Link</th>}
 				</tr>
 			</thead>
 			<tbody>
@@ -200,6 +205,15 @@ const LadderTable = ({
 								)}
 							</td>
 						)}
+            {matches?.some(round => round.some(room => room.scoresheetId)) && (
+              <RoomLinkCell
+                ladderId={ladderId}
+                publicLadderId={publicLadderId}
+                divisionIdx={divisionIdx}
+                roomIdx={i}
+                scoreSheetIds={pittings.map(round => round[i].scoresheetId).filter(Boolean) as string[]}
+              />
+            )}
 					</tr>
 				))}
 			</tbody>
