@@ -2,7 +2,6 @@ import { ChangeEvent, useState } from "react";
 import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
-import { Link } from "react-router-dom";
 import RoomLinkCell from "./RoomLinkCell";
 
 const determineAddScoresButtonText = (status: EditingStatus) => {
