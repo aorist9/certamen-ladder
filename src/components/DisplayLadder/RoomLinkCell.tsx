@@ -32,7 +32,7 @@ const RoomLinkCell = ({
           body: JSON.stringify({
             email,
             ladderId,
-            roomLink: `${process.env.NODE_ENV === "production" ? "https://aorist9.github.io/certamen-ladder" : "http://localhost:3030"}/#/ladder-row?ladder=${ladderId}&division=${divisionIdx}&room=${roomIdx}`,
+            roomLink: `${process.env.NODE_ENV === "production" ? "https://aorist9.github.io/certamen-ladder" : "http://localhost:3030"}/#/ladder-row?publicLadderId=${publicLadderId}&division=${divisionIdx}&room=${roomIdx}`,
             scoreSheets: scoreSheetIds.map((id, idx) => ({ id, round: `Round ${idx + 1}` }))
           })
         }
