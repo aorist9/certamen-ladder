@@ -6,6 +6,7 @@ import CommentSection from "./CommentSection";
 import NavigationPanel from "./NavigationPanel";
 import EditSection from "./EditSection";
 import TimerSection from "./TimerSection";
+import { NOT_A_TEAM } from "../../constants";
 
 enum State {
 	TOSSUP,
@@ -185,7 +186,13 @@ const CurrentQuestion = ({
 				</section>
 				<section className="current-tossup">
 					{teams.map((team, teamIdx) => (
-						<section key={team.name} className="buzzer-section">
+						<section
+              key={
+                team.name === NOT_A_TEAM.name ?
+                  `${team.name}${teamIdx}` :
+                  team.name}
+              className="buzzer-section"
+            >
 							{team.players.map((player, playerIdx) => (
 								<button
 									key={playerIdx}

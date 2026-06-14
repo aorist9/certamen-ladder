@@ -1,5 +1,6 @@
 import React from "react";
 import { useRoundContext } from "../../contexts/RoundContext";
+import { NOT_A_TEAM } from "../../constants";
 
 const UP_ARROW = "\u2191";
 const DOWN_ARROW = "\u2193";
@@ -43,7 +44,7 @@ const TeamDisplay = ({
 					</section>
 				)}
 			</section>
-			{isEditMode && (
+			{isEditMode && team !== NOT_A_TEAM.name && (
 				<button className="btn-info hide-print" onClick={addPlayers}>
 					Add Players
 				</button>

@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import TeamDisplay from "./TeamDisplay";
 import Players from "./Players";
 import { useRoundContext } from "../../contexts/RoundContext";
-import { LETTERS } from "../../types/Round";
+import { LETTERS, Team } from "../../types/Round";
 
 export interface Player {
 	name: string;
 	isCaptain?: boolean;
 }
+
+const reletter = (teams: Team[]) => teams.map((team, idx) => ({ ...team, letter: LETTERS[idx] }));
 
 const Teams = () => {
 	const { teams, setTeams } = useRoundContext();
@@ -39,31 +41,32 @@ const Teams = () => {
 		return (
 			<ul className="teams">
 				{teams.map((team, idx) => (
-					<React.Fragment key={team.name}>
+					<React.Fragment key={idx}>
 						<TeamDisplay
 							addPlayers={() => setPlayerEditingTeam(idx)}
 							letter={LETTERS[idx]}
 							moveDown={
 								idx < teams.length - 1
 									? () => {
-											setTeams([
+                    const newTeams = [
 												...teams.slice(0, idx),
 												teams[idx + 1],
 												team,
 												...teams.slice(idx + 2)
-											]);
+											]
+											setTeams(reletter(newTeams));
 									  }
 									: undefined
 							}
 							moveUp={
 								idx > 0
 									? () => {
-											setTeams([
+											setTeams(reletter([
 												...teams.slice(0, idx - 1),
 												team,
 												teams[idx - 1],
 												...teams.slice(idx + 1)
-											]);
+											]));
 									  }
 									: undefined
 							}

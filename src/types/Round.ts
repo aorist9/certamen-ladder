@@ -1,3 +1,5 @@
+import { NOT_A_TEAM } from "../constants";
+
 export interface Player {
 	name: string;
 	isCaptain?: boolean;
@@ -6,6 +8,7 @@ export interface Player {
 export interface Team {
 	name: string;
 	players: Player[];
+  letter?: "A" | "B" | "C" | "D";
 }
 
 export interface Question {
@@ -91,7 +94,7 @@ export default class Round {
 		return {
 			id: this.id,
 			questions: this._questions,
-			teams: this.teams,
+			teams: this.teams.filter(team => team.name !== NOT_A_TEAM.name),
 			password: this._password
 		};
 	}

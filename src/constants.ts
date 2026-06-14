@@ -1,4 +1,4 @@
-import { Question } from "./types/Round";
+import { Question, Team } from "./types/Round";
 
 export const drawTypes: string[] = [
 	"I wanna use scraps of paper like my ancestors did",
@@ -75,3 +75,5 @@ export const EMPTY_QUESTIONS: Question[] = Array(20).fill({
 	buzzes: [],
 	boni: []
 });
+
+export const NOT_A_TEAM: Team = { name: "Unoccupied", players: [] };

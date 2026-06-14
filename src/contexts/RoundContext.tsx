@@ -6,11 +6,11 @@ import React, {
 	useMemo,
 	useState
 } from "react";
-import Round, { Question, Team } from "../types/Round";
+import Round, { LETTERS, Question, Team } from "../types/Round";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import scoreSheetService from "../services/scoreSheetService";
-import { EMPTY_QUESTIONS } from "../constants";
+import { EMPTY_QUESTIONS, NOT_A_TEAM } from "../constants";
 import PasswordInput from "../components/ScoreSheet/PasswordInput";
 
 const RoundContext = createContext<{
@@ -56,14 +56,31 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 		? scoreSheetService.getScoreSheet(roundId)
 		: undefined;
 
-	const [teams, setTeams] = useState(
-		isDemo
-			? ["Team", "Other Team", "Yet Another Team"].map(team => ({
+  let initialTeams: Team[] = isDemo
+			? ["Team", "Other Team", "Yet Another Team"].map((team, tIdx) => ({
 					name: team,
-					players: Array(4).fill({ name: "", isCaptain: false })
+					players: Array(4).fill({ name: "", isCaptain: false }),
+          letter: LETTERS[tIdx]
 			  }))
-			: scoreSheet?.teams
-	);
+			: scoreSheet?.teams || [];
+
+  while (initialTeams?.length < 4) {
+    initialTeams.push(NOT_A_TEAM);
+  }
+
+	const [teams, rawSetTeams] = useState(initialTeams);
+  const setTeams = (teams: Team[]) => {
+    const newTeams = Array(4).fill(NOT_A_TEAM);
+    teams.forEach((team, idx) => {
+      if (team.letter) {
+        newTeams[LETTERS.indexOf(team.letter)] = team;
+      } else if (team.name !== NOT_A_TEAM.name) {
+        newTeams[idx] = team;
+      }
+    });
+    rawSetTeams(newTeams);
+  }
+
 	const [questions, setQuestions] = useState(
 		scoreSheet?.questions || EMPTY_QUESTIONS
 	);
@@ -136,7 +153,7 @@ export const RoundContextProvider = ({ children }: PropsWithChildren) => {
 	}, [ladderId, round, scoreSheet, teams, password]);
 
 	useEffect(() => {
-		if (roundId) {
+		if (!isEditMode && roundId) {
 			scoreSheetService.getScoreSheetAsync(roundId).then(updatedScoreSheet => {
 				if (updatedScoreSheet) {
 					setTeams(updatedScoreSheet.teams);

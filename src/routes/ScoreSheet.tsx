@@ -5,6 +5,7 @@ import TotalScores from "../components/ScoreSheet/TotalScores";
 import Questions from "../components/ScoreSheet/Questions";
 import { useSearchParams } from "react-router-dom";
 import ScoreSheetHeader from "../components/ScoreSheet/ScoreSheetHeader";
+// @ts-ignore
 import "./ScoreSheet.css";
 
 export interface Player {
