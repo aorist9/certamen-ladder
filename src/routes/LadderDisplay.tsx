@@ -23,6 +23,7 @@ const LadderDisplay = () => {
 	}, [ladder]);
 
 	if (ladder) {
+    const message = ladder.displayedMessage();
 		return (
 			<section className="App-page ladder-display">
 				<section style={{ display: "flex", columnGap: "2em" }}>
@@ -37,6 +38,11 @@ const LadderDisplay = () => {
 						Scoreboard
 					</Link>
 				</section>
+        {message && (
+          <div className="ladder-message">
+            <p>{message}</p>
+          </div>
+        )}
 				{hideIfPublic(
 					<p className="hide-print">
 						Click and drag to move a match up and down to a different room

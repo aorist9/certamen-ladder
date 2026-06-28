@@ -570,6 +570,7 @@ describe("Pitting Service", () => {
 								drawType: DrawType.TRADITIONAL,
 								ladderType: LadderStyle.TRADITIONAL,
 								numRounds: 0,
+                displayedMessage: jest.fn(),
 								calculateStatus: function (): LadderStatus {
 									throw new Error("Function not implemented.");
 								},

@@ -6,6 +6,10 @@ export interface LadderTypeV2 {
 	id: string;
 	publicId?: string;
 	name: string;
+  message?: {
+    text: string;
+    showUntil: "ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE";
+  }
 	divisions?: {
 		division?: string;
 		teams: Teams;
@@ -58,6 +62,10 @@ export interface Division {
 export class Ladder implements LadderTypeV2 {
 	public id: string;
 	public publicId?: string;
+  public message?: {
+    text: string;
+    showUntil: "ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE";
+  }
 	public name: string;
 	public divisions?: Division[];
 	public drawType: DrawType;
@@ -75,6 +83,7 @@ export class Ladder implements LadderTypeV2 {
 			this.drawType = ladder.drawType;
 			this.ladderType = ladder.ladderType;
 			this.numRounds = ladder.numRounds;
+      this.message = ladder.message;
 		} else {
 			this.drawType = drawTypes[ladder.draw] as DrawType;
 			this.ladderType = ladderTypes[ladder.type] as LadderStyle;
@@ -124,7 +133,7 @@ export class Ladder implements LadderTypeV2 {
 	calculateStatus(): LadderStatus {
 		if (
 			!this.divisions?.length ||
-			this.divisions.some(division => !division.teams)
+			this.divisions.some(division => !division.teams || !Object.keys(division.teams).length)
 		) {
 			return LadderStatus.CREATED;
 		}
@@ -185,6 +194,34 @@ export class Ladder implements LadderTypeV2 {
 			this.ladderType === LadderStyle.SWISS_BY_POINTS
 		);
 	}
+
+  displayedMessage(): string | undefined {
+    if (!this.message) {
+      return undefined;
+    }
+
+    const status = this.calculateStatus();
+    if (this.message.showUntil === "ALWAYS") {
+      return this.message.text;
+    } else if (
+      this.message.showUntil === "DRAW" &&
+      LadderStatus.CREATED === status
+    ) {
+      return this.message.text;
+    } else if (
+      this.message.showUntil === "IN_PROGRESS" &&
+      [LadderStatus.CREATED, LadderStatus.DRAWN].includes(status)
+    ) {
+      return this.message.text;
+    } else if (
+      this.message.showUntil === "DONE" &&
+      status !== LadderStatus.DONE
+    ) {
+      return this.message.text;
+    }
+
+    return undefined;
+  }
 }
 
 export default LadderType;

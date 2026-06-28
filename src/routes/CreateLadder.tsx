@@ -21,6 +21,8 @@ const CreateLadder = () => {
 	const [type, setType] = useState<keyof typeof LadderStyle>("TRADITIONAL");
 	const [rounds, setRounds] = useState<number | undefined>(3);
 	const [draw, setDraw] = useState<DrawType | undefined>();
+  const [messageText, setMessageText] = useState<string>("");
+  const [messageShowUntil, setMessageShowUntil] = useState<"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | undefined>();
 	const [error, setError] = useState<string>("");
 	const navigate = useNavigate();
 
@@ -48,6 +50,13 @@ const CreateLadder = () => {
 			} else {
 				newLadder.divisions = [{ teams: {} }];
 			}
+
+      if (messageText?.length) {
+        newLadder.message = {
+          text: messageText,
+          showUntil: messageShowUntil || "ALWAYS"
+        }
+      }
 
 			ladderService.addLadder(newLadder);
 			navigate(`/draw?ladder=${ladderId}`);
@@ -180,6 +189,38 @@ const CreateLadder = () => {
 							</label>
 						))}
 					</section>
+          <section className="form-field">
+            <label htmlFor="ladder-message-text">Type an optional message to be shown on the ladder (e.g. Draw will be held in the auditorium at 9:15 AM)</label>
+            <input
+              type="text"
+              id="ladder-message-text"
+              style={{ minWidth: "20rem" }}
+              placeholder="A message to display on the ladder page"
+              value={messageText}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setMessageText(e.target.value)
+              }
+            />
+          </section>
+          <section className="form-field">
+            <label htmlFor="ladder-message-show-until">This message should be shown until...</label>
+            <select
+              id="ladder-message-show-until"
+              value={messageShowUntil}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                setMessageShowUntil(e.target.value as any)
+                if (!e.target.value?.length) {
+                  setMessageText("");
+                }
+              }}
+            >
+              <option></option>
+              <option value="ALWAYS">Always</option>
+              <option value="DRAW">After the Draw</option>
+              <option value="IN_PROGRESS">The rounds start (only works if you enter scores)</option>
+              <option value="DONE">Done (only works if you enter scores)</option>
+            </select>
+          </section>
 				</section>
 				<section style={{ display: "flex" }}>
 					<button
