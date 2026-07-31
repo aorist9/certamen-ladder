@@ -6,7 +6,7 @@ import { HashRouter } from "react-router-dom";
 const renderSidebar = () => {
 	render(
 		<HashRouter>
-			<Sidebar visible={true} />
+			<Sidebar visible={true} onClose={jest.fn()} setVisible={jest.fn()} />
 		</HashRouter>
 	);
 };

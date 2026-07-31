@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from "react";
+import TextField from "@mui/material/TextField";
 
 export type DrawRow = {
 	letter?: string;
@@ -13,27 +14,37 @@ const DrawInputTableRow = (props: {
 }) => (
 	<tr data-testid="ladder-input-row">
 		<td>
-			<input
+			<TextField
 				id={`letter-${props.idx}`}
 				type="text"
-				style={{ maxWidth: "4em" }}
+				size="small"
+				slotProps={{
+					htmlInput: {
+						style: { maxWidth: "4em" },
+						"data-testid": "letter-input",
+						"aria-describedby": "letter-header",
+						"aria-labelledby": "letter-header"
+					}
+				}}
 				value={props.row.letter || ""}
-				data-testid="letter-input"
-				aria-describedby="letter-header"
-				aria-labelledby="letter-header"
 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
 					props.onChange({ ...props.row, letter: e.target.value });
 				}}
 			/>
 		</td>
 		<td>
-			<input
+			<TextField
 				id={`team-${props.idx}`}
 				type="text"
+				size="small"
+				slotProps={{
+					htmlInput: {
+						"data-testid": "team-input",
+						"aria-describedby": "team-header",
+						"aria-labelledby": "team-header"
+					}
+				}}
 				value={props.row.team || ""}
-				data-testid="team-input"
-				aria-describedby="team-header"
-				aria-labelledby="team-header"
 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
 					props.onChange({ ...props.row, team: e.target.value });
 				}}

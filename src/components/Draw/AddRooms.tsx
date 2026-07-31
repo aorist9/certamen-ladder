@@ -1,4 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 interface Props {
 	divisionOrTournament: "division" | "tournament";
@@ -11,23 +16,23 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 		savedRooms.map(rm => ({ value: rm, editing: false }))
 	);
 	return (
-		<section className="add-rooms">
-			<p>
+		<Box component="section" className="add-rooms">
+			<Typography variant="body2" sx={{ mb: 1 }}>
 				You can add rooms/moderators to this {divisionOrTournament} if you want
 				by clicking below. You can also add them after the ladder is generated
 				or not add them at all. It's your world.
-			</p>
-			<section
-				style={{ display: "flex", flexDirection: "column", rowGap: "1em" }}
-			>
+			</Typography>
+			<Stack spacing={1} sx={{ mb: 1 }}>
 				{rooms.map((room, idx) => {
 					if (room.editing) {
 						return (
-							<div key={idx} style={{ display: "flex", flexDirection: "row" }}>
-								<textarea
+							<Stack component="div" key={idx} direction="row" spacing={1} sx={{ alignItems: "center" }}>
+								<TextareaAutosize
+                  aria-label="room name"
+                  minRows={2}
 									value={room.value}
 									autoFocus={true}
-									onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+									onChange={e =>
 										setRooms([
 											...rooms.slice(0, idx),
 											{ value: e.target.value, editing: true },
@@ -35,7 +40,8 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 										])
 									}
 								/>
-								<button
+								<Button
+                  variant="contained"
 									onClick={() => {
 										const newRooms = [
 											...rooms.slice(0, idx),
@@ -47,21 +53,21 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 									}}
 								>
 									Save
-								</button>
-							</div>
+								</Button>
+							</Stack>
 						);
 					} else {
 						return (
-							<div
+							<Stack
+
 								key={idx}
-								style={{
-									display: "flex",
-									flexDirection: "row",
-									columnGap: "1em"
-								}}
+								direction="row"
+								spacing={1}
+								sx={{ alignItems: "center" }}
 							>
-								<span style={{ minWidth: "4rem" }}>{room.value}</span>
-								<button
+								<Typography>{room.value}</Typography>
+								<Button
+                  variant="contained"
 									onClick={() =>
 										setRooms([
 											...rooms.slice(0, idx),
@@ -71,8 +77,9 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 									}
 								>
 									Edit
-								</button>
-								<button
+								</Button>
+								<Button
+                  variant="outlined"
 									onClick={() => {
 										const newRooms = [
 											...rooms.slice(0, idx),
@@ -83,18 +90,19 @@ const AddRooms = ({ divisionOrTournament, savedRooms, updateRooms }: Props) => {
 									}}
 								>
 									Remove
-								</button>
-							</div>
+								</Button>
+							</Stack>
 						);
 					}
 				})}
-				<button
+				<Button
+					variant="contained"
 					onClick={() => setRooms([...rooms, { value: "", editing: true }])}
 				>
 					+ Add Room
-				</button>
-			</section>
-		</section>
+				</Button>
+			</Stack>
+		</Box>
 	);
 };
 

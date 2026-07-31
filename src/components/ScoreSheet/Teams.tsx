@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import TeamDisplay from "./TeamDisplay";
 import Players from "./Players";
 import { useRoundContext } from "../../contexts/RoundContext";
@@ -9,7 +11,8 @@ export interface Player {
 	isCaptain?: boolean;
 }
 
-const reletter = (teams: Team[]) => teams.map((team, idx) => ({ ...team, letter: LETTERS[idx] }));
+const reletter = (teams: Team[]) =>
+	teams.map((team, idx) => ({ ...team, letter: LETTERS[idx] }));
 
 const Teams = () => {
 	const { teams, setTeams } = useRoundContext();
@@ -39,7 +42,7 @@ const Teams = () => {
 		);
 	} else {
 		return (
-			<ul className="teams">
+			<List className="teams">
 				{teams.map((team, idx) => (
 					<React.Fragment key={idx}>
 						<TeamDisplay
@@ -48,35 +51,37 @@ const Teams = () => {
 							moveDown={
 								idx < teams.length - 1
 									? () => {
-                    const newTeams = [
+											const newTeams = [
 												...teams.slice(0, idx),
 												teams[idx + 1],
 												team,
 												...teams.slice(idx + 2)
-											]
+											];
 											setTeams(reletter(newTeams));
-									  }
+										}
 									: undefined
 							}
 							moveUp={
 								idx > 0
 									? () => {
-											setTeams(reletter([
-												...teams.slice(0, idx - 1),
-												team,
-												teams[idx - 1],
-												...teams.slice(idx + 1)
-											]));
-									  }
+											setTeams(
+												reletter([
+													...teams.slice(0, idx - 1),
+													team,
+													teams[idx - 1],
+													...teams.slice(idx + 1)
+												])
+											);
+										}
 									: undefined
 							}
 							team={team.name}
 						/>
-						<ul className="print-only">
+						<List className="print-only">
 							{team.players.map((player, playerIdx) => {
 								if (player?.name && player.name.trim() !== "") {
 									return (
-										<li
+										<ListItem
 											key={`${playerIdx}${player.name}`}
 											style={{ listStyle: "none" }}
 										>
@@ -86,16 +91,16 @@ const Teams = () => {
 											</span>
 											{player.isCaptain ? "*" : ""}
 											{player.name}
-										</li>
+										</ListItem>
 									);
 								} else {
 									return <React.Fragment key={playerIdx}></React.Fragment>;
 								}
 							})}
-						</ul>
+						</List>
 					</React.Fragment>
 				))}
-			</ul>
+			</List>
 		);
 	}
 };

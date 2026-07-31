@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useSearchParams } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import { Ladder } from "../types/LadderType";
@@ -12,56 +20,68 @@ const PublishLadder = () => {
 	);
 
 	if (loading) {
-		return <section>Processing...</section>;
+		return (
+			<Paper
+				variant="outlined"
+				sx={{ p: 3, bgcolor: "background.paper", borderColor: "divider" }}
+			>
+				<Stack spacing={1.5} sx={{ alignItems: "center" }}>
+					<CircularProgress size={24} />
+					<Typography variant="body1">Processing...</Typography>
+				</Stack>
+			</Paper>
+		);
 	} else if (ladder?.publicId) {
 		const href = `${window.location.href.substring(
 			0,
 			window.location.href.indexOf("/certamen-ladder")
 		)}/certamen-ladder#/ladder?publicId=${ladder.publicId}`;
 		return (
-			<section
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					padding: "0 3em"
-				}}
+			<Paper
+				variant="outlined"
+				sx={{ p: 3, bgcolor: "background.paper", borderColor: "divider" }}
 			>
-				<h2>Your ladder is public</h2>
-				<QRCode value={href} size={150} />
-				<a href={href} style={{ margin: "0.5em 0" }}>
-					Public Link
-				</a>
-			</section>
+				<Stack spacing={2} sx={{ alignItems: "center" }}>
+					<Alert severity="success" sx={{ width: "100%" }}>
+						Your ladder is public.
+					</Alert>
+					<QRCode value={href} size={150} />
+					<Link href={href} underline="hover">
+						Public Link
+					</Link>
+				</Stack>
+			</Paper>
 		);
 	} else if (ladder) {
 		return (
-			<button
-				style={{ fontSize: "1.4rem", marginTop: "1em", marginLeft: "0.5em" }}
-				onClick={() => {
-					setLoading(true);
-					const lddr: Ladder | undefined = ladderService.getLadder(ladder.id);
-					if (!lddr) {
-						throw new Error("umm... there's no ladder");
-					} else if (lddr.publicId) {
-						setLadder(lddr);
-						setLoading(false);
-						return;
-					}
+			<Box sx={{ p: { xs: 1, md: 2 } }}>
+				<Button
+					variant="contained"
+					onClick={() => {
+						setLoading(true);
+						const lddr: Ladder | undefined = ladderService.getLadder(ladder.id);
+						if (!lddr) {
+							throw new Error("umm... there's no ladder");
+						} else if (lddr.publicId) {
+							setLadder(lddr);
+							setLoading(false);
+							return;
+						}
 
-					ladderService
-						.publishLadder(lddr)
-						.then(newLadder => {
-							setLoading(false);
-							window.location.reload();
-						})
-						.catch(error => {
-							setLoading(false);
-						});
-				}}
-			>
-				Publish this Ladder
-			</button>
+						ladderService
+							.publishLadder(lddr)
+							.then(() => {
+								setLoading(false);
+								window.location.reload();
+							})
+							.catch(() => {
+								setLoading(false);
+							});
+					}}
+				>
+					Publish this Ladder
+				</Button>
+			</Box>
 		);
 	} else {
 		return <></>;

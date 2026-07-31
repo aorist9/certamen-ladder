@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import NumberInput from "../NumberInput";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import { letters } from "../../constants";
 import { DrawProps } from "../../routes/Draw";
 import ChooseDrawTeamsSection from "./ChooseDrawTeamsSection";
@@ -47,17 +52,36 @@ const Draw = (props: DrawProps) => {
 	}, [chosenLetter, numLetters, teams]);
 
 	return (
-		<section className="draw-body">
-			<NumberInput
-				id="number-of-letters"
-				label="How many letters should players choose from (it's okay if not all letters are picked)?"
-				setValue={value => setNumLetters(value)}
-				value={numLetters}
-			/>
-			<section className="draw-section">
-				<figure data-testid="letter-display" className="letter-display">
+		<Stack className="draw-body" direction="column" spacing={2}>
+			<Box component="section">
+				<NumberInput
+					id="number-of-letters"
+					label="How many letters should players choose from (it's okay if not all letters are picked)?"
+					onValueChange={(value: number | null) =>
+						value && setNumLetters(value)
+					}
+					maxWidth="350px"
+					value={numLetters}
+				/>
+			</Box>
+			<Stack className="draw-section">
+				<Box
+					component="figure"
+					data-testid="letter-display"
+					sx={{
+						mb: 2,
+						p: 2,
+						borderRadius: 2,
+						bgcolor: "action.hover",
+						display: "inline-block",
+						fontSize: "8rem",
+						fontWeight: 700,
+						minWidth: 72,
+						textAlign: "center"
+					}}
+				>
 					{chosenLetter || displayLetter}
-				</figure>
+				</Box>
 				{chosenLetter ? (
 					<ChooseDrawTeamInput
 						addTeam={(teamName: string) => {
@@ -69,16 +93,17 @@ const Draw = (props: DrawProps) => {
 						}}
 					/>
 				) : (
-					<button
-						className="draw-button"
+					<Button
+						variant="contained"
 						onClick={() => {
 							setChosenLetter(displayLetter);
 						}}
+						sx={{ mb: 4 }}
 					>
 						Draw
-					</button>
+					</Button>
 				)}
-			</section>
+			</Stack>
 			{Object.keys(teams).length ? (
 				<ChooseDrawTeamsSection
 					teams={teams}
@@ -92,19 +117,18 @@ const Draw = (props: DrawProps) => {
 				""
 			)}
 			{Object.keys(teams).length === 6 && (
-				<p>
-					<label>
-						<input
-							type="checkbox"
+				<FormControlLabel
+					control={
+						<Checkbox
 							id="three-rooms-for-six-teams"
 							checked={props.threeRooms}
 							onChange={e => props.setThreeRooms(e.target.checked)}
 						/>
-						Separate these six teams into 3 rooms?
-					</label>
-				</p>
+					}
+					label="Separate these six teams into 3 rooms?"
+				/>
 			)}
-		</section>
+		</Stack>
 	);
 };
 

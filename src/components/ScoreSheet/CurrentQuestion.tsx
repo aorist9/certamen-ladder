@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { LETTERS, Question } from "../../types/Round";
 import { useRoundContext } from "../../contexts/RoundContext";
 import BonusCheckboxSection from "./BonusCheckboxSection";
@@ -7,6 +10,7 @@ import NavigationPanel from "./NavigationPanel";
 import EditSection from "./EditSection";
 import TimerSection from "./TimerSection";
 import { NOT_A_TEAM } from "../../constants";
+import { useTheme } from "@mui/material/styles";
 
 enum State {
 	TOSSUP,
@@ -41,16 +45,31 @@ const CurrentQuestion = ({
 		}
 	}, [buzzer, state, headerRef]);
 
+	const getTeamColor = (teamIdx: number) => {
+		switch (teamIdx) {
+			case 0:
+				return "error";
+			case 1:
+				return "primary";
+			case 2:
+				return "success";
+			case 3:
+				return "secondary";
+		}
+	};
+
+	const theme = useTheme();
+
 	if (state === State.BONI) {
 		return (
-			<section className="current-tossup boni">
-				<h3 ref={headerRef}>
+			<Stack className="current-tossup boni hide-print" sx={{ my: "1rem" }}>
+				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
 					Tossup {currentQuestion + 1}: Boni to{" "}
 					{questions[currentQuestion].correctTeam}
-				</h3>
-				<section
-					style={{
-						display: "flex",
+				</Typography>
+				<Stack
+					direction="row"
+					sx={{
 						justifyContent: "space-between",
 						alignItems: "center"
 					}}
@@ -69,7 +88,7 @@ const CurrentQuestion = ({
 						}}
 					/>
 					<TimerSection />
-				</section>
+				</Stack>
 				<CommentSection
 					comment={questions[currentQuestion].comments}
 					setComment={(comments: string) => {
@@ -79,12 +98,17 @@ const CurrentQuestion = ({
 						});
 					}}
 				/>
-			</section>
+			</Stack>
 		);
 	} else if (state === State.EDITING) {
 		return (
-			<section className="current-tossup editing">
-				<h3 ref={headerRef}>Tossup {currentQuestion + 1}: Editing</h3>
+			<Stack
+				className="current-tossup editing hide-print"
+				sx={{ my: "1rem", gap: "1rem" }}
+			>
+				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
+					Tossup {currentQuestion + 1}: Editing
+				</Typography>
 				<EditSection
 					cancel={() => setState(State.TOSSUP)}
 					question={questions[currentQuestion]}
@@ -105,53 +129,58 @@ const CurrentQuestion = ({
 						});
 					}}
 				/>
-			</section>
+			</Stack>
 		);
 	} else if (buzzer) {
 		return (
-			<section className="current-tossup buzzed">
-				<h3 ref={headerRef}>
+			<Stack className="current-tossup buzzed hide-print" sx={{ my: "1rem" }}>
+				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
 					Tossup {currentQuestion + 1}: {buzzer} Buzzed
-				</h3>
-				<button
-					className="btn-success"
-					style={{ backgroundColor: "darkgreen" }}
-					onClick={() => {
-						setState(State.BONI);
-						updateCurrentQuestion({
-							...questions[currentQuestion],
-							correctTeam:
-								teams[
-									LETTERS.indexOf(
-										buzzer.substring(0, 1) as "A" | "B" | "C" | "D"
-									)
-								].name
-						});
-					}}
-				>
-					Correct
-				</button>
-				<button
-					className="btn-failure"
-					style={{ backgroundColor: "darkred" }}
-					onClick={() => setBuzzer(undefined)}
-				>
-					Incorrect
-				</button>
-				<button
-					onClick={() => {
-						updateCurrentQuestion({
-							...questions[currentQuestion],
-							buzzes: questions[currentQuestion].buzzes.slice(
-								0,
-								questions[currentQuestion].buzzes.length - 1
-							)
-						});
-						setBuzzer(undefined);
-					}}
-				>
-					Cancel
-				</button>
+				</Typography>
+				<Stack direction="row" sx={{ gap: "1rem", my: "2rem" }}>
+					<Button
+						variant="contained"
+						className="btn-success"
+						color="success"
+						onClick={() => {
+							setState(State.BONI);
+							updateCurrentQuestion({
+								...questions[currentQuestion],
+								correctTeam:
+									teams[
+										LETTERS.indexOf(
+											buzzer.substring(0, 1) as "A" | "B" | "C" | "D"
+										)
+									].name
+							});
+						}}
+					>
+						Correct
+					</Button>
+					<Button
+						variant="contained"
+						className="btn-failure"
+						color="error"
+						onClick={() => setBuzzer(undefined)}
+					>
+						Incorrect
+					</Button>
+					<Button
+						variant="outlined"
+						onClick={() => {
+							updateCurrentQuestion({
+								...questions[currentQuestion],
+								buzzes: questions[currentQuestion].buzzes.slice(
+									0,
+									questions[currentQuestion].buzzes.length - 1
+								)
+							});
+							setBuzzer(undefined);
+						}}
+					>
+						Cancel
+					</Button>
+				</Stack>
 				<CommentSection
 					comment={questions[currentQuestion].comments}
 					setComment={(comments: string) => {
@@ -161,16 +190,27 @@ const CurrentQuestion = ({
 						});
 					}}
 				/>
-			</section>
+			</Stack>
 		);
 	} else {
 		return (
 			<>
-				<section className="current-tossup-header">
-					<section>
-						<h3 ref={headerRef}>Tossup {currentQuestion + 1}</h3>
-						<p>Who Buzzed?</p>
-					</section>
+				<Stack
+					className="current-tossup-header hide-print"
+					sx={{
+						mt: "1rem",
+						zIndex: 999,
+						backgroundColor: "background.paper"
+					}}
+				>
+					<Stack>
+						<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
+							Tossup {currentQuestion + 1}
+						</Typography>
+						<Typography variant="body1" sx={{ my: "1rem" }}>
+							Who Buzzed?
+						</Typography>
+					</Stack>
 					<NavigationPanel
 						currentQuestion={currentQuestion}
 						nextQuestion={() => {
@@ -183,19 +223,25 @@ const CurrentQuestion = ({
 						}}
 						setEditing={() => setState(State.EDITING)}
 					/>
-				</section>
-				<section className="current-tossup">
+				</Stack>
+				<Stack className="current-tossup hide-print" sx={{ mt: "1rem" }}>
 					{teams.map((team, teamIdx) => (
-						<section
-              key={
-                team.name === NOT_A_TEAM.name ?
-                  `${team.name}${teamIdx}` :
-                  team.name}
-              className="buzzer-section"
-            >
+						<Stack
+							key={
+								team.name === NOT_A_TEAM.name
+									? `${team.name}${teamIdx}`
+									: team.name
+							}
+							className="buzzer-section"
+							direction="row"
+							sx={{ gap: "1rem", my: "1rem" }}
+						>
 							{team.players.map((player, playerIdx) => (
-								<button
+								<Button
 									key={playerIdx}
+									variant={teamIdx === 3 ? "outlined" : "contained"}
+									color={getTeamColor(teamIdx)}
+									size="large"
 									className="buzzer-button"
 									disabled={questions[currentQuestion].buzzes.some(
 										b => b.team === teams[teamIdx].name
@@ -213,12 +259,16 @@ const CurrentQuestion = ({
 											]
 										});
 									}}
+									sx={{
+										[theme.breakpoints.down("md")]: { p: "1rem 2rem" },
+										[theme.breakpoints.up("md")]: { p: "1rem 3rem" }
+									}}
 								>
 									{LETTERS[teamIdx]}
 									{playerIdx + 1}
-								</button>
+								</Button>
 							))}
-						</section>
+						</Stack>
 					))}
 					<CommentSection
 						comment={questions[currentQuestion].comments}
@@ -229,7 +279,7 @@ const CurrentQuestion = ({
 							});
 						}}
 					/>
-				</section>
+				</Stack>
 			</>
 		);
 	}

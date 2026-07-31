@@ -1,4 +1,8 @@
 import { ChangeEvent, useState } from "react";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import Typography from "@mui/material/Typography";
 import { MatchesV2 } from "../../types/Matches";
 import { EditingStatus } from "./DisplayedLadder";
 import DraggableRoomDisplay from "./DraggableRoomDisplay";
@@ -16,7 +20,7 @@ const determineAddScoresButtonText = (status: EditingStatus) => {
 };
 
 type LadderTableProps = {
-  divisionIdx: number;
+	divisionIdx: number;
 	hideIfPublic: (
 		elem: string | JSX.Element | JSX.Element[]
 	) => string | JSX.Element | JSX.Element[];
@@ -55,7 +59,7 @@ const updatePittingScores = (
 };
 
 const LadderTable = ({
-  divisionIdx = 0,
+	divisionIdx = 0,
 	hideIfPublic,
 	isSwiss,
 	isSwissByPoints,
@@ -88,135 +92,143 @@ const LadderTable = ({
 		};
 
 	return (
-		<table>
-			<thead>
-				<tr>
-					{pittings.map((_, i: number) => (
-						<th key={i} style={{ padding: "0 10px" }}>
-							Round {i + 1}
-							{(!matches ||
-								matches[i].some(
-									room => !room.scoresheetId || room.scoresheetOverridden
-								)) &&
-								hideIfPublic(
-									<button
-										style={{ marginLeft: "1.5em" }}
-										onClick={() => {
-											setRoundScoreEditStatuses([
-												...roundScoreEditStatuses.slice(0, i),
-												roundScoreEditStatuses[i] === EditingStatus.EDITING
-													? EditingStatus.EDITED
-													: EditingStatus.EDITING,
-												...roundScoreEditStatuses.slice(i + 1)
-											]);
-										}}
-									>
-										{determineAddScoresButtonText(roundScoreEditStatuses[i])}
-									</button>
-								)}
-						</th>
-					))}
-					{roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
-          {matches?.some(round => round.some(room => room.scoresheetId)) && <th className="hide-print">Room Link</th>}
-				</tr>
-			</thead>
-			<tbody>
-				{pittings[0].map((_, i: number) => (
-					<tr key={i}>
-						{pittings.map((_, j: number) => (
-							<DraggableRoomDisplay
-								key={`${j}:${i}`}
-								editStatus={
-									pittings[j][i].scoresheetId &&
-									!pittings[j][i].scoresheetOverridden
-										? EditingStatus.EDITED
-										: roundScoreEditStatuses[j]
-								}
-								isAnyRoundEditingScore={roundScoreEditStatuses.some(
-									round => round === EditingStatus.EDITING
-								)}
-								hideIfPublic={hideIfPublic}
-								isDraggedRound={draggedRound === j}
-								moveRoom={(sourceIdx: number) => {
-									if (sourceIdx === i) {
-										return;
+		<Stack spacing={1.5}>
+			<table>
+				<thead>
+					<tr>
+						{pittings.map((_, i: number) => (
+							<th key={i} style={{ padding: "0 10px" }}>
+								<Typography component="span" variant="subtitle2">
+									Round {i + 1}
+								</Typography>
+								{(!matches ||
+									matches[i].some(
+										room => !room.scoresheetId || room.scoresheetOverridden
+									)) &&
+									hideIfPublic(
+										<Button
+											size="small"
+											variant="outlined"
+											sx={{ ml: 1.5 }}
+											onClick={() => {
+												setRoundScoreEditStatuses([
+													...roundScoreEditStatuses.slice(0, i),
+													roundScoreEditStatuses[i] === EditingStatus.EDITING
+														? EditingStatus.EDITED
+														: EditingStatus.EDITING,
+													...roundScoreEditStatuses.slice(i + 1)
+												]);
+											}}
+										>
+											{determineAddScoresButtonText(roundScoreEditStatuses[i])}
+										</Button>
+									)}
+							</th>
+						))}
+						{roomEditStatus === EditingStatus.NEW ? "" : <th>Room</th>}
+						{matches?.some(round => round.some(room => room.scoresheetId)) && (
+							<th className="hide-print">Room Link</th>
+						)}
+					</tr>
+				</thead>
+				<tbody>
+					{pittings[0].map((_, i: number) => (
+						<tr key={i}>
+							{pittings.map((_, j: number) => (
+								<DraggableRoomDisplay
+									key={`${j}:${i}`}
+									editStatus={
+										pittings[j][i].scoresheetId &&
+										!pittings[j][i].scoresheetOverridden
+											? EditingStatus.EDITED
+											: roundScoreEditStatuses[j]
 									}
+									isAnyRoundEditingScore={roundScoreEditStatuses.some(
+										round => round === EditingStatus.EDITING
+									)}
+									hideIfPublic={hideIfPublic}
+									isDraggedRound={draggedRound === j}
+									moveRoom={(sourceIdx: number) => {
+										if (sourceIdx === i) {
+											return;
+										}
 
-									const newPittings: MatchesV2 = [...pittings];
-									let newRound;
-									if (sourceIdx < i) {
-										newRound = [
-											...pittings[j].slice(0, sourceIdx),
-											...pittings[j].slice(sourceIdx + 1, i + 1),
-											pittings[j][sourceIdx],
-											...pittings[j].slice(i + 1)
-										];
-									} else {
-										newRound = [
-											...pittings[j].slice(0, i),
-											pittings[j][sourceIdx],
-											...pittings[j].slice(i, sourceIdx),
-											...pittings[j].slice(sourceIdx + 1)
-										];
-									}
-									newPittings[j] = newRound;
-									setPittings(newPittings);
-									updateMatches(newPittings);
-								}}
-								onScoreChange={onScoreChange}
-								pitting={pittings[j][i]}
-								roomNumber={i}
-								roundNumber={j}
-								startDrag={() => setDraggedRound(j)}
-								overrideScoresheet={() => {
-									if (
-										// eslint-disable-next-line no-restricted-globals
-										confirm(
-											"Are you sure you want to override the scoresheet? This can't be undone, but you'll still be able to see the scoresheet"
-										)
-									) {
+										const newPittings: MatchesV2 = [...pittings];
+										let newRound;
+										if (sourceIdx < i) {
+											newRound = [
+												...pittings[j].slice(0, sourceIdx),
+												...pittings[j].slice(sourceIdx + 1, i + 1),
+												pittings[j][sourceIdx],
+												...pittings[j].slice(i + 1)
+											];
+										} else {
+											newRound = [
+												...pittings[j].slice(0, i),
+												pittings[j][sourceIdx],
+												...pittings[j].slice(i, sourceIdx),
+												...pittings[j].slice(sourceIdx + 1)
+											];
+										}
+										newPittings[j] = newRound;
+										setPittings(newPittings);
+										updateMatches(newPittings);
+									}}
+									onScoreChange={onScoreChange}
+									pitting={pittings[j][i]}
+									roomNumber={i}
+									roundNumber={j}
+									startDrag={() => setDraggedRound(j)}
+									overrideScoresheet={() => {
 										const newPitting = [...pittings];
 										newPitting[j][i].scoresheetOverridden = true;
 										setPittings(newPitting);
 										updateMatches(newPitting);
+									}}
+								/>
+							))}
+							{roomEditStatus === EditingStatus.NEW ? (
+								""
+							) : (
+								<td className="room-cell" data-testid="room">
+									{roomEditStatus === EditingStatus.EDITING ? (
+										<TextareaAutosize
+											data-testid="room-input"
+											value={rooms[i]}
+											onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+												setRooms([
+													...rooms.slice(0, i),
+													e.target.value,
+													...rooms.slice(i + 1)
+												]);
+											}}
+											minRows={2}
+										/>
+									) : (
+										rooms[i]
+									)}
+								</td>
+							)}
+							{matches?.some(round =>
+								round.some(room => room.scoresheetId)
+							) && (
+								<RoomLinkCell
+									ladderId={ladderId}
+									publicLadderId={publicLadderId}
+									divisionIdx={divisionIdx}
+									roomIdx={i}
+									scoreSheetIds={
+										pittings
+											.map(round => round[i].scoresheetId)
+											.filter(Boolean) as string[]
 									}
-								}}
-							/>
-						))}
-						{roomEditStatus === EditingStatus.NEW ? (
-							""
-						) : (
-							<td className="room-cell" data-testid="room">
-								{roomEditStatus === EditingStatus.EDITING ? (
-									<textarea
-										data-testid="room-input"
-										value={rooms[i]}
-										onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-											setRooms([
-												...rooms.slice(0, i),
-												e.target.value,
-												...rooms.slice(i + 1)
-											])
-										}
-									/>
-								) : (
-									rooms[i]
-								)}
-							</td>
-						)}
-            {matches?.some(round => round.some(room => room.scoresheetId)) && (
-              <RoomLinkCell
-                ladderId={ladderId}
-                publicLadderId={publicLadderId}
-                divisionIdx={divisionIdx}
-                roomIdx={i}
-                scoreSheetIds={pittings.map(round => round[i].scoresheetId).filter(Boolean) as string[]}
-              />
-            )}
-					</tr>
-				))}
-			</tbody>
-		</table>
+								/>
+							)}
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</Stack>
 	);
 };
 

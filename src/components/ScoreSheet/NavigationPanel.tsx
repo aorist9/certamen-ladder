@@ -1,3 +1,5 @@
+import Button from "@mui/material/Button";
+
 const LEFT_ARROW = "\u2190";
 const RIGHT_ARROW = "\u2192";
 
@@ -14,23 +16,31 @@ const NavigationPanel = ({
 }) => (
 	<section>
 		<section>
-			<button
+			<Button
+				variant="outlined"
+				size="large"
+				color="secondary"
 				className="btn-info question-nav-button"
 				disabled={currentQuestion === 0}
 				onClick={previousQuestion}
 			>
 				{LEFT_ARROW}
-			</button>
-			<button
+			</Button>
+			<Button
+				variant="outlined"
+				size="large"
+				color="secondary"
 				className="btn-info question-nav-button"
 				disabled={currentQuestion >= 19}
 				onClick={nextQuestion}
 			>
 				{RIGHT_ARROW}
-			</button>
+			</Button>
 		</section>
 		<section style={{ display: "flex", justifyContent: "center" }}>
-			<button
+			<Button
+				variant="contained"
+				color="warning"
 				onClick={setEditing}
 				style={{
 					paddingLeft: "1em",
@@ -39,7 +49,7 @@ const NavigationPanel = ({
 				}}
 			>
 				Edit
-			</button>
+			</Button>
 		</section>
 	</section>
 );

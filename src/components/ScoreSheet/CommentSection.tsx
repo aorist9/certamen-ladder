@@ -1,4 +1,7 @@
 import React from "react";
+import Box from "@mui/material/Box";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 const CommentSection = ({
 	comment,
@@ -8,16 +11,22 @@ const CommentSection = ({
 	setComment: (comment: string) => void;
 }) => {
 	return (
-		<section style={{ display: "flex", alignItems: "center", gap: "0.5em" }}>
-			<label htmlFor="comments">Comments</label>
-			<textarea
-				name="comments"
-				placeholder="Comments"
-				style={{ flexGrow: "1" }}
-				value={comment || ""}
-				onChange={e => setComment(e.target.value)}
+		<Box sx={{ my: "1rem" }}>
+			<FormControlLabel
+				label="Comments"
+				labelPlacement="start"
+				control={
+					<TextareaAutosize
+						name="comments"
+						minRows={2}
+						placeholder="Comments"
+						value={comment || ""}
+						style={{ minWidth: "375px" }}
+						onChange={e => setComment(e.target.value)}
+					/>
+				}
 			/>
-		</section>
+		</Box>
 	);
 };
 

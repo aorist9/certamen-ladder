@@ -1,4 +1,13 @@
 import React, { useMemo } from "react";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import calculateScores, {
 	ScoreRow,
 	sortScores
@@ -22,53 +31,78 @@ const Scoreboard = (props: ScoreboardProps) => {
 	const sortedScores: ScoreRow[] = scores?.sort(sortScores);
 
 	return (
-		<section>
+		<Box>
 			{ladder && sortedScores ? (
-				<>
-					{name ? <h3>{name}</h3> : ""}
-					<table>
-						<thead>
-							<tr>
-								<th>Team</th>
-								{ladder.divisions?.[divisionNumber].matches?.map((_, idx) => (
-									<th key={idx}>Round {idx + 1}</th>
-								))}
-								{ladder.isSwiss() ? <th>Total Swiss Points</th> : ""}
-								{ladder.isSwiss() ? <th>SOS</th> : ""}
-								<th>Total Score</th>
-							</tr>
-						</thead>
-						<tbody>
-							{sortedScores.map(team => (
-								<tr key={team.team}>
-									<td data-testid="team-cell">{team.team}</td>
-									{team.roundScores.map((round, rdNum) => (
-										<td
-											key={rdNum}
-											data-testid={`round-${rdNum + 1}-score-cell`}
-										>
-											{round}
-											{team.roundSwiss && team.roundSwiss.length > rdNum
-												? ` / ${team.roundSwiss[rdNum]}`
-												: ""}
-										</td>
+				<Paper
+					variant="outlined"
+					sx={{ p: 2, bgcolor: "background.paper", borderColor: "divider" }}
+				>
+					{name ? (
+						<Typography variant="h6" sx={{ mb: 1.5 }}>
+							{name}
+						</Typography>
+					) : (
+						""
+					)}
+					<TableContainer>
+						<Table size="small">
+							<TableHead>
+								<TableRow>
+									<TableCell>Team</TableCell>
+									{ladder.divisions?.[divisionNumber].matches?.map((_, idx) => (
+										<TableCell key={idx}>Round {idx + 1}</TableCell>
 									))}
-									{team.swissTotal ? (
-										<td data-testid="total-swiss-cell">{team.swissTotal}</td>
+									{ladder.isSwiss() ? (
+										<TableCell>Total Swiss Points</TableCell>
 									) : (
 										""
 									)}
-									{team.sos ? <td data-testid="sos-cell">{team.sos}</td> : ""}
-									<td data-testid="total-score-cell">{team.total}</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</>
+									{ladder.isSwiss() ? <TableCell>SOS</TableCell> : ""}
+									<TableCell>Total Score</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{sortedScores.map(team => (
+									<TableRow key={team.team}>
+										<TableCell data-testid="team-cell">{team.team}</TableCell>
+										{team.roundScores.map((round, rdNum) => (
+											<TableCell
+												key={rdNum}
+												data-testid={`round-${rdNum + 1}-score-cell`}
+											>
+												{round}
+												{team.roundSwiss && team.roundSwiss.length > rdNum
+													? ` / ${team.roundSwiss[rdNum]}`
+													: ""}
+											</TableCell>
+										))}
+										{team.swissTotal ? (
+											<TableCell data-testid="total-swiss-cell">
+												{team.swissTotal}
+											</TableCell>
+										) : (
+											""
+										)}
+										{team.sos ? (
+											<TableCell data-testid="sos-cell">{team.sos}</TableCell>
+										) : (
+											""
+										)}
+										<TableCell data-testid="total-score-cell">
+											{team.total}
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				</Paper>
 			) : (
-				"You may have reached this page in error"
+				<Typography color="text.secondary">
+					You may have reached this page in error
+				</Typography>
 			)}
-		</section>
+		</Box>
 	);
 };
 

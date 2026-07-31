@@ -1,4 +1,10 @@
 import React from "react";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import { useRoundContext } from "../../contexts/RoundContext";
 import { NOT_A_TEAM } from "../../constants";
 
@@ -19,37 +25,73 @@ const TeamDisplay = ({
 	team: string;
 }) => {
 	const { isEditMode } = useRoundContext();
+	const theme = useTheme();
 
 	return (
-		<li className="team-select-item">
-			<label htmlFor={`team-${letter}-select`}>Team {letter}</label>
-			<section id={`team-${letter}-select`} className="team-assignment">
+		<ListItem
+			className={`team-select-item ${team === NOT_A_TEAM.name ? "hide-print" : ""}`}
+			sx={{
+				[theme.breakpoints.down("sm")]: { width: "80%", border: "1px solid" },
+				[theme.breakpoints.up("sm")]: { width: "60%", border: "1px solid" }
+			}}
+		>
+			<Stack
+				direction="row"
+				id={`team-${letter}-select`}
+				className="team-assignment"
+				sx={{
+					justifyContent: "space-between",
+					alignItems: "center",
+					width: "80%",
+					height: "100%"
+				}}
+			>
+				<Stack
+					direction="row"
+					sx={{ alignItems: "center", gap: "0.5rem", height: "100%" }}
+				>
+					<Typography variant="body1">Team {letter}</Typography>
+					<Divider
+						orientation="vertical"
+						flexItem
+						className="hide-print"
+						sx={{ borderRight: "1.5px solid" }}
+					/>
+				</Stack>
 				{team}
 				{isEditMode && (
-					<section className="button-section">
-						<button
+					<Stack direction="column" className="button-section">
+						<Button
+							variant="outlined"
+							sx={{ fontSize: "1.5rem" }}
 							disabled={!moveUp}
 							className="direction-button hide-print"
 							onClick={moveUp}
 						>
 							{UP_ARROW}
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="outlined"
+							sx={{ fontSize: "1.5rem" }}
 							disabled={!moveDown}
 							className="direction-button hide-print"
 							onClick={moveDown}
 						>
 							{DOWN_ARROW}
-						</button>
-					</section>
+						</Button>
+					</Stack>
 				)}
-			</section>
+			</Stack>
 			{isEditMode && team !== NOT_A_TEAM.name && (
-				<button className="btn-info hide-print" onClick={addPlayers}>
+				<Button
+					variant="contained"
+					className="btn-info hide-print"
+					onClick={addPlayers}
+				>
 					Add Players
-				</button>
+				</Button>
 			)}
-		</li>
+		</ListItem>
 	);
 };
 

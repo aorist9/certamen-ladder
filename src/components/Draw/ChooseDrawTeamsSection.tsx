@@ -1,4 +1,7 @@
 import React from "react";
+import Box from "@mui/material/Box";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
 import DrawListItem from "./DrawListItem";
 
 type Props = {
@@ -7,8 +10,11 @@ type Props = {
 };
 
 const ChooseDrawTeamsSection = (props: Props) => (
-	<section className="teams">
-		<ul>
+	<Box component="section" sx={{ width: "100%" }}>
+		<Typography variant="subtitle2" sx={{ mb: 1 }}>
+			Entered Teams
+		</Typography>
+		<List dense sx={{ p: 0 }}>
 			{Object.keys(props.teams)
 				.sort()
 				.map((teamLetter: string) => (
@@ -19,8 +25,8 @@ const ChooseDrawTeamsSection = (props: Props) => (
 						onClick={() => props.removeTeam(teamLetter)}
 					/>
 				))}
-		</ul>
-	</section>
+		</List>
+	</Box>
 );
 
 export default ChooseDrawTeamsSection;

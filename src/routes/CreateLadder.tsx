@@ -1,4 +1,20 @@
 import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import NumberInput from "../components/NumberInput";
@@ -21,10 +37,13 @@ const CreateLadder = () => {
 	const [type, setType] = useState<keyof typeof LadderStyle>("TRADITIONAL");
 	const [rounds, setRounds] = useState<number | undefined>(3);
 	const [draw, setDraw] = useState<DrawType | undefined>();
-  const [messageText, setMessageText] = useState<string>("");
-  const [messageShowUntil, setMessageShowUntil] = useState<"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | undefined>();
+	const [messageText, setMessageText] = useState<string>("");
+	const [messageShowUntil, setMessageShowUntil] = useState<
+		"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | ""
+	>("");
 	const [error, setError] = useState<string>("");
 	const navigate = useNavigate();
+	const theme = useTheme();
 
 	const onSubmit = (e: FormEvent) => {
 		e.preventDefault();
@@ -51,12 +70,12 @@ const CreateLadder = () => {
 				newLadder.divisions = [{ teams: {} }];
 			}
 
-      if (messageText?.length) {
-        newLadder.message = {
-          text: messageText,
-          showUntil: messageShowUntil || "ALWAYS"
-        }
-      }
+			if (messageText?.length) {
+				newLadder.message = {
+					text: messageText,
+					showUntil: messageShowUntil || "ALWAYS"
+				};
+			}
 
 			ladderService.addLadder(newLadder);
 			navigate(`/draw?ladder=${ladderId}`);
@@ -78,162 +97,226 @@ const CreateLadder = () => {
 	}, [name, rounds, draw]);
 
 	return (
-		<section className="App-page create-ladder">
-			<header>
-				<h2>Create a New Ladder</h2>
-			</header>
-			<form onSubmit={onSubmit}>
-				<section className="form-field">
-					<label htmlFor="ladder-name">Ladder Name:</label>
-					<input
-						type="text"
+		<Box component="section" sx={{ display: "grid", gap: 3 }}>
+			<Paper
+				elevation={0}
+				sx={{
+					[theme.breakpoints.down("md")]: {
+						px: 3,
+						pt: 3,
+						pb: 5,
+						bgcolor: "background.paper",
+						mb: 10
+					},
+					[theme.breakpoints.up("md")]: {
+						p: 4,
+						bgcolor: "background.paper"
+					}
+				}}
+			>
+				<Typography variant="h4" gutterBottom>
+					Create a New Ladder
+				</Typography>
+				<Box
+					component="form"
+					onSubmit={onSubmit}
+					sx={{ display: "grid", gap: 3 }}
+				>
+					<TextField
 						id="ladder-name"
-						style={{ minWidth: "20rem" }}
+						label="Ladder Name:"
+						variant="standard"
 						placeholder="The name you can find this ladder under later"
 						value={name}
+						fullWidth
+						sx={{ maxWidth: 520 }}
+						onPointerDown={e => e.stopPropagation()}
 						onChange={(e: ChangeEvent<HTMLInputElement>) =>
 							setName(e.target.value)
 						}
 					/>
-				</section>
-				{multipleDivisionsFlag ? (
-					<>
-						<section className="form-field">
-							<label>
-								<input
-									id="are-there-divisions"
-									type="checkbox"
-									checked={divisions !== undefined}
-									onChange={(e: ChangeEvent<HTMLInputElement>) =>
-										setDivisions(e.target.checked ? 3 : undefined)
-									}
-								/>
-								Multiple Division Tournament
-							</label>
-						</section>
-						{divisions !== undefined ? (
-							<NumberInput
-								id="divisions"
-								label="How many divisions are there?"
-								value={divisions}
-								setValue={(value: number | undefined) => setDivisions(value)}
+
+					{multipleDivisionsFlag ? (
+						<Stack spacing={2}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={divisions !== undefined}
+										onChange={(e: ChangeEvent<HTMLInputElement>) =>
+											setDivisions(e.target.checked ? 3 : undefined)
+										}
+										onPointerDown={e => e.stopPropagation()}
+									/>
+								}
+								label="Multiple Division Tournament"
 							/>
-						) : (
-							""
-						)}
-					</>
-				) : (
-					""
-				)}
-				{swissLadderFlag || pointsSwissLadderFlag ? (
-					<section className="form-field">
-						<label htmlFor="ladder-type">
-							What type of ladder would you like to create?
-						</label>
-						<select
-							id="ladder-type"
-							value={type}
-							onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-								setType(e.target.value as keyof typeof LadderStyle)
-							}
+							{divisions !== undefined ? (
+								<Box component="section" sx={{ maxWidth: "300px" }}>
+									<NumberInput
+										id="divisions"
+										label="How many divisions are there?"
+										value={divisions}
+										onValueChange={(value: number | null) =>
+											value && setDivisions(value)
+										}
+										onPointerDown={e => e.stopPropagation()}
+									/>
+								</Box>
+							) : null}
+						</Stack>
+					) : null}
+
+					{swissLadderFlag || pointsSwissLadderFlag ? (
+						<FormControl sx={{ maxWidth: 520 }}>
+							<FormLabel htmlFor="ladder-type">
+								What type of ladder would you like to create?
+							</FormLabel>
+							<Select
+								id="ladder-type"
+								value={type}
+								onChange={e =>
+									setType(e.target.value as keyof typeof LadderStyle)
+								}
+								onPointerDown={e => e.stopPropagation()}
+							>
+								{Object.keys(LadderStyle)
+									.filter(
+										type =>
+											(swissLadderFlag || type !== "SWISS") &&
+											(pointsSwissLadderFlag || type !== "SWISS_BY_POINTS")
+									)
+									.map(key => (
+										<MenuItem
+											key={key}
+											value={key}
+											onPointerDown={e => e.stopPropagation()}
+										>
+											{LadderStyle[key as keyof typeof LadderStyle]}
+										</MenuItem>
+									))}
+							</Select>
+						</FormControl>
+					) : null}
+
+					{chooseRoundsFlag ||
+					(swissLadderFlag && type === "SWISS") ||
+					(pointsSwissLadderFlag && type === "SWISS_BY_POINTS") ? (
+						<Box component="section" sx={{ maxWidth: "300px" }}>
+							<NumberInput
+								id="rounds"
+								value={rounds}
+								onValueChange={value => value && setRounds(value)}
+								label="How many preliminary rounds are you playing?"
+								onPointerDown={e => e.stopPropagation()}
+							/>
+						</Box>
+					) : null}
+
+					<FormControl sx={{ maxWidth: 720 }}>
+						<FormLabel id="draw-type-radio-group">
+							How would you like to do the draw?
+						</FormLabel>
+						<RadioGroup
+							aria-labelledby="draw-type-radio-group"
+							value={draw ?? ""}
 						>
-							{Object.keys(LadderStyle)
-								.filter(
-									type =>
-										(swissLadderFlag || type !== "SWISS") &&
-										(pointsSwissLadderFlag || type !== "SWISS_BY_POINTS")
-								)
-								.map(key => (
-									<option key={key} value={key}>
-										{LadderStyle[key as keyof typeof LadderStyle]}
-									</option>
-								))}
-						</select>
-					</section>
-				) : (
-					""
-				)}
-				{chooseRoundsFlag ||
-				(swissLadderFlag && type === "SWISS") ||
-				(pointsSwissLadderFlag && type === "SWISS_BY_POINTS") ? (
-					<NumberInput
-						id="rounds"
-						value={rounds}
-						setValue={value => setRounds(value)}
-						label="How many preliminary rounds are you playing?"
-					/>
-				) : (
-					""
-				)}
-				<section className="form-field">
-					<label htmlFor="draw-type-radio-group">
-						How would you like to do the draw?
-					</label>
-					<section
-						id="draw-type-radio-group"
-						className="radio-group"
-						style={{ marginTop: ".3rem" }}
-					>
-						{Object.keys(DrawType).map(key => (
-							<label key={key} className="radio-button">
-								<input
-									type="radio"
-									name="draw-type"
+							{Object.keys(DrawType).map(key => (
+								<FormControlLabel
+									key={key}
 									value={key}
-									checked={DrawType[key as keyof typeof DrawType] === draw}
-									onChange={(e: ChangeEvent<HTMLInputElement>) => {
-										setDraw(DrawType[e.target.value as keyof typeof DrawType]);
+									control={
+										<Radio
+											checked={draw === DrawType[key as keyof typeof DrawType]}
+										/>
+									}
+									label={DrawType[key as keyof typeof DrawType]}
+									onChange={() => {
+										setDraw(DrawType[key as keyof typeof DrawType]);
 									}}
+									onPointerDown={e => e.stopPropagation()}
 								/>
-								{DrawType[key as keyof typeof DrawType]}
-							</label>
-						))}
-					</section>
-          <section className="form-field">
-            <label htmlFor="ladder-message-text">Type an optional message to be shown on the ladder (e.g. Draw will be held in the auditorium at 9:15 AM)</label>
-            <input
-              type="text"
-              id="ladder-message-text"
-              style={{ minWidth: "20rem" }}
-              placeholder="A message to display on the ladder page"
-              value={messageText}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setMessageText(e.target.value)
-              }
-            />
-          </section>
-          <section className="form-field">
-            <label htmlFor="ladder-message-show-until">This message should be shown until...</label>
-            <select
-              id="ladder-message-show-until"
-              value={messageShowUntil}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                setMessageShowUntil(e.target.value as any)
-                if (!e.target.value?.length) {
-                  setMessageText("");
-                }
-              }}
-            >
-              <option></option>
-              <option value="ALWAYS">Always</option>
-              <option value="DRAW">After the Draw</option>
-              <option value="IN_PROGRESS">The rounds start (only works if you enter scores)</option>
-              <option value="DONE">Done (only works if you enter scores)</option>
-            </select>
-          </section>
-				</section>
-				<section style={{ display: "flex" }}>
-					<button
-						className="btn-success"
-						type="submit"
-						disabled={isFormValid() !== true}
+							))}
+						</RadioGroup>
+					</FormControl>
+
+					<TextField
+						id="ladder-message-text"
+						label="Optional message for the ladder"
+						placeholder="A message to display on the ladder page"
+						value={messageText}
+						fullWidth
+						sx={{ maxWidth: 720 }}
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							setMessageText(e.target.value)
+						}
+						onPointerDown={e => e.stopPropagation()}
+					/>
+
+					<FormControl sx={{ maxWidth: 520 }}>
+						<FormLabel htmlFor="ladder-message-show-until">
+							This message should be shown until...
+						</FormLabel>
+						<Select
+							id="ladder-message-show-until"
+							value={messageShowUntil}
+							onChange={e => {
+								const nextValue = e.target.value as
+									"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | "";
+								setMessageShowUntil(nextValue);
+								if (!nextValue.length) {
+									setMessageText("");
+								}
+							}}
+							onPointerDown={e => e.stopPropagation()}
+						>
+							<MenuItem value="" onPointerDown={e => e.stopPropagation()}>
+								None
+							</MenuItem>
+							<MenuItem value="ALWAYS" onPointerDown={e => e.stopPropagation()}>
+								Always
+							</MenuItem>
+							<MenuItem value="DRAW" onPointerDown={e => e.stopPropagation()}>
+								After the Draw
+							</MenuItem>
+							<MenuItem
+								value="IN_PROGRESS"
+								onPointerDown={e => e.stopPropagation()}
+							>
+								The rounds start (only works if you enter scores)
+							</MenuItem>
+							<MenuItem value="DONE" onPointerDown={e => e.stopPropagation()}>
+								Done (only works if you enter scores)
+							</MenuItem>
+						</Select>
+					</FormControl>
+
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 2,
+							flexWrap: "wrap"
+						}}
 					>
-						Start
-					</button>
-					<p className="error">{error}</p>
-				</section>
-			</form>
-		</section>
+						<Button
+							variant="contained"
+							type="submit"
+							disabled={isFormValid() !== true}
+						>
+							Start
+						</Button>
+						{error ? (
+							<Alert
+								severity="error"
+								sx={{ flex: 1, border: 1, borderColor: "divider" }}
+							>
+								{error}
+							</Alert>
+						) : null}
+					</Box>
+				</Box>
+			</Paper>
+		</Box>
 	);
 };
 

@@ -1,4 +1,9 @@
 import { useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Stack from "@mui/material/Stack";
 import { LETTERS, Question } from "../../types/Round";
 import EditBuzz from "./EditBuzz";
 import { useRoundContext } from "../../contexts/RoundContext";
@@ -20,7 +25,7 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[0].team)
 					]
-			  }${question.buzzes[0].player + 1}`
+				}${question.buzzes[0].player + 1}`
 			: undefined
 	);
 	const [buzz2, setBuzz2] = useState<string | undefined>(
@@ -29,7 +34,7 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[1].team)
 					]
-			  }${question.buzzes[1].player + 1}`
+				}${question.buzzes[1].player + 1}`
 			: undefined
 	);
 	const [buzz3, setBuzz3] = useState<string | undefined>(
@@ -38,9 +43,20 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[2].team)
 					]
-			  }${question.buzzes[2].player + 1}`
+				}${question.buzzes[2].player + 1}`
 			: undefined
 	);
+
+	const [buzz4, setBuzz4] = useState<string | undefined>(
+		question.buzzes.length > 3
+			? `${
+					LETTERS[
+						teams.findIndex(team => team.name === question.buzzes[3].team)
+					]
+				}${question.buzzes[3].player + 1}`
+			: undefined
+	);
+
 	const [correct, setCorrect] = useState<number | undefined>(
 		question.buzzes.findIndex(team => team.team === question.correctTeam)
 	);
@@ -66,10 +82,9 @@ const EditSection = ({
 	};
 
 	return (
-		<section
+		<Stack
+			direction="column"
 			style={{
-				display: "flex",
-				flexDirection: "column",
 				gap: "1em",
 				paddingBottom: "1em"
 			}}
@@ -83,7 +98,7 @@ const EditSection = ({
 					setBuzz1(value);
 				}}
 				value={buzz1}
-				values={LETTERS.slice(0, 3)
+				values={LETTERS.filter(letter => teams.some(t => t.letter === letter))
 					.map(letter => [1, 2, 3, 4].map(number => `${letter}${number}`))
 					.flat()}
 			/>
@@ -96,7 +111,7 @@ const EditSection = ({
 					setBuzz2(value);
 				}}
 				value={buzz2}
-				values={LETTERS.slice(0, 3)
+				values={LETTERS.filter(letter => teams.some(t => t.letter === letter))
 					.filter(letter => letter !== buzz1?.charAt(0))
 					.map(letter => [1, 2, 3, 4].map(number => `${letter}${number}`))
 					.flat()}
@@ -110,67 +125,85 @@ const EditSection = ({
 					setBuzz3(value);
 				}}
 				value={buzz3}
-				values={LETTERS.slice(0, 3)
+				values={LETTERS.filter(letter => teams.some(t => t.letter === letter))
 					.filter(
 						letter => letter !== buzz1?.charAt(0) && letter !== buzz2?.charAt(0)
 					)
 					.map(letter => [1, 2, 3, 4].map(number => `${letter}${number}`))
 					.flat()}
 			/>
-			<section className="bonus-checkbox-section">
-				<p>
-					<label
-						htmlFor="bonus1"
-						onClick={() => setBonus1(!bonus1)}
-						className="bonus-checkbox-label"
-					>
-						<input
-							type="checkbox"
-							name="bonus1"
-							checked={bonus1}
-							className="bonus-checkbox"
-						/>
-						&nbsp; Bonus 1
-					</label>
-				</p>
-				<p>
-					<label
-						htmlFor="bonus2"
-						onClick={() => setBonus2(!bonus2)}
-						className="bonus-checkbox-label"
-					>
-						<input
-							type="checkbox"
-							name="bonus2"
-							checked={bonus2}
-							className="bonus-checkbox"
-						/>
-						&nbsp; Bonus 2
-					</label>
-				</p>
-			</section>
-			<button
-				className="btn-success"
-				onClick={() => {
-					const buzzes = [
-						mapBuzzer(buzz1),
-						mapBuzzer(buzz2),
-						mapBuzzer(buzz3)
-					].filter(buzz => !!buzz) as { team: string; player: number }[];
-					save({
-						buzzes,
-						correctTeam:
-							correct === undefined ? undefined : buzzes[correct].team,
-						boni: [bonus1, bonus2]
-					});
+			<EditBuzz
+				clearCorrect={() => setCorrect(undefined)}
+				isCorrect={correct === 3}
+				label={"Buzz 4"}
+				setCorrect={() => setCorrect(3)}
+				setValue={(value: string | undefined) => {
+					setBuzz4(value);
 				}}
-			>
-				Save
-			</button>
-			<button className="btn-failure" onClick={cancel}>
-				Cancel
-			</button>
-		</section>
+				value={buzz4}
+				values={LETTERS.filter(letter => teams.some(t => t.letter === letter))
+					.filter(
+						letter =>
+							letter !== buzz1?.charAt(0) &&
+							letter !== buzz2?.charAt(0) &&
+							letter !== buzz3?.charAt(0)
+					)
+					.map(letter => [1, 2, 3, 4].map(number => `${letter}${number}`))
+					.flat()}
+			/>
+			<Stack direction="column" className="bonus-checkbox-section">
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={bonus1}
+							onChange={() => setBonus1(!bonus1)}
+							name="bonus1"
+						/>
+					}
+					label="Bonus 1"
+				/>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={bonus2}
+							onChange={() => setBonus2(!bonus2)}
+							name="bonus2"
+						/>
+					}
+					label="Bonus 2"
+				/>
+			</Stack>
+			<Box>
+				<Button
+					className="btn-success"
+					variant="contained"
+					color="success"
+					onClick={() => {
+						const buzzes = [
+							mapBuzzer(buzz1),
+							mapBuzzer(buzz2),
+							mapBuzzer(buzz3)
+						].filter(buzz => !!buzz) as { team: string; player: number }[];
+						save({
+							buzzes,
+							correctTeam:
+								correct === undefined ? undefined : buzzes[correct].team,
+							boni: [bonus1, bonus2]
+						});
+					}}
+				>
+					Save
+				</Button>
+				<Button
+					className="btn-failure"
+					onClick={cancel}
+					variant="contained"
+					color="error"
+				>
+					Cancel
+				</Button>
+			</Box>
+		</Stack>
 	);
 };
 

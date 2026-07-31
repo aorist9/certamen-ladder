@@ -1,6 +1,12 @@
-import { Link, useSearchParams } from "react-router-dom";
+import React from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import Scoreboard from "../components/Scoreboard";
-import "./ScoreboardPage.css";
 import { useLadder } from "../services/ladderService";
 
 const ScoreboardPage = () => {
@@ -9,18 +15,28 @@ const ScoreboardPage = () => {
 	const { ladder } = useLadder({ ladderId, publicLadderId: publicId });
 
 	const header = (
-		<section style={{ display: "flex", columnGap: "2em" }}>
-			<h2>{ladder?.name}</h2>
-			<Link
-				to={`/ladder?${
-					ladderId ? `ladder=${ladderId}` : `publicId=${publicId}`
-				}`}
-				style={{ margin: "auto 0" }}
-				className="hide-print"
+		<Paper
+			elevation={0}
+			sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+		>
+			<Stack
+				direction={{ xs: "column", sm: "row" }}
+				sx={{
+					spacing: 2,
+					justifyContent: "space-between",
+					alignItems: "flex-start"
+				}}
 			>
-				Ladder
-			</Link>
-		</section>
+				<Typography variant="h4">{ladder?.name}</Typography>
+				<Button
+					component={RouterLink}
+					to={`/ladder${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`}
+					variant="outlined"
+				>
+					Ladder
+				</Button>
+			</Stack>
+		</Paper>
 	);
 
 	if (
@@ -28,27 +44,26 @@ const ScoreboardPage = () => {
 		ladder.divisions?.some(d => d.matches?.length)
 	) {
 		return (
-			<section className="App-page scoreboard">
+			<Box component="section" sx={{ display: "grid", gap: 2 }}>
 				{header}
-				<section
-					style={{ display: "flex", flexWrap: "wrap", columnGap: "1em" }}
-				>
+				<Grid container spacing={2} sx={{ flexWrap: "wrap" }}>
 					{ladder.divisions.map((d, idx) => (
-						<Scoreboard
-							key={d.division}
-							name={d.division}
-							ladder={ladder}
-							divisionNumber={idx}
-						/>
+						<Grid key={d.division} size={{ xs: 12, lg: 6 }}>
+							<Scoreboard
+								name={d.division}
+								ladder={ladder}
+								divisionNumber={idx}
+							/>
+						</Grid>
 					))}
-				</section>
-			</section>
+				</Grid>
+			</Box>
 		);
 	} else {
 		return (
-			<section className="App-page scoreboard">
-				"You may have reached this page in error"
-			</section>
+			<Box component="section" sx={{ p: 3 }}>
+				<Typography>You may have reached this page in error</Typography>
+			</Box>
 		);
 	}
 };

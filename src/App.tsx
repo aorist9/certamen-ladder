@@ -1,5 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import MenuIcon from "@mui/icons-material/Menu";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Home from "./routes/Home";
 import Sidebar from "./components/Sidebar";
 import CreateLadder from "./routes/CreateLadder";
@@ -8,46 +18,115 @@ import Draw from "./routes/Draw";
 import LadderDisplay from "./routes/LadderDisplay";
 import ScoreboardPage from "./routes/ScoreboardPage";
 import LadderRow from "./routes/LadderRow";
-import HamburgerIcon from "./icons/Hamburger";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScoreSheet from "./routes/ScoreSheet";
 import { FeatureFlagsProvider } from "./contexts/featureFlagsContext";
-import "./App.css";
+import { themes } from "./utils/themes";
+// @ts-ignore
+import "./print.css";
 
 function App() {
-	const headerRef = useRef<HTMLHeadingElement>(null);
-	const [height, setHeight] = useState<number>(0);
+	const [themeIndex, setThemeIndex] = useState<number>(() => {
+		const stored = window.localStorage.getItem("themeName");
+		if (stored) {
+			const matchedIndex = themes.findIndex(theme => theme.name === stored);
+			return matchedIndex >= 0 ? matchedIndex : 0;
+		}
+		return 0;
+	});
 	const [showSidebar, setShowSidebar] = useState<boolean>(false);
+	const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
 	useEffect(() => {
-		if (headerRef.current) {
-			setHeight(headerRef.current.clientHeight);
+		if (!window.localStorage.getItem("themeName")) {
+			const initialThemeIndex = prefersDarkMode ? 0 : 1;
+			setThemeIndex(initialThemeIndex);
 		}
-	}, [headerRef, setHeight]);
+	}, [prefersDarkMode]);
+
+	const theme = useMemo(
+		() => themes[themeIndex]?.theme ?? themes[0].theme,
+		[themeIndex]
+	);
+
+	const toggleTheme = () => {
+		const nextIndex = (themeIndex + 1) % themes.length;
+		window.localStorage.setItem("themeName", themes[nextIndex].name);
+		setThemeIndex(nextIndex);
+	};
 
 	return (
-		<main className="App">
-			<header className="App-header" ref={headerRef}>
-				<h1 style={{ display: "flex" }}>
-					<button
-						className="menu-btn mobile-only"
-						style={{ margin: "0.5em 1em", borderRadius: "0" }}
-						onClick={() => setShowSidebar(!showSidebar)}
-						aria-label="Menu Button"
-					>
-						<HamburgerIcon color="currentColor" />
-					</button>
-					Certamen Ladder
-				</h1>
-			</header>
-			<div className="mobile-only" style={{ height: `${height}px` }}></div>
+		<ThemeProvider theme={theme}>
+			<CssBaseline />
 			<HashRouter>
 				<FeatureFlagsProvider>
 					<ErrorBoundary>
-						<section style={{ display: "flex" }}>
-							<Sidebar visible={showSidebar} />
-							<article
-								style={{ flexGrow: 3 }}
+						<Box
+							sx={{
+								display: "flex",
+								minHeight: "100vh",
+								backgroundColor: theme.palette.background.default
+							}}
+						>
+							<AppBar
+								className="App-header"
+								position="fixed"
+								elevation={2}
+								sx={{
+									backgroundColor: theme.palette.background.default,
+									color: theme.palette.mode === "light" ? "#0f172a" : "#f8fafc",
+									zIndex: theme.zIndex.drawer + 1,
+									borderBottom: `1px solid ${theme.palette.divider}`
+								}}
+							>
+								<Toolbar>
+									<IconButton
+										color="inherit"
+										edge="start"
+										onClick={() => setShowSidebar(!showSidebar)}
+										sx={{ mr: 2, display: { md: "none" } }}
+										aria-label="Open navigation drawer"
+									>
+										<MenuIcon />
+									</IconButton>
+									<Typography
+										variant="h6"
+										component="div"
+										sx={{ flexGrow: 1, color: "inherit" }}
+									>
+										Certamen Ladder
+									</Typography>
+									<IconButton
+										color="inherit"
+										onClick={toggleTheme}
+										sx={{
+											color:
+												theme.palette.mode === "light" ? "#0f172a" : "#f8fafc"
+										}}
+										aria-label="Toggle theme"
+									>
+										{theme.palette.mode === "dark" ? (
+											<Brightness7Icon />
+										) : (
+											<Brightness4Icon />
+										)}
+									</IconButton>
+								</Toolbar>
+							</AppBar>
+							<Sidebar
+								setVisible={setShowSidebar}
+								visible={showSidebar}
+								onClose={() => setShowSidebar(false)}
+							/>
+							<Box
+								component="main"
+								sx={{
+									flexGrow: 1,
+									p: { xs: 0, md: 3 },
+									mt: { xs: 7, sm: 8 },
+									backgroundColor: theme.palette.background.paper,
+									minHeight: "100vh"
+								}}
 								onClick={() => setShowSidebar(false)}
 							>
 								<ErrorBoundary>
@@ -62,12 +141,12 @@ function App() {
 										<Route path="/score-sheet" element={<ScoreSheet />} />
 									</Routes>
 								</ErrorBoundary>
-							</article>
-						</section>
+							</Box>
+						</Box>
 					</ErrorBoundary>
 				</FeatureFlagsProvider>
 			</HashRouter>
-		</main>
+		</ThemeProvider>
 	);
 }
 

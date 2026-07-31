@@ -1,4 +1,9 @@
 import React, { ChangeEvent } from "react";
+import Box from "@mui/material/Box";
+import ListItem from "@mui/material/ListItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { EditingStatus } from "./DisplayedLadder";
 
 type TeamDisplayProps = {
@@ -11,30 +16,42 @@ type TeamDisplayProps = {
 
 const TeamDisplay = (props: TeamDisplayProps) => {
 	return (
-		<li>
+		<ListItem disablePadding sx={{ py: 0.25 }}>
 			{props.roundEditStatus === EditingStatus.EDITING ||
 			props.score !== undefined ? (
-				<section className="team-display">
-					<span>{props.team}</span>
-					<span style={{ marginLeft: "0.5em" }}>
+				<Stack
+					direction="row"
+					spacing={1}
+					sx={{ width: "100%", alignItems: "center" }}
+				>
+					<Typography variant="body2" color="text.primary">
+						{props.team}
+					</Typography>
+					<Box>
 						{props.roundEditStatus === EditingStatus.EDITING ? (
-							<input
+							<TextField
 								type="number"
-								step={5}
+								slotProps={{ htmlInput: { step: 5 } }}
 								value={props.score || 0}
 								onChange={props.onScoreChange}
+								size="small"
+								sx={{ width: 96 }}
 							/>
 						) : (
-							<strong>{`${props.score}${
-								props.swissPoints ? ` / ${props.swissPoints}` : ""
-							}`}</strong>
+							<Typography variant="body2" sx={{ fontWeight: 600 }}>
+								{`${props.score}${
+									props.swissPoints ? ` / ${props.swissPoints}` : ""
+								}`}
+							</Typography>
 						)}
-					</span>
-				</section>
+					</Box>
+				</Stack>
 			) : (
-				props.team
+				<Typography variant="body2" color="text.primary">
+					{props.team}
+				</Typography>
 			)}
-		</li>
+		</ListItem>
 	);
 };
 

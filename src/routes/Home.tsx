@@ -1,5 +1,5 @@
 import React from "react";
-import "./Home.css";
+import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 import { useFeatureFlags } from "../contexts/featureFlagsContext";
 
 const Home = () => {
@@ -9,71 +9,75 @@ const Home = () => {
 		pointsSwissLadder: pointsSwissLadderFlag,
 		codeSheet: codeSheetFlag
 	} = useFeatureFlags();
+
 	return (
-		<section className="App-page home">
-			<p>
-				Welcome to Certamen Ladder. Check the sidebar to create ladders or view
-				ladders that you previously created.
-			</p>
-			<h2>About this Tool</h2>
-			<p>
-				Certamen Ladder allows you to create ladders for Certamen tournaments,
-				including help doing the draw, setting the pittings, and keeping score.
-			</p>
-			{publishLadderFlag ? (
-				<p>
-					Ladders can now be made public to share via a link; watch the sidebar
-					for the opportunity to publish your ladder. Even when a ladder is
-					shared it can only be updated/edited from the computer that created
-					it, which should keep others from changing your ladders.
-				</p>
-			) : (
-				<p>
-					Although Certamen Ladder is on the web and runs on your browser, the
-					data you put in doesn't go anywhere but is stored on your computer.
-					The good news is that no one can see the information you put in; the
-					bad news is that no one can see the information you put in. Ladders
-					will be designed to be printed out for sharing purposes, but as of now
-					there's no way to share your ladder via this app.
-				</p>
-			)}
-			{codeSheetFlag && (
-				<>
-					<h2>Score Sheets</h2>
-					<p>
-						You wanna keep score on the app? Good news, that is now available.
-						You will see a scoresheet link for each round on the ladder, you
-						will be able to send a link to someone who can then keep score on
-						their phone or on a laptop, and the score will be automatically
-						reflected on the ladder and scoreboard pages.
-					</p>
-				</>
-			)}
-			{swissLadderFlag ? (
-				<>
-					<h2>About the Swiss System</h2>
-					<p>
-						When creating a ladder you'll be offered the opportunity to use
-						Swiss seeding, which will provide you the pittings for the first
-						round based on the draw and then determine the following rounds by
-						pitting teams against each other based on their performance in
-						previous rounds (pitting teams against others performing at the same
-						level).
-					</p>
-					{pointsSwissLadderFlag && (
-						<p>
-							You will also see "Swiss by Points" as an option for type of
-							ladder. This is an experimental ladder type where swiss points are
-							assigned not on whether a team wins its particular round, but
-							whether the team's score falls in the top, middle, or bottom third
-							of all scores
-						</p>
-					)}
-				</>
-			) : (
-				""
-			)}
-		</section>
+		<Box component="section" sx={{ display: "grid", gap: 3 }}>
+			<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+				<Typography variant="h4" gutterBottom>
+					Welcome to Certamen Ladder
+				</Typography>
+				<Typography color="text.secondary">
+					Check the sidebar to create ladders or view ladders that you previously created.
+				</Typography>
+			</Paper>
+
+			<Stack spacing={2}>
+				<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+					<Typography variant="h6" gutterBottom>
+						About this Tool
+					</Typography>
+					<Typography color="text.secondary">
+						Certamen Ladder allows you to create ladders for Certamen tournaments, including
+						help doing the draw, setting the pittings, and keeping score.
+					</Typography>
+				</Paper>
+
+				{publishLadderFlag ? (
+					<Alert severity="info" sx={{ border: 1, borderColor: "divider", bgcolor: "background.default" }}>
+						Ladders can now be made public to share via a link; watch the sidebar for the
+						opportunity to publish your ladder. Even when a ladder is shared it can only be
+						updated or edited from the computer that created it.
+					</Alert>
+				) : (
+					<Alert severity="info" sx={{ border: 1, borderColor: "divider", bgcolor: "background.default" }}>
+						Although Certamen Ladder is on the web and runs in your browser, the data you put
+						in stays on your computer. Ladders are designed to be printed out for sharing
+						purposes, but there is currently no built-in way to share your ladder from this app.
+					</Alert>
+				)}
+
+				{codeSheetFlag && (
+					<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+						<Typography variant="h6" gutterBottom>
+							Score Sheets
+						</Typography>
+						<Typography color="text.secondary">
+							You can keep score in the app and share a link with another device so the score
+							updates automatically on the ladder and scoreboard pages.
+						</Typography>
+					</Paper>
+				)}
+
+				{swissLadderFlag ? (
+					<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+						<Typography variant="h6" gutterBottom>
+							About the Swiss System
+						</Typography>
+						<Typography color="text.secondary">
+							When creating a ladder you can choose Swiss seeding, which will provide the
+							pittings for the first round and then determine later rounds by pairing teams
+							based on their performance.
+						</Typography>
+						{pointsSwissLadderFlag && (
+							<Typography color="text.secondary" sx={{ mt: 1 }}>
+								Swiss by Points is also available as an experimental option where points are
+								awarded by placement within the score range rather than by winning a round.
+							</Typography>
+						)}
+					</Paper>
+				) : null}
+			</Stack>
+		</Box>
 	);
 };
 
