@@ -1,52 +1,44 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import ladderService from "../services/ladderService";
 import { Ladder, LadderStatus } from "../types/LadderType";
 import LadderInfoSection from "../components/LadderInfoSection";
-import "./ViewLadders.css";
 
 const ViewLadders = () => {
 	const [ladders, setLadders] = useState<Ladder[]>(ladderService.getLadders());
 
 	return (
-		<section className="App-page view-ladders">
-			<h2>Existing Ladders</h2>
-			<p>Click one to see the ladder</p>
-			<section className="list-of-ladders">
+		<Box component="section" sx={{ display: "grid", gap: 2 }}>
+			<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+				<Typography variant="h4" gutterBottom>
+					Existing Ladders
+				</Typography>
+				<Typography color="text.secondary">Click one to see the ladder</Typography>
+			</Paper>
+			<Stack spacing={2}>
 				{ladders.map((l: Ladder) => {
 					const ladder: Ladder = new Ladder(l);
 					return (
-						<section className="ladder-item" key={ladder.id}>
-							<Link
-								to={`/${
-									ladder.calculateStatus() === LadderStatus.CREATED
-										? "draw"
-										: "ladder"
-								}?ladder=${ladder.id}`}
-								style={{
-									textDecoration: "inherit",
-									color: "inherit"
+						<Paper key={ladder.id} elevation={0} sx={{ p: 2, display: "flex", gap: 2, justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+							<Box component={RouterLink} to={`/${ladder.calculateStatus() === LadderStatus.CREATED ? "draw" : "ladder"}?ladder=${ladder.id}`} sx={{ textDecoration: "none", color: "inherit", flex: 1 }}>
+								<LadderInfoSection ladder={ladder} />
+							</Box>
+							<Button
+								variant="outlined"
+								color="error"
+								onClick={() => {
+									ladderService.deleteLadder(ladder.id);
+									setLadders(ladders.filter((l: Ladder) => l.id !== ladder.id));
 								}}
 							>
-								<LadderInfoSection ladder={ladder} />
-							</Link>
-							<section className="delete-ladder-button-section">
-								<button
-									onClick={() => {
-										ladderService.deleteLadder(ladder.id);
-										setLadders(
-											ladders.filter((l: Ladder) => l.id !== ladder.id)
-										);
-									}}
-								>
-									Delete
-								</button>
-							</section>
-						</section>
+								Delete
+							</Button>
+						</Paper>
 					);
 				})}
-			</section>
-		</section>
+			</Stack>
+		</Box>
 	);
 };
 

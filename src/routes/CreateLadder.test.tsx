@@ -31,7 +31,7 @@ describe("CreateLadder", () => {
 		renderCreateLadder();
 		userEvent.click(screen.getByLabelText("Multiple Division Tournament"));
 		expect(
-			screen.getByText("How many divisions are there?")
+			screen.getAllByText("How many divisions are there?")[0]
 		).toBeInTheDocument();
 	});
 

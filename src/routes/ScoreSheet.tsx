@@ -1,12 +1,11 @@
 import React from "react";
+import { Box, Paper } from "@mui/material";
 import Teams from "../components/ScoreSheet/Teams";
 import { RoundContextProvider } from "../contexts/RoundContext";
 import TotalScores from "../components/ScoreSheet/TotalScores";
 import Questions from "../components/ScoreSheet/Questions";
 import { useSearchParams } from "react-router-dom";
 import ScoreSheetHeader from "../components/ScoreSheet/ScoreSheetHeader";
-// @ts-ignore
-import "./ScoreSheet.css";
 
 export interface Player {
 	name: string;
@@ -19,14 +18,16 @@ const ScoreSheet = () => {
 	const publicId = query.get("publicId");
 
 	return (
-		<section className="App-page score-sheet">
-			<RoundContextProvider>
-				<ScoreSheetHeader ladderId={ladderId} publicId={publicId} />
-				<Teams />
-				<TotalScores />
-				<Questions />
-			</RoundContextProvider>
-		</section>
+		<Box component="section" sx={{ display: "grid", gap: 2 }}>
+			<Paper elevation={0} sx={{ p: { xs: 2, md: 3 }, bgcolor: "background.paper" }}>
+				<RoundContextProvider>
+					<ScoreSheetHeader ladderId={ladderId} publicId={publicId} />
+					<Teams />
+					<TotalScores />
+					<Questions />
+				</RoundContextProvider>
+			</Paper>
+		</Box>
 	);
 };
 

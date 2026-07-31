@@ -1,6 +1,7 @@
-import { Link, useSearchParams } from "react-router-dom";
+import React from "react";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import Scoreboard from "../components/Scoreboard";
-import "./ScoreboardPage.css";
 import { useLadder } from "../services/ladderService";
 
 const ScoreboardPage = () => {
@@ -9,18 +10,14 @@ const ScoreboardPage = () => {
 	const { ladder } = useLadder({ ladderId, publicLadderId: publicId });
 
 	const header = (
-		<section style={{ display: "flex", columnGap: "2em" }}>
-			<h2>{ladder?.name}</h2>
-			<Link
-				to={`/ladder?${
-					ladderId ? `ladder=${ladderId}` : `publicId=${publicId}`
-				}`}
-				style={{ margin: "auto 0" }}
-				className="hide-print"
-			>
-				Ladder
-			</Link>
-		</section>
+		<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+			<Stack direction={{ xs: "column", sm: "row" }} sx={{ spacing: 2, justifyContent: "space-between", alignItems: "flex-start" }}>
+				<Typography variant="h4">{ladder?.name}</Typography>
+				<Button component={RouterLink} to={`/ladder${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`} variant="outlined">
+					Ladder
+				</Button>
+			</Stack>
+		</Paper>
 	);
 
 	if (
@@ -28,11 +25,9 @@ const ScoreboardPage = () => {
 		ladder.divisions?.some(d => d.matches?.length)
 	) {
 		return (
-			<section className="App-page scoreboard">
+			<Box component="section" sx={{ display: "grid", gap: 2 }}>
 				{header}
-				<section
-					style={{ display: "flex", flexWrap: "wrap", columnGap: "1em" }}
-				>
+				<Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
 					{ladder.divisions.map((d, idx) => (
 						<Scoreboard
 							key={d.division}
@@ -41,14 +36,14 @@ const ScoreboardPage = () => {
 							divisionNumber={idx}
 						/>
 					))}
-				</section>
-			</section>
+				</Stack>
+			</Box>
 		);
 	} else {
 		return (
-			<section className="App-page scoreboard">
-				"You may have reached this page in error"
-			</section>
+			<Box component="section" sx={{ p: 3 }}>
+				<Typography>You may have reached this page in error</Typography>
+			</Box>
 		);
 	}
 };

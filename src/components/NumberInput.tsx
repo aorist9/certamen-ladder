@@ -1,4 +1,5 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from "react";
+import { TextField } from "@mui/material";
 
 type NumberInputProps = {
 	id: string;
@@ -8,18 +9,19 @@ type NumberInputProps = {
 };
 
 const NumberInput = (props: NumberInputProps) => (
-	<section className="form-field">
-		<label htmlFor={props.id}>{props.label}</label>
-		<input
-			type="number"
-			id={props.id}
-			value={props.value || ''}
-			onChange={(e: ChangeEvent<HTMLInputElement>) => {
-				let val = parseInt(e.target.value);
-				props.setValue(isNaN(val) ? undefined : val);
-			}}
-		/>
-	</section>
+	<TextField
+		id={props.id}
+		label={props.label}
+		variant="standard"
+		type="number"
+		value={props.value ?? ""}
+		fullWidth
+		sx={{ maxWidth: 320 }}
+		onChange={(e: ChangeEvent<HTMLInputElement>) => {
+			const val = parseInt(e.target.value, 10);
+			props.setValue(isNaN(val) ? undefined : val);
+		}}
+	/>
 );
 
 export default NumberInput;

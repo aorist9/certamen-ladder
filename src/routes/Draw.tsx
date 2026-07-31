@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChooseDraw from "../components/Draw/ChooseDraw";
 import ladderService from "../services/ladderService";
 import OldFashionedDraw from "../components/Draw/OldFashionedDraw";
 import RandomDraw from "../components/Draw/RandomDraw";
 import { Ladder } from "../types/LadderType";
-import "./Draw.css";
 import DivisionTab from "../components/Draw/DivisionTab";
 import AddRooms from "../components/Draw/AddRooms";
 import Teams from "../types/Teams";
@@ -79,9 +83,9 @@ const Draw = () => {
 
 	if (!ladder) {
 		return (
-			<section className="App-page draw">
-				You may have reached this page in error
-			</section>
+			<Box component="section" sx={{ p: 3 }}>
+				<Typography>You may have reached this page in error</Typography>
+			</Box>
 		);
 	}
 
@@ -235,18 +239,18 @@ const Draw = () => {
 				);
 			default:
 				return (
-					<section className="App-page draw">
-						You may have reached this page in error
-					</section>
+					<Box component="section" sx={{ p: 3 }}>
+						<Typography>You may have reached this page in error</Typography>
+					</Box>
 				);
 		}
 	};
 
 	return (
-		<section>
+		<Box component="section" sx={{ display: "grid", gap: 2 }}>
 			{ladder.divisions && ladder.divisions.length > 1 ? (
-				<nav className="divisions tabs">
-					<ul>
+				<Box component="nav" sx={{ borderBottom: 1, borderColor: "divider", pb: 1 }}>
+					<Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
 						{divisionNames.map((name, idx) => (
 							<DivisionTab
 								key={name}
@@ -262,37 +266,32 @@ const Draw = () => {
 								select={() => setSelectedDivision(idx)}
 							/>
 						))}
-					</ul>
-				</nav>
-			) : (
-				""
-			)}
-			<section className="App-page draw">
+					</Stack>
+				</Box>
+			) : null}
+			<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
 				{divisionNames?.length ? (
 					divisionNames.map((divName, idx: number) => (
-						<section
-							key={divName}
-							style={selectedDivision === idx ? {} : { display: "none" }}
-						>
+						<Box key={divName} sx={selectedDivision === idx ? {} : { display: "none" }}>
 							{error?.idx === idx ? (
-								<p className="error">{error?.message}</p>
-							) : (
-								""
-							)}
+								<Typography color="error" sx={{ mb: 2 }}>
+									{error?.message}
+								</Typography>
+							) : null}
 							{renderDraw(idx)}
-						</section>
+						</Box>
 					))
 				) : (
 					<>
-						{error?.message ? <p className="error">{error?.message}</p> : ""}
+						{error?.message ? <Typography color="error" sx={{ mb: 2 }}>{error?.message}</Typography> : null}
 						{renderDraw(0)}
 					</>
 				)}
-				<button style={{ marginTop: "1em" }} onClick={() => submit()}>
+				<Button variant="contained" sx={{ mt: 2 }} onClick={() => submit()}>
 					Generate Ladder
-				</button>
-			</section>
-		</section>
+				</Button>
+			</Paper>
+		</Box>
 	);
 };
 
