@@ -14,6 +14,7 @@ import DivisionTab from "../components/Draw/DivisionTab";
 import AddRooms from "../components/Draw/AddRooms";
 import Teams from "../types/Teams";
 import { DrawType } from "../constants";
+import { Grid } from "@mui/material";
 
 const determineInitialDivisions = (divisions: number | undefined): string[] => {
 	if (!divisions) {
@@ -143,7 +144,8 @@ const Draw = () => {
 		switch (ladder?.drawType) {
 			case DrawType.TRADITIONAL:
 				return (
-					<section className="draw-division">
+					<Grid container spacing={2} className="draw-division">
+            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
 						<OldFashionedDraw
 							setDrawFunction={inputDrawFunction}
 							teams={teams}
@@ -162,6 +164,8 @@ const Draw = () => {
 									: setThreeRooms
 							}
 						/>
+            </Grid>
+            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
 						<AddRooms
 							divisionOrTournament={
 								ladder?.divisions && ladder.divisions.length > 1
@@ -171,11 +175,13 @@ const Draw = () => {
 							savedRooms={savedRooms}
 							updateRooms={updateRooms}
 						/>
-					</section>
+            </Grid>
+					</Grid>
 				);
 			case DrawType.CLICK:
 				return (
-					<section className="draw-division">
+					<Grid container spacing={2} className="draw-division">
+            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
 						<ChooseDraw
 							setDrawFunction={inputDrawFunction}
 							teams={teams}
@@ -194,6 +200,8 @@ const Draw = () => {
 									: setThreeRooms
 							}
 						/>
+            </Grid>
+            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
 						<AddRooms
 							divisionOrTournament={
 								ladder?.divisions && ladder.divisions.length > 1
@@ -203,11 +211,13 @@ const Draw = () => {
 							savedRooms={savedRooms}
 							updateRooms={updateRooms}
 						/>
-					</section>
+            </Grid>
+					</Grid>
 				);
 			case DrawType.RANDOM:
 				return (
-					<section className="draw-division">
+					<Grid container spacing={2} className="draw-division">
+            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
 						<RandomDraw
 							setDrawFunction={inputDrawFunction}
 							teams={teams}
@@ -226,6 +236,8 @@ const Draw = () => {
 									: setThreeRooms
 							}
 						/>
+            </Grid>
+            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
 						<AddRooms
 							divisionOrTournament={
 								ladder?.divisions && ladder.divisions.length > 1
@@ -235,7 +247,8 @@ const Draw = () => {
 							savedRooms={savedRooms}
 							updateRooms={updateRooms}
 						/>
-					</section>
+            </Grid>
+					</Grid>
 				);
 			default:
 				return (

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NumberInput from "../NumberInput";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { letters } from "../../constants";
 import { DrawProps } from "../../routes/Draw";
 import ChooseDrawTeamsSection from "./ChooseDrawTeamsSection";
@@ -47,13 +49,17 @@ const Draw = (props: DrawProps) => {
 	}, [chosenLetter, numLetters, teams]);
 
 	return (
-		<section className="draw-body">
-			<NumberInput
-				id="number-of-letters"
-				label="How many letters should players choose from (it's okay if not all letters are picked)?"
-				setValue={value => setNumLetters(value)}
-				value={numLetters}
-			/>
+		<Stack className="draw-body" direction="column" spacing={2}>
+			<Box component="section" sx={{ maxWidth: "300px" }}>
+				<NumberInput
+					id="number-of-letters"
+					label="How many letters should players choose from (it's okay if not all letters are picked)?"
+					onValueChange={(value: number | null) =>
+						value && setNumLetters(value)
+					}
+					value={numLetters}
+				/>
+			</Box>
 			<section className="draw-section">
 				<figure data-testid="letter-display" className="letter-display">
 					{chosenLetter || displayLetter}
@@ -104,7 +110,7 @@ const Draw = (props: DrawProps) => {
 					</label>
 				</p>
 			)}
-		</section>
+		</Stack>
 	);
 };
 

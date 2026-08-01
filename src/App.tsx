@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider, CssBaseline, PaletteMode } from "@mui/material";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";

@@ -1,5 +1,21 @@
 import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
-import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Paper, Radio, RadioGroup, Select, Stack, TextField, Typography } from "@mui/material";
+import {
+	Alert,
+	Box,
+	Button,
+	Checkbox,
+	FormControl,
+	FormControlLabel,
+	FormLabel,
+	MenuItem,
+	Paper,
+	Radio,
+	RadioGroup,
+	Select,
+	Stack,
+	TextField,
+	Typography
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import NumberInput from "../components/NumberInput";
@@ -23,7 +39,9 @@ const CreateLadder = () => {
 	const [rounds, setRounds] = useState<number | undefined>(3);
 	const [draw, setDraw] = useState<DrawType | undefined>();
 	const [messageText, setMessageText] = useState<string>("");
-	const [messageShowUntil, setMessageShowUntil] = useState<"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | "">("");
+	const [messageShowUntil, setMessageShowUntil] = useState<
+		"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | ""
+	>("");
 	const [error, setError] = useState<string>("");
 	const navigate = useNavigate();
 
@@ -80,11 +98,18 @@ const CreateLadder = () => {
 
 	return (
 		<Box component="section" sx={{ display: "grid", gap: 3 }}>
-			<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+			<Paper
+				elevation={0}
+				sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+			>
 				<Typography variant="h4" gutterBottom>
 					Create a New Ladder
 				</Typography>
-				<Box component="form" onSubmit={onSubmit} sx={{ display: "grid", gap: 3 }}>
+				<Box
+					component="form"
+					onSubmit={onSubmit}
+					sx={{ display: "grid", gap: 3 }}
+				>
 					<TextField
 						id="ladder-name"
 						label="Ladder Name:"
@@ -93,7 +118,9 @@ const CreateLadder = () => {
 						value={name}
 						fullWidth
 						sx={{ maxWidth: 520 }}
-						onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							setName(e.target.value)
+						}
 					/>
 
 					{multipleDivisionsFlag ? (
@@ -110,19 +137,25 @@ const CreateLadder = () => {
 								label="Multiple Division Tournament"
 							/>
 							{divisions !== undefined ? (
-								<NumberInput
-									id="divisions"
-									label="How many divisions are there?"
-									value={divisions}
-									setValue={(value: number | undefined) => setDivisions(value)}
-								/>
+								<Box component="section" sx={{ maxWidth: "300px" }}>
+									<NumberInput
+										id="divisions"
+										label="How many divisions are there?"
+										value={divisions}
+										onValueChange={(value: number | null) =>
+											value && setDivisions(value)
+										}
+									/>
+								</Box>
 							) : null}
 						</Stack>
 					) : null}
 
 					{swissLadderFlag || pointsSwissLadderFlag ? (
 						<FormControl sx={{ maxWidth: 520 }}>
-							<FormLabel htmlFor="ladder-type">What type of ladder would you like to create?</FormLabel>
+							<FormLabel htmlFor="ladder-type">
+								What type of ladder would you like to create?
+							</FormLabel>
 							<Select
 								id="ladder-type"
 								value={type}
@@ -148,22 +181,33 @@ const CreateLadder = () => {
 					{chooseRoundsFlag ||
 					(swissLadderFlag && type === "SWISS") ||
 					(pointsSwissLadderFlag && type === "SWISS_BY_POINTS") ? (
-						<NumberInput
-							id="rounds"
-							value={rounds}
-							setValue={value => setRounds(value)}
-							label="How many preliminary rounds are you playing?"
-						/>
+						<Box component="section" sx={{ maxWidth: "300px" }}>
+							<NumberInput
+								id="rounds"
+								value={rounds}
+								onValueChange={value => value && setRounds(value)}
+								label="How many preliminary rounds are you playing?"
+							/>
+						</Box>
 					) : null}
 
 					<FormControl sx={{ maxWidth: 720 }}>
-						<FormLabel id="draw-type-radio-group">How would you like to do the draw?</FormLabel>
-						<RadioGroup aria-labelledby="draw-type-radio-group" value={draw ?? ""}>
+						<FormLabel id="draw-type-radio-group">
+							How would you like to do the draw?
+						</FormLabel>
+						<RadioGroup
+							aria-labelledby="draw-type-radio-group"
+							value={draw ?? ""}
+						>
 							{Object.keys(DrawType).map(key => (
 								<FormControlLabel
 									key={key}
 									value={key}
-									control={<Radio />}
+									control={
+										<Radio
+											checked={draw === DrawType[key as keyof typeof DrawType]}
+										/>
+									}
 									label={DrawType[key as keyof typeof DrawType]}
 									onChange={() => {
 										setDraw(DrawType[key as keyof typeof DrawType]);
@@ -180,16 +224,21 @@ const CreateLadder = () => {
 						value={messageText}
 						fullWidth
 						sx={{ maxWidth: 720 }}
-						onChange={(e: ChangeEvent<HTMLInputElement>) => setMessageText(e.target.value)}
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							setMessageText(e.target.value)
+						}
 					/>
 
 					<FormControl sx={{ maxWidth: 520 }}>
-						<FormLabel htmlFor="ladder-message-show-until">This message should be shown until...</FormLabel>
+						<FormLabel htmlFor="ladder-message-show-until">
+							This message should be shown until...
+						</FormLabel>
 						<Select
 							id="ladder-message-show-until"
 							value={messageShowUntil}
 							onChange={e => {
-								const nextValue = e.target.value as "ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | "";
+								const nextValue = e.target.value as
+									"ALWAYS" | "DRAW" | "IN_PROGRESS" | "DONE" | "";
 								setMessageShowUntil(nextValue);
 								if (!nextValue.length) {
 									setMessageText("");
@@ -199,17 +248,35 @@ const CreateLadder = () => {
 							<MenuItem value="">None</MenuItem>
 							<MenuItem value="ALWAYS">Always</MenuItem>
 							<MenuItem value="DRAW">After the Draw</MenuItem>
-							<MenuItem value="IN_PROGRESS">The rounds start (only works if you enter scores)</MenuItem>
-							<MenuItem value="DONE">Done (only works if you enter scores)</MenuItem>
+							<MenuItem value="IN_PROGRESS">
+								The rounds start (only works if you enter scores)
+							</MenuItem>
+							<MenuItem value="DONE">
+								Done (only works if you enter scores)
+							</MenuItem>
 						</Select>
 					</FormControl>
 
-					<Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
-						<Button variant="contained" type="submit" disabled={isFormValid() !== true}>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 2,
+							flexWrap: "wrap"
+						}}
+					>
+						<Button
+							variant="contained"
+							type="submit"
+							disabled={isFormValid() !== true}
+						>
 							Start
 						</Button>
 						{error ? (
-							<Alert severity="error" sx={{ flex: 1, border: 1, borderColor: "divider" }}>
+							<Alert
+								severity="error"
+								sx={{ flex: 1, border: 1, borderColor: "divider" }}
+							>
 								{error}
 							</Alert>
 						) : null}
