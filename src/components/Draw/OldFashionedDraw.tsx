@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { DrawProps } from "../../routes/Draw";
 import DrawInputTableRow, { DrawRow } from "./DrawInputTableRow";
 import { useMemo } from "react";
@@ -19,7 +25,7 @@ const OldFashionedDraw = (props: DrawProps) => {
 			? Object.keys(teams).map(letter => ({
 					letter,
 					team: teams?.[letter] as string
-			  }))
+				}))
 			: [];
 		const targetLength = defaultRows.length < 12 ? 12 : defaultRows.length + 3;
 		while (defaultRows.length < targetLength) {
@@ -41,13 +47,13 @@ const OldFashionedDraw = (props: DrawProps) => {
 	}, [rows]);
 
 	return (
-		<section className="draw-body">
-			<section>
+		<Box component="section" sx={{ display: "grid", gap: 2 }}>
+			<Typography variant="body1">
 				Please enter the teams as they draw. Don't worry about putting them in
 				order or filling up all the fields.
-			</section>
-			<section className="teams" style={{ rowGap: "1em" }}>
-				<section>
+			</Typography>
+			<Stack spacing={2}>
+				<Box>
 					<table className="input-table">
 						<thead>
 							<tr>
@@ -68,27 +74,28 @@ const OldFashionedDraw = (props: DrawProps) => {
 							))}
 						</tbody>
 					</table>
-					<button onClick={() => setRows([...rows, {}, {}, {}, {}, {}, {}])}>
+					<Button
+						variant="contained"
+						sx={{ mt: 1.5 }}
+						onClick={() => setRows([...rows, {}, {}, {}, {}, {}, {}])}
+					>
 						+ Add More Teams
-					</button>
-				</section>
-				<section className="options">
-					{activeRows === 6 && (
-						<p className="three-rooms">
-							<label>
-								<input
-									type="checkbox"
-									id="three-rooms-for-six-teams"
-									checked={props.threeRooms}
-									onChange={e => props.setThreeRooms(e.target.checked)}
-								/>
-								Separate these six teams into 3 rooms?
-							</label>
-						</p>
-					)}
-				</section>
-			</section>
-		</section>
+					</Button>
+				</Box>
+				{activeRows === 6 && (
+					<FormControlLabel
+						control={
+							<Checkbox
+								id="three-rooms-for-six-teams"
+								checked={props.threeRooms}
+								onChange={e => props.setThreeRooms(e.target.checked)}
+							/>
+						}
+						label="Separate these six teams into 3 rooms?"
+					/>
+				)}
+			</Stack>
+		</Box>
 	);
 };
 

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import { Ladder } from "../../types/LadderType";
 import { MatchesV2 } from "../../types/Matches";
 import pittingService from "../../services/pittingService";
@@ -78,12 +81,13 @@ const DisplayedLadder = ({
 
 	if (ladder && pittings && pittings.length) {
 		return (
-			<section className="displayed-ladder">
-				<h3>
+			<Box className="displayed-ladder">
+				<Typography variant="h3">
 					{name || ""}
 					{hideIfPublic(
-						<button
-							style={{ marginLeft: "1em" }}
+						<Button
+							sx={{ ml: "1em" }}
+							className="hide-print"
 							onClick={() => {
 								if (roomEditStatus === EditingStatus.EDITING) {
 									setRoomEditStatus(EditingStatus.EDITED);
@@ -94,14 +98,14 @@ const DisplayedLadder = ({
 							}}
 						>
 							{roomEditStatus}
-						</button>
+						</Button>
 					)}
 					{codeSheetFlag &&
 						pittings.every(round => round.every(room => !room.scoresheetId)) &&
 						hideIfPublic(
-							<button
+							<Button
 								className="hide-print"
-								style={{ marginLeft: "1em" }}
+								sx={{ ml: "1em" }}
 								onClick={async () => {
 									if (
 										// eslint-disable-next-line no-restricted-globals
@@ -172,15 +176,15 @@ const DisplayedLadder = ({
 								}}
 							>
 								Use Score Sheets
-							</button>
+							</Button>
 						)}
 					{ladder.isSwiss() &&
 					(pittings[pittings.length - 1][0].teams[0].swissPoints !==
 						undefined ||
 						ladder.numRounds > pittings.length)
 						? hideIfPublic(
-								<button
-									style={{ marginLeft: "1em" }}
+								<Button
+									sx={{ ml: "1em" }}
 									onClick={() => {
 										let newPittings = [...pittings];
 										newPittings[newPittings.length - 1] = newPittings[
@@ -238,12 +242,12 @@ const DisplayedLadder = ({
 									{ladder.numRounds > pittings.length
 										? "/Generate Next Round"
 										: ""}
-								</button>
-						  )
+								</Button>
+							)
 						: ""}
-				</h3>
+				</Typography>
 				<LadderTable
-          divisionIdx={divisionNumber || 0}
+					divisionIdx={divisionNumber || 0}
 					hideIfPublic={hideIfPublic}
 					isSwiss={ladder.isSwiss()}
 					isSwissByPoints={ladder.ladderType === LadderStyle.SWISS_BY_POINTS}
@@ -259,7 +263,7 @@ const DisplayedLadder = ({
 					setRoundScoreEditStatuses={setRoundScoreEditStatuses}
 					updateMatches={updateMatches}
 				/>
-			</section>
+			</Box>
 		);
 	} else {
 		return <></>;

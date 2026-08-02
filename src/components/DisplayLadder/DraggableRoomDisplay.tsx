@@ -1,4 +1,11 @@
 import React, { useState, DragEvent, ChangeEvent, useEffect } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import MuiLink from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import TeamDisplay from "./TeamDisplay";
 import { EditingStatus } from "./DisplayedLadder";
 import { Link, useSearchParams } from "react-router-dom";
@@ -86,54 +93,78 @@ const DraggableRoomDisplay = ({
 					moveRoom(parseInt(e.dataTransfer.getData("roomIdx")));
 				}
 			}}
-			style={isDragHovered ? { border: "1.5px solid blue" } : {}}
+			style={
+				isDragHovered
+					? { border: "1.5px solid", borderColor: "primary.main" }
+					: {}
+			}
 		>
-			<ul
-				draggable={canEdit}
-				onDragStart={(e: DragEvent) => {
-					if (canEdit) {
-						e.dataTransfer.setData("roomIdx", `${roomNumber}`);
-						startDrag();
-					}
+			<Paper
+				variant="outlined"
+				sx={{
+					p: 1.25,
+					bgcolor: "background.paper",
+					borderColor: isDragHovered ? "primary.main" : "divider"
 				}}
 			>
-				{pitting?.teams.map(({ team, score, swissPoints }, idx) => (
-					<TeamDisplay
-						key={team}
-						onScoreChange={onScoreChange(roomNumber, roundNumber, idx)}
-						roundEditStatus={editStatus}
-						score={score}
-						swissPoints={swissPoints}
-						team={team}
-					/>
-				))}
-			</ul>
-			{scoresheetId && codeSheetFlag ? (
-				<section className="score-sheet-link hide-print">
-					<Link
-						to={`/score-sheet?ladder=${query.get(
-							"ladder"
-						)}&round=${scoresheetId}`}
-						tabIndex={isAnyRoundEditingScore ? 2 : undefined}
-						className="hide-print"
-					>
-						Score Sheet
-					</Link>
-					{scoresheetOverridden ? (
-						<span>Overridden</span>
-					) : (
-						<button onClick={overrideScoresheet}>Override</button>
-					)}
-				</section>
-			) : (
-				""
-			)}
-			{codeSheetFlag &&
-				!scoresheetOverridden &&
-				password &&
-				hideIfPublic(
-					<p className="password-display hide-print">Password: {password}</p>
+				<Box
+					draggable={canEdit}
+					onDragStart={(e: DragEvent) => {
+						if (canEdit) {
+							e.dataTransfer.setData("roomIdx", `${roomNumber}`);
+							startDrag();
+						}
+					}}
+					sx={{ cursor: canEdit ? "grab" : "default" }}
+				>
+					{pitting?.teams.map(({ team, score, swissPoints }, idx) => (
+						<TeamDisplay
+							key={team}
+							onScoreChange={onScoreChange(roomNumber, roundNumber, idx)}
+							roundEditStatus={editStatus}
+							score={score}
+							swissPoints={swissPoints}
+							team={team}
+						/>
+					))}
+				</Box>
+				{scoresheetId && codeSheetFlag ? (
+					<Stack spacing={1} sx={{ mt: 1.25 }}>
+						<MuiLink
+							component={Link}
+							to={`/score-sheet?ladder=${query.get("ladder")}&round=${scoresheetId}`}
+							underline="hover"
+						>
+							Score Sheet
+						</MuiLink>
+						{scoresheetOverridden ? (
+							<Chip label="Overridden" size="small" color="warning" />
+						) : (
+							<Button
+								size="small"
+								variant="outlined"
+								onClick={overrideScoresheet}
+							>
+								Override
+							</Button>
+						)}
+					</Stack>
+				) : (
+					""
 				)}
+				{codeSheetFlag &&
+					!scoresheetOverridden &&
+					password &&
+					hideIfPublic(
+						<Typography
+							variant="caption"
+							color="text.secondary"
+							sx={{ display: "block", mt: 1 }}
+						>
+							Password: {password}
+						</Typography>
+					)}
+			</Paper>
 		</td>
 	);
 };

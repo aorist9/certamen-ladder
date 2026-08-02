@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box"
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChooseDraw from "../components/Draw/ChooseDraw";
@@ -145,109 +145,109 @@ const Draw = () => {
 			case DrawType.TRADITIONAL:
 				return (
 					<Grid container spacing={2} className="draw-division">
-            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
-						<OldFashionedDraw
-							setDrawFunction={inputDrawFunction}
-							teams={teams}
-							threeRooms={
-								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
-							}
-							setThreeRooms={
-								Array.isArray(threeRooms)
-									? (tr: boolean) => {
-											setThreeRooms([
-												...threeRooms.slice(0, idx),
-												tr,
-												...threeRooms.slice(idx + 1)
-											]);
-									  }
-									: setThreeRooms
-							}
-						/>
-            </Grid>
-            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
-						<AddRooms
-							divisionOrTournament={
-								ladder?.divisions && ladder.divisions.length > 1
-									? "division"
-									: "tournament"
-							}
-							savedRooms={savedRooms}
-							updateRooms={updateRooms}
-						/>
-            </Grid>
+						<Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
+							<OldFashionedDraw
+								setDrawFunction={inputDrawFunction}
+								teams={teams}
+								threeRooms={
+									Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+								}
+								setThreeRooms={
+									Array.isArray(threeRooms)
+										? (tr: boolean) => {
+												setThreeRooms([
+													...threeRooms.slice(0, idx),
+													tr,
+													...threeRooms.slice(idx + 1)
+												]);
+											}
+										: setThreeRooms
+								}
+							/>
+						</Grid>
+						<Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
+							<AddRooms
+								divisionOrTournament={
+									ladder?.divisions && ladder.divisions.length > 1
+										? "division"
+										: "tournament"
+								}
+								savedRooms={savedRooms}
+								updateRooms={updateRooms}
+							/>
+						</Grid>
 					</Grid>
 				);
 			case DrawType.CLICK:
 				return (
 					<Grid container spacing={2} className="draw-division">
-            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
-						<ChooseDraw
-							setDrawFunction={inputDrawFunction}
-							teams={teams}
-							threeRooms={
-								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
-							}
-							setThreeRooms={
-								Array.isArray(threeRooms)
-									? (tr: boolean) => {
-											setThreeRooms([
-												...threeRooms.slice(0, idx),
-												tr,
-												...threeRooms.slice(idx + 1)
-											]);
-									  }
-									: setThreeRooms
-							}
-						/>
-            </Grid>
-            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
-						<AddRooms
-							divisionOrTournament={
-								ladder?.divisions && ladder.divisions.length > 1
-									? "division"
-									: "tournament"
-							}
-							savedRooms={savedRooms}
-							updateRooms={updateRooms}
-						/>
-            </Grid>
+						<Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
+							<ChooseDraw
+								setDrawFunction={inputDrawFunction}
+								teams={teams}
+								threeRooms={
+									Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+								}
+								setThreeRooms={
+									Array.isArray(threeRooms)
+										? (tr: boolean) => {
+												setThreeRooms([
+													...threeRooms.slice(0, idx),
+													tr,
+													...threeRooms.slice(idx + 1)
+												]);
+											}
+										: setThreeRooms
+								}
+							/>
+						</Grid>
+						<Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
+							<AddRooms
+								divisionOrTournament={
+									ladder?.divisions && ladder.divisions.length > 1
+										? "division"
+										: "tournament"
+								}
+								savedRooms={savedRooms}
+								updateRooms={updateRooms}
+							/>
+						</Grid>
 					</Grid>
 				);
 			case DrawType.RANDOM:
 				return (
 					<Grid container spacing={2} className="draw-division">
-            <Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
-						<RandomDraw
-							setDrawFunction={inputDrawFunction}
-							teams={teams}
-							threeRooms={
-								Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
-							}
-							setThreeRooms={
-								Array.isArray(threeRooms)
-									? (tr: boolean) => {
-											setThreeRooms([
-												...threeRooms.slice(0, idx),
-												tr,
-												...threeRooms.slice(idx + 1)
-											]);
-									  }
-									: setThreeRooms
-							}
-						/>
-            </Grid>
-            <Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
-						<AddRooms
-							divisionOrTournament={
-								ladder?.divisions && ladder.divisions.length > 1
-									? "division"
-									: "tournament"
-							}
-							savedRooms={savedRooms}
-							updateRooms={updateRooms}
-						/>
-            </Grid>
+						<Grid component="section" size={{ xs: 12, md: 8, lg: 9 }}>
+							<RandomDraw
+								setDrawFunction={inputDrawFunction}
+								teams={teams}
+								threeRooms={
+									Array.isArray(threeRooms) ? threeRooms[idx] : threeRooms
+								}
+								setThreeRooms={
+									Array.isArray(threeRooms)
+										? (tr: boolean) => {
+												setThreeRooms([
+													...threeRooms.slice(0, idx),
+													tr,
+													...threeRooms.slice(idx + 1)
+												]);
+											}
+										: setThreeRooms
+								}
+							/>
+						</Grid>
+						<Grid component="section" size={{ xs: 12, md: 4, lg: 3 }}>
+							<AddRooms
+								divisionOrTournament={
+									ladder?.divisions && ladder.divisions.length > 1
+										? "division"
+										: "tournament"
+								}
+								savedRooms={savedRooms}
+								updateRooms={updateRooms}
+							/>
+						</Grid>
 					</Grid>
 				);
 			default:
@@ -262,8 +262,15 @@ const Draw = () => {
 	return (
 		<Box component="section" sx={{ display: "grid", gap: 2 }}>
 			{ladder.divisions && ladder.divisions.length > 1 ? (
-				<Box component="nav" sx={{ borderBottom: 1, borderColor: "divider", pb: 1 }}>
-					<Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+				<Box
+					component="nav"
+					sx={{ borderBottom: 1, borderColor: "divider", pb: 1 }}
+				>
+					<Tabs
+						value={selectedDivision}
+						variant="scrollable"
+						scrollButtons="auto"
+					>
 						{divisionNames.map((name, idx) => (
 							<DivisionTab
 								key={name}
@@ -274,18 +281,24 @@ const Draw = () => {
 										...divisionNames.slice(idx + 1)
 									])
 								}
-								isSelected={selectedDivision === idx}
+								idx={idx}
 								name={name}
 								select={() => setSelectedDivision(idx)}
 							/>
 						))}
-					</Stack>
+					</Tabs>
 				</Box>
 			) : null}
-			<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
+			<Paper
+				elevation={0}
+				sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+			>
 				{divisionNames?.length ? (
 					divisionNames.map((divName, idx: number) => (
-						<Box key={divName} sx={selectedDivision === idx ? {} : { display: "none" }}>
+						<Box
+							key={divName}
+							sx={selectedDivision === idx ? {} : { display: "none" }}
+						>
 							{error?.idx === idx ? (
 								<Typography color="error" sx={{ mb: 2 }}>
 									{error?.message}
@@ -296,7 +309,11 @@ const Draw = () => {
 					))
 				) : (
 					<>
-						{error?.message ? <Typography color="error" sx={{ mb: 2 }}>{error?.message}</Typography> : null}
+						{error?.message ? (
+							<Typography color="error" sx={{ mb: 2 }}>
+								{error?.message}
+							</Typography>
+						) : null}
 						{renderDraw(0)}
 					</>
 				)}

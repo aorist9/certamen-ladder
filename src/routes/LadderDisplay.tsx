@@ -25,15 +25,34 @@ const LadderDisplay = () => {
 		const message = ladder.displayedMessage();
 		return (
 			<Box component="section" sx={{ display: "grid", gap: 2 }}>
-				<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
-					<Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ justifyContent: "space-between", alignItems: "flex-start" }}>
-						<Typography variant="h4">{ladder.name}</Typography>
-						<Button component={RouterLink} to={`/scoreboard${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`} variant="outlined">
+				<Paper
+					elevation={0}
+					sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+				>
+					<Stack
+						direction={{ xs: "column", sm: "row" }}
+						spacing={2}
+						sx={{ justifyContent: "space-between", alignItems: "flex-start" }}
+					>
+						<Typography variant="h2">{ladder.name}</Typography>
+						<Button
+							component={RouterLink}
+							to={`/scoreboard${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`}
+							variant="outlined"
+						>
 							Scoreboard
 						</Button>
 					</Stack>
 					{message ? (
-						<Alert severity="info" sx={{ mt: 2, border: 1, borderColor: "divider", bgcolor: "background.default" }}>
+						<Alert
+							severity="info"
+							sx={{
+								mt: 2,
+								border: 1,
+								borderColor: "divider",
+								bgcolor: "background.default"
+							}}
+						>
 							{message}
 						</Alert>
 					) : null}
@@ -44,12 +63,17 @@ const LadderDisplay = () => {
 					)}
 					{canStillGoBack &&
 						hideIfPublic(
-							<Button component={RouterLink} to={`/draw?ladder=${ladderId}`} variant="text" sx={{ mt: 1 }}>
+							<Button
+								component={RouterLink}
+								to={`/draw?ladder=${ladderId}`}
+								variant="text"
+								sx={{ mt: 1 }}
+							>
 								Add/Remove Teams
 							</Button>
 						)}
 				</Paper>
-				<section className="multi-ladder-display">
+				<Stack className="multi-ladder-display" direction="column" spacing={4}>
 					{ladder?.divisions?.map((division, idx) => (
 						<DisplayedLadder
 							divisionNumber={idx}
@@ -72,7 +96,7 @@ const LadderDisplay = () => {
 							hideIfPublic={hideIfPublic}
 						/>
 					))}
-				</section>
+				</Stack>
 			</Box>
 		);
 	} else {

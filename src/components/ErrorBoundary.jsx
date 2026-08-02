@@ -1,4 +1,10 @@
 import React from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import ladderService from "../services/ladderService";
 import { useNavigate } from "react-router";
 
@@ -25,35 +31,39 @@ class ErrorBoundary extends React.Component {
 				ladder = ladderService.getLadder(ladderId);
 			}
 			return (
-				<section className="App-page">
-					<section className="error">
-						Oh no! An error occurred! If you want to help out, then before you
-						refresh to clear this error, take the below information and paste it
-						into an email to webmaster@txclassics.org. It may include ladder
-						details, so feel free to skip that part if you don't want to share
-						it.
-					</section>
-					<p>
-						<code>{this.state.error.message}</code>
-						<br />
-						<code>{this.state.error.stack}</code>
-						{ladder ? (
-							<p>
-								<code>{JSON.stringify(ladder)}</code>
-							</p>
-						) : (
-							""
-						)}
-					</p>
-					<button
-						onClick={() => {
-							this.props.navigate("/");
-							this.setState({ error: undefined });
-						}}
+				<Box sx={{ p: 3 }}>
+					<Paper
+						variant="outlined"
+						sx={{ p: 3, bgcolor: "background.paper", borderColor: "divider" }}
 					>
-						Return to home page
-					</button>
-				</section>
+						<Stack spacing={2}>
+							<Alert severity="error">
+								Oh no! An error occurred. If you want to help out, then before
+								you refresh to clear this error, take the below information and
+								paste it into an email to webmaster@txclassics.org. It may
+								include ladder details, so feel free to skip that part if you
+								don't want to share it.
+							</Alert>
+							<Typography
+								component="pre"
+								sx={{ whiteSpace: "pre-wrap", fontSize: "0.875rem" }}
+							>
+								{this.state.error.message}
+								\n{this.state.error.stack}
+								{ladder ? `\n${JSON.stringify(ladder)}` : ""}
+							</Typography>
+							<Button
+								variant="contained"
+								onClick={() => {
+									this.props.navigate("/");
+									this.setState({ error: undefined });
+								}}
+							>
+								Return to home page
+							</Button>
+						</Stack>
+					</Paper>
+				</Box>
 			);
 		} else {
 			return this.props.children;

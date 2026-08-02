@@ -126,7 +126,7 @@ describe("Draw", () => {
 				);
 				done();
 			}, 51);
-			expect(screen.getByText("Team Name:")).toBeInTheDocument();
+			expect(screen.getByLabelText(/team name/i)).toBeInTheDocument();
 			expect(screen.getByText("Save")).toBeInTheDocument();
 		});
 

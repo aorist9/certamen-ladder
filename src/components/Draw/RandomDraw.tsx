@@ -1,4 +1,10 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { DrawProps } from "../../routes/Draw";
 import { letters } from "../../constants";
 
@@ -35,34 +41,36 @@ const RandomDraw = (props: DrawProps) => {
 	}, [splitTeams]);
 
 	return (
-		<section className="draw-body">
-			Please enter team names in the text box. You can separate them with commas
-			or new lines.
-			<section className="teams">
-				<textarea
+		<Box component="section" sx={{ display: "grid", gap: 2 }}>
+			<Typography variant="body1">
+				Please enter team names in the text box. You can separate them with
+				commas or new lines.
+			</Typography>
+			<Stack spacing={1.5}>
+				<TextField
+					multiline
+					minRows={8}
 					value={teams}
 					onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
 						setTeams(e.target.value)
 					}
-					rows={8}
-					cols={50}
 					placeholder="Enter teams here"
+					sx={{ width: "100%", maxWidth: 560 }}
 				/>
 				{Object.keys(splitTeams).length === 6 && (
-					<p>
-						<label>
-							<input
-								type="checkbox"
+					<FormControlLabel
+						control={
+							<Checkbox
 								id="three-rooms-for-six-teams"
 								checked={props.threeRooms}
 								onChange={e => props.setThreeRooms(e.target.checked)}
 							/>
-							Separate these six teams into 3 rooms?
-						</label>
-					</p>
+						}
+						label="Separate these six teams into 3 rooms?"
+					/>
 				)}
-			</section>
-		</section>
+			</Stack>
+		</Box>
 	);
 };
 

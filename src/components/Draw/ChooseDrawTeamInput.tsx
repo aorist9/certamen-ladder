@@ -1,4 +1,8 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 
 const ChooseDrawTeamInput = (props: {
 	addTeam: (teamName: string) => void;
@@ -10,7 +14,8 @@ const ChooseDrawTeamInput = (props: {
 	}, []);
 
 	return (
-		<form
+		<Box
+			component="form"
 			onSubmit={(e: FormEvent) => {
 				e.preventDefault();
 				if (teamName) {
@@ -18,25 +23,28 @@ const ChooseDrawTeamInput = (props: {
 					setTeamName("");
 				}
 			}}
-			style={{ display: "flex", columnGap: "1em" }}
+			sx={{ width: "100%" }}
 		>
-			<section className="form-field">
-				<label htmlFor="team-name">Team Name:</label>
-				<input
-					type="text"
+			<Stack
+				direction={{ xs: "column", md: "row" }}
+				spacing={1.5}
+				sx={{ alignItems: { xs: "stretch", md: "flex-start" } }}
+			>
+				<TextField
+					label="Team Name:"
 					id="team-name"
 					value={teamName || ""}
-					style={{ minWidth: "30rem" }}
+					fullWidth
 					placeholder="Enter Your Team's Name (make sure to include Purple/Gold, A/B, if necessary)"
 					onChange={(e: ChangeEvent<HTMLInputElement>) =>
 						setTeamName(e.target.value)
 					}
 				/>
-			</section>
-			<button type="submit" disabled={!teamName?.trim()}>
-				Save
-			</button>
-		</form>
+				<Button type="submit" variant="contained" disabled={!teamName?.trim()}>
+					Save
+				</Button>
+			</Stack>
+		</Box>
 	);
 };
 

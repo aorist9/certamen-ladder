@@ -1,5 +1,10 @@
 import React from "react";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import Scoreboard from "../components/Scoreboard";
 import { useLadder } from "../services/ladderService";
@@ -10,10 +15,24 @@ const ScoreboardPage = () => {
 	const { ladder } = useLadder({ ladderId, publicLadderId: publicId });
 
 	const header = (
-		<Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}>
-			<Stack direction={{ xs: "column", sm: "row" }} sx={{ spacing: 2, justifyContent: "space-between", alignItems: "flex-start" }}>
+		<Paper
+			elevation={0}
+			sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+		>
+			<Stack
+				direction={{ xs: "column", sm: "row" }}
+				sx={{
+					spacing: 2,
+					justifyContent: "space-between",
+					alignItems: "flex-start"
+				}}
+			>
 				<Typography variant="h4">{ladder?.name}</Typography>
-				<Button component={RouterLink} to={`/ladder${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`} variant="outlined">
+				<Button
+					component={RouterLink}
+					to={`/ladder${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`}
+					variant="outlined"
+				>
 					Ladder
 				</Button>
 			</Stack>
@@ -27,16 +46,17 @@ const ScoreboardPage = () => {
 		return (
 			<Box component="section" sx={{ display: "grid", gap: 2 }}>
 				{header}
-				<Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
+				<Grid container spacing={2} sx={{ flexWrap: "wrap" }}>
 					{ladder.divisions.map((d, idx) => (
-						<Scoreboard
-							key={d.division}
-							name={d.division}
-							ladder={ladder}
-							divisionNumber={idx}
-						/>
+						<Grid key={d.division} size={{ xs: 12, lg: 6 }}>
+							<Scoreboard
+								name={d.division}
+								ladder={ladder}
+								divisionNumber={idx}
+							/>
+						</Grid>
 					))}
-				</Stack>
+				</Grid>
 			</Box>
 		);
 	} else {
