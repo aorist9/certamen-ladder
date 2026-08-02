@@ -22,6 +22,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import ScoreSheet from "./routes/ScoreSheet";
 import { FeatureFlagsProvider } from "./contexts/featureFlagsContext";
 import { themes } from "./utils/themes";
+// @ts-ignore
+import "./print.css";
 
 function App() {
 	const [themeIndex, setThemeIndex] = useState<number>(() => {
@@ -42,7 +44,10 @@ function App() {
 		}
 	}, [prefersDarkMode]);
 
-	const theme = useMemo(() => themes[themeIndex]?.theme ?? themes[0].theme, [themeIndex]);
+	const theme = useMemo(
+		() => themes[themeIndex]?.theme ?? themes[0].theme,
+		[themeIndex]
+	);
 
 	const toggleTheme = () => {
 		const nextIndex = (themeIndex + 1) % themes.length;
@@ -56,7 +61,13 @@ function App() {
 			<HashRouter>
 				<FeatureFlagsProvider>
 					<ErrorBoundary>
-						<Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: theme.palette.background.default }}>
+						<Box
+							sx={{
+								display: "flex",
+								minHeight: "100vh",
+								backgroundColor: theme.palette.background.default
+							}}
+						>
 							<AppBar
 								position="fixed"
 								elevation={2}
@@ -87,21 +98,34 @@ function App() {
 									<IconButton
 										color="inherit"
 										onClick={toggleTheme}
-										sx={{ color: theme.palette.mode === "light" ? "#0f172a" : "#f8fafc" }}
+										sx={{
+											color:
+												theme.palette.mode === "light" ? "#0f172a" : "#f8fafc"
+										}}
 										aria-label="Toggle theme"
 									>
-										{theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+										{theme.palette.mode === "dark" ? (
+											<Brightness7Icon />
+										) : (
+											<Brightness4Icon />
+										)}
 									</IconButton>
 								</Toolbar>
 							</AppBar>
 							<Sidebar
-                setVisible={setShowSidebar}
-                visible={showSidebar}
-                onClose={() => setShowSidebar(false)}
-              />
+								setVisible={setShowSidebar}
+								visible={showSidebar}
+								onClose={() => setShowSidebar(false)}
+							/>
 							<Box
 								component="main"
-								sx={{ flexGrow: 1, p: 3, mt: { xs: 7, sm: 8 }, backgroundColor: theme.palette.background.paper, minHeight: "100vh" }}
+								sx={{
+									flexGrow: 1,
+									p: 3,
+									mt: { xs: 7, sm: 8 },
+									backgroundColor: theme.palette.background.paper,
+									minHeight: "100vh"
+								}}
 								onClick={() => setShowSidebar(false)}
 							>
 								<ErrorBoundary>
