@@ -1,20 +1,32 @@
 import React from "react";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import { LETTERS } from "../../types/Round";
 import { useRoundContext } from "../../contexts/RoundContext";
 
 const CHECK = "\u2713";
 const X = "X";
 
-const NEUTRAL_CELL = <td></td>;
+const NEUTRAL_CELL = <TableCell></TableCell>;
 const SUCCESS_CELL = (
-	<td>
-		<span className="success">{CHECK}</span>
-	</td>
+	<TableCell color="success">
+		<Typography variant="body1" color="success" sx={{ fontWeight: 600 }}>
+			{CHECK}
+		</Typography>
+	</TableCell>
 );
 const FAILURE_CELL = (
-	<td>
-		<span className="failure">{X}</span>
-	</td>
+	<TableCell>
+		<Typography variant="body1" color="error" sx={{ fontWeight: 600 }}>
+			{X}
+		</Typography>
+	</TableCell>
 );
 
 const renderQuestionCell = (
@@ -39,49 +51,68 @@ const QuestionsTable = ({
 }) => {
 	const { questions, teams } = useRoundContext();
 	return (
-		<table className="questions-table">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th style={{ width: "40%" }}>Player</th>
-					<th>TU (10)</th>
-					<th>B1 (5)</th>
-					<th>B2 (5)</th>
-					<th>Comments</th>
-				</tr>
-			</thead>
-			<tbody>
+		<Table className="questions-table">
+			<TableHead>
+				<TableRow>
+					<TableCell>#</TableCell>
+					<TableCell sx={{ minWidth: "40%" }}>Player</TableCell>
+					<TableCell>TU (10)</TableCell>
+					<TableCell>B1 (5)</TableCell>
+					<TableCell>B2 (5)</TableCell>
+					<TableCell>Comments</TableCell>
+				</TableRow>
+			</TableHead>
+			<TableBody>
 				{questions.map((question, idx) => (
-					<tr key={idx}>
-						<td>
+					<TableRow key={idx}>
+						<TableCell sx={{ textAlign: "center" }}>
 							{currentQuestion === idx ? (
 								idx + 1
 							) : (
-								<button
+								<Button
 									className="link-button"
 									onClick={() => setCurrentQuestion(idx)}
 								>
 									{idx + 1}
-								</button>
+								</Button>
 							)}
-						</td>
-						<td>
-							{question.buzzes.map(buzz => (
-								<span
-									key={buzz.team}
-									className={
-										question.correctTeam === buzz.team
-											? "buzzer correct"
-											: question.correctTeam || currentQuestion > idx
-											? "buzzer incorrect"
-											: "buzzer"
-									}
-								>
-									{LETTERS[teams.map(team => team.name).indexOf(buzz.team)]}
-									{buzz.player + 1}
-								</span>
-							))}
-						</td>
+						</TableCell>
+						<TableCell>
+							<Stack
+								direction="row"
+								sx={{
+									height: "100%",
+									gap: "1rem",
+									alignItems: "center"
+								}}
+							>
+								{question.buzzes.map(buzz => (
+									<Typography
+										variant="body1"
+										key={buzz.team}
+										color={
+											question.correctTeam === buzz.team
+												? "success"
+												: question.correctTeam || currentQuestion > idx
+													? "error"
+													: ""
+										}
+										sx={{
+											fontWeight: 600,
+											textDecoration:
+												question.correctTeam &&
+												currentQuestion >= idx &&
+												question.correctTeam !== buzz.team
+													? "line-through"
+													: ""
+										}}
+									>
+										{LETTERS[teams.map(team => team.name).indexOf(buzz.team)]}
+										{buzz.player + 1}
+									</Typography>
+								))}
+							</Stack>
+						</TableCell>
 						{renderQuestionCell(!!question.correctTeam, currentQuestion > idx)}
 						{renderQuestionCell(
 							!!question.boni?.length && question.boni[0],
@@ -91,11 +122,11 @@ const QuestionsTable = ({
 							question.boni?.length > 1 && question.boni[1],
 							question.boni?.length > 1
 						)}
-						<td>{question.comments}</td>
-					</tr>
+						<TableCell>{question.comments}</TableCell>
+					</TableRow>
 				))}
-			</tbody>
-		</table>
+			</TableBody>
+		</Table>
 	);
 };
 

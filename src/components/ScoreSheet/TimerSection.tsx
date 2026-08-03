@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 const TimerSection = () => {
 	const [timer, setTimer] = useState(0);
@@ -14,12 +17,11 @@ const TimerSection = () => {
 	}, [timer, timerOn]);
 
 	return (
-		<section
+		<Stack
+			direction="column"
 			className="timer-section"
-			style={{
+			sx={{
 				marginRight: "1em",
-				display: "flex",
-				flexDirection: "column",
 				alignItems: "center",
 				justifyContent: "center",
 				marginBottom: "1em"
@@ -27,28 +29,29 @@ const TimerSection = () => {
 		>
 			{timerOn ? (
 				<>
-					<section
-						style={{
-							margin: "1em",
-							fontSize: timer > 0 ? "24pt" : "20pt"
-						}}
+					<Typography
+						variant="h4"
+						sx={{ margin: "1em", fontSize: timer > 0 ? "24pt" : "20pt" }}
 					>
 						{timer > 0 ? timer : "Time's up!"}
-					</section>
-					<button
-						className="btn-danger"
-						style={{ fontSize: "14pt", padding: "1em" }}
+					</Typography>
+					<Button
+						variant="contained"
+						color="error"
+						sx={{ fontSize: "14pt", padding: "1em" }}
 						onClick={() => {
 							setTimer(0);
 							setTimerOn(false);
 						}}
 					>
 						Stop Timer
-					</button>
+					</Button>
 				</>
 			) : (
-				<button
+				<Button
 					className="btn-success"
+					variant="contained"
+					color="success"
 					style={{ fontSize: "14pt", padding: "1em" }}
 					onClick={() => {
 						setTimer(15);
@@ -56,9 +59,9 @@ const TimerSection = () => {
 					}}
 				>
 					Start Timer
-				</button>
+				</Button>
 			)}
-		</section>
+		</Stack>
 	);
 };
 

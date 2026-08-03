@@ -1,4 +1,9 @@
 import { useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Stack from "@mui/material/Stack";
 import { LETTERS, Question } from "../../types/Round";
 import EditBuzz from "./EditBuzz";
 import { useRoundContext } from "../../contexts/RoundContext";
@@ -20,7 +25,7 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[0].team)
 					]
-			  }${question.buzzes[0].player + 1}`
+				}${question.buzzes[0].player + 1}`
 			: undefined
 	);
 	const [buzz2, setBuzz2] = useState<string | undefined>(
@@ -29,7 +34,7 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[1].team)
 					]
-			  }${question.buzzes[1].player + 1}`
+				}${question.buzzes[1].player + 1}`
 			: undefined
 	);
 	const [buzz3, setBuzz3] = useState<string | undefined>(
@@ -38,7 +43,7 @@ const EditSection = ({
 					LETTERS[
 						teams.findIndex(team => team.name === question.buzzes[2].team)
 					]
-			  }${question.buzzes[2].player + 1}`
+				}${question.buzzes[2].player + 1}`
 			: undefined
 	);
 	const [correct, setCorrect] = useState<number | undefined>(
@@ -66,10 +71,9 @@ const EditSection = ({
 	};
 
 	return (
-		<section
+		<Stack
+			direction="column"
 			style={{
-				display: "flex",
-				flexDirection: "column",
 				gap: "1em",
 				paddingBottom: "1em"
 			}}
@@ -117,60 +121,59 @@ const EditSection = ({
 					.map(letter => [1, 2, 3, 4].map(number => `${letter}${number}`))
 					.flat()}
 			/>
-			<section className="bonus-checkbox-section">
-				<p>
-					<label
-						htmlFor="bonus1"
-						onClick={() => setBonus1(!bonus1)}
-						className="bonus-checkbox-label"
-					>
-						<input
-							type="checkbox"
-							name="bonus1"
+			<Stack direction="column" className="bonus-checkbox-section">
+				<FormControlLabel
+					control={
+						<Checkbox
 							checked={bonus1}
-							className="bonus-checkbox"
+							onChange={() => setBonus1(!bonus1)}
+							name="bonus1"
 						/>
-						&nbsp; Bonus 1
-					</label>
-				</p>
-				<p>
-					<label
-						htmlFor="bonus2"
-						onClick={() => setBonus2(!bonus2)}
-						className="bonus-checkbox-label"
-					>
-						<input
-							type="checkbox"
-							name="bonus2"
+					}
+					label="Bonus 1"
+				/>
+				<FormControlLabel
+					control={
+						<Checkbox
 							checked={bonus2}
-							className="bonus-checkbox"
+							onChange={() => setBonus2(!bonus2)}
+							name="bonus2"
 						/>
-						&nbsp; Bonus 2
-					</label>
-				</p>
-			</section>
-			<button
-				className="btn-success"
-				onClick={() => {
-					const buzzes = [
-						mapBuzzer(buzz1),
-						mapBuzzer(buzz2),
-						mapBuzzer(buzz3)
-					].filter(buzz => !!buzz) as { team: string; player: number }[];
-					save({
-						buzzes,
-						correctTeam:
-							correct === undefined ? undefined : buzzes[correct].team,
-						boni: [bonus1, bonus2]
-					});
-				}}
-			>
-				Save
-			</button>
-			<button className="btn-failure" onClick={cancel}>
-				Cancel
-			</button>
-		</section>
+					}
+					label="Bonus 2"
+				/>
+			</Stack>
+			<Box>
+				<Button
+					className="btn-success"
+					variant="contained"
+					color="success"
+					onClick={() => {
+						const buzzes = [
+							mapBuzzer(buzz1),
+							mapBuzzer(buzz2),
+							mapBuzzer(buzz3)
+						].filter(buzz => !!buzz) as { team: string; player: number }[];
+						save({
+							buzzes,
+							correctTeam:
+								correct === undefined ? undefined : buzzes[correct].team,
+							boni: [bonus1, bonus2]
+						});
+					}}
+				>
+					Save
+				</Button>
+				<Button
+					className="btn-failure"
+					onClick={cancel}
+					variant="contained"
+					color="error"
+				>
+					Cancel
+				</Button>
+			</Box>
+		</Stack>
 	);
 };
 

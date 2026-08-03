@@ -1,4 +1,10 @@
 import { ChangeEvent } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
 
 const EditBuzz = ({
 	clearCorrect,
@@ -18,45 +24,51 @@ const EditBuzz = ({
 	values: string[];
 }) => {
 	return (
-		<div style={{ display: "flex", gap: "1em", fontSize: "x-large" }}>
-			<label id={label.toLowerCase().replace(" ", "")}>{label}:</label>
-			<select
+		<Stack direction="row" sx={{ gap: "1em", fontSize: "x-large" }}>
+			<InputLabel
+				htmlFor={label.toLowerCase().replace(" ", "")}
+				sx={{ fontSize: "inherit" }}
+				id={label.toLowerCase().replace(" ", "")}
+				component="label"
+			>
+				{label}
+			</InputLabel>
+			<Select
 				name={label.toLowerCase().replace(" ", "")}
 				className="buzz-dropdown"
 				value={value}
-				onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+				onChange={e =>
 					setValue(e.target.value === "" ? undefined : e.target.value)
 				}
+				sx={{ minWidth: "5em" }}
 			>
-				<option value=""></option>
+				<MenuItem value=""></MenuItem>
 				{values.map(buzzer => (
-					<option key={buzzer} value={buzzer}>
+					<MenuItem key={buzzer} value={buzzer}>
 						{buzzer}
-					</option>
+					</MenuItem>
 				))}
-			</select>
+			</Select>
 			<span>
-				<input
-					type="checkbox"
-					id={label.replace("Buzz ", "correct")}
-					checked={isCorrect}
-					className="correct-checkbox"
-					onChange={(e: ChangeEvent<HTMLInputElement>) => {
-						if (isCorrect) {
-							clearCorrect();
-						} else {
-							setCorrect();
-						}
-					}}
+				<FormControlLabel
+					control={
+						<Checkbox
+							id={label.replace("Buzz ", "correct")}
+							checked={isCorrect}
+							className="correct-checkbox"
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								if (isCorrect) {
+									clearCorrect();
+								} else {
+									setCorrect();
+								}
+							}}
+						/>
+					}
+					label="Correct"
 				/>
-				<label
-					htmlFor={label.replace("Buzz ", "correct")}
-					style={{ paddingLeft: "0.25em" }}
-				>
-					Correct
-				</label>
 			</span>
-		</div>
+		</Stack>
 	);
 };
 
