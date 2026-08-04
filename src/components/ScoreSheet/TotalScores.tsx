@@ -10,7 +10,9 @@ const TotalScores = () => {
 	return (
 		<Stack
 			direction="row"
-			sx={{ justifyContent: "space-around" }}
+			sx={{
+				justifyContent: "space-around"
+			}}
 			className="total-scores"
 		>
 			{scores.map((score, idx) =>

@@ -10,6 +10,7 @@ import NavigationPanel from "./NavigationPanel";
 import EditSection from "./EditSection";
 import TimerSection from "./TimerSection";
 import { NOT_A_TEAM } from "../../constants";
+import { useTheme } from "@mui/material/styles";
 
 enum State {
 	TOSSUP,
@@ -56,6 +57,8 @@ const CurrentQuestion = ({
 				return "secondary";
 		}
 	};
+
+	const theme = useTheme();
 
 	if (state === State.BONI) {
 		return (
@@ -192,7 +195,14 @@ const CurrentQuestion = ({
 	} else {
 		return (
 			<>
-				<Stack className="current-tossup-header" sx={{ mt: "1rem" }}>
+				<Stack
+					className="current-tossup-header"
+					sx={{
+						mt: "1rem",
+						zIndex: 999,
+						backgroundColor: "background.paper"
+					}}
+				>
 					<Stack>
 						<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
 							Tossup {currentQuestion + 1}
@@ -249,7 +259,10 @@ const CurrentQuestion = ({
 											]
 										});
 									}}
-									sx={{ px: "3rem", py: "1rem" }}
+									sx={{
+										[theme.breakpoints.down("md")]: { p: "1rem 2rem" },
+										[theme.breakpoints.up("md")]: { p: "1rem 3rem" }
+									}}
 								>
 									{LETTERS[teamIdx]}
 									{playerIdx + 1}

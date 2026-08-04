@@ -121,7 +121,7 @@ function App() {
 								component="main"
 								sx={{
 									flexGrow: 1,
-									p: 3,
+									p: { xs: 0, md: 3 },
 									mt: { xs: 7, sm: 8 },
 									backgroundColor: theme.palette.background.paper,
 									minHeight: "100vh"
