@@ -1,6 +1,5 @@
 import React, { useState, DragEvent, ChangeEvent, useEffect } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import MuiLink from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
@@ -12,6 +11,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { RoomV2 } from "../../types/Matches";
 import scoreSheetService from "../../services/scoreSheetService";
 import { useFeatureFlags } from "../../contexts/featureFlagsContext";
+import OverrideScoreSheetButton from "./OverrideScoreSheetButton";
 
 type RoomDisplayProps = {
 	editStatus: EditingStatus;
@@ -129,7 +129,7 @@ const DraggableRoomDisplay = ({
 					))}
 				</Box>
 				{scoresheetId && codeSheetFlag ? (
-					<Stack spacing={1} sx={{ mt: 1.25 }}>
+					<Stack spacing={1} sx={{ mt: 1.25 }} className="hide-print">
 						<MuiLink
 							component={Link}
 							to={`/score-sheet?ladder=${query.get("ladder")}&round=${scoresheetId}`}
@@ -140,13 +140,7 @@ const DraggableRoomDisplay = ({
 						{scoresheetOverridden ? (
 							<Chip label="Overridden" size="small" color="warning" />
 						) : (
-							<Button
-								size="small"
-								variant="outlined"
-								onClick={overrideScoresheet}
-							>
-								Override
-							</Button>
+							<OverrideScoreSheetButton onYes={overrideScoresheet} />
 						)}
 					</Stack>
 				) : (
@@ -159,6 +153,7 @@ const DraggableRoomDisplay = ({
 						<Typography
 							variant="caption"
 							color="text.secondary"
+							className="hide-print"
 							sx={{ display: "block", mt: 1 }}
 						>
 							Password: {password}

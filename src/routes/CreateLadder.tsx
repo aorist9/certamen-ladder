@@ -1,21 +1,20 @@
 import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
-import {
-	Alert,
-	Box,
-	Button,
-	Checkbox,
-	FormControl,
-	FormControlLabel,
-	FormLabel,
-	MenuItem,
-	Paper,
-	Radio,
-	RadioGroup,
-	Select,
-	Stack,
-	TextField,
-	Typography
-} from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import NumberInput from "../components/NumberInput";
@@ -44,6 +43,7 @@ const CreateLadder = () => {
 	>("");
 	const [error, setError] = useState<string>("");
 	const navigate = useNavigate();
+	const theme = useTheme();
 
 	const onSubmit = (e: FormEvent) => {
 		e.preventDefault();
@@ -100,7 +100,19 @@ const CreateLadder = () => {
 		<Box component="section" sx={{ display: "grid", gap: 3 }}>
 			<Paper
 				elevation={0}
-				sx={{ p: { xs: 3, md: 4 }, bgcolor: "background.paper" }}
+				sx={{
+					[theme.breakpoints.down("md")]: {
+						px: 3,
+						pt: 3,
+						pb: 5,
+						bgcolor: "background.paper",
+						mb: 10
+					},
+					[theme.breakpoints.up("md")]: {
+						p: 4,
+						bgcolor: "background.paper"
+					}
+				}}
 			>
 				<Typography variant="h4" gutterBottom>
 					Create a New Ladder
@@ -118,6 +130,7 @@ const CreateLadder = () => {
 						value={name}
 						fullWidth
 						sx={{ maxWidth: 520 }}
+						onPointerDown={e => e.stopPropagation()}
 						onChange={(e: ChangeEvent<HTMLInputElement>) =>
 							setName(e.target.value)
 						}
@@ -132,6 +145,7 @@ const CreateLadder = () => {
 										onChange={(e: ChangeEvent<HTMLInputElement>) =>
 											setDivisions(e.target.checked ? 3 : undefined)
 										}
+										onPointerDown={e => e.stopPropagation()}
 									/>
 								}
 								label="Multiple Division Tournament"
@@ -145,6 +159,7 @@ const CreateLadder = () => {
 										onValueChange={(value: number | null) =>
 											value && setDivisions(value)
 										}
+										onPointerDown={e => e.stopPropagation()}
 									/>
 								</Box>
 							) : null}
@@ -162,6 +177,7 @@ const CreateLadder = () => {
 								onChange={e =>
 									setType(e.target.value as keyof typeof LadderStyle)
 								}
+								onPointerDown={e => e.stopPropagation()}
 							>
 								{Object.keys(LadderStyle)
 									.filter(
@@ -170,7 +186,11 @@ const CreateLadder = () => {
 											(pointsSwissLadderFlag || type !== "SWISS_BY_POINTS")
 									)
 									.map(key => (
-										<MenuItem key={key} value={key}>
+										<MenuItem
+											key={key}
+											value={key}
+											onPointerDown={e => e.stopPropagation()}
+										>
 											{LadderStyle[key as keyof typeof LadderStyle]}
 										</MenuItem>
 									))}
@@ -187,6 +207,7 @@ const CreateLadder = () => {
 								value={rounds}
 								onValueChange={value => value && setRounds(value)}
 								label="How many preliminary rounds are you playing?"
+								onPointerDown={e => e.stopPropagation()}
 							/>
 						</Box>
 					) : null}
@@ -212,6 +233,7 @@ const CreateLadder = () => {
 									onChange={() => {
 										setDraw(DrawType[key as keyof typeof DrawType]);
 									}}
+									onPointerDown={e => e.stopPropagation()}
 								/>
 							))}
 						</RadioGroup>
@@ -227,6 +249,7 @@ const CreateLadder = () => {
 						onChange={(e: ChangeEvent<HTMLInputElement>) =>
 							setMessageText(e.target.value)
 						}
+						onPointerDown={e => e.stopPropagation()}
 					/>
 
 					<FormControl sx={{ maxWidth: 520 }}>
@@ -244,14 +267,24 @@ const CreateLadder = () => {
 									setMessageText("");
 								}
 							}}
+							onPointerDown={e => e.stopPropagation()}
 						>
-							<MenuItem value="">None</MenuItem>
-							<MenuItem value="ALWAYS">Always</MenuItem>
-							<MenuItem value="DRAW">After the Draw</MenuItem>
-							<MenuItem value="IN_PROGRESS">
+							<MenuItem value="" onPointerDown={e => e.stopPropagation()}>
+								None
+							</MenuItem>
+							<MenuItem value="ALWAYS" onPointerDown={e => e.stopPropagation()}>
+								Always
+							</MenuItem>
+							<MenuItem value="DRAW" onPointerDown={e => e.stopPropagation()}>
+								After the Draw
+							</MenuItem>
+							<MenuItem
+								value="IN_PROGRESS"
+								onPointerDown={e => e.stopPropagation()}
+							>
 								The rounds start (only works if you enter scores)
 							</MenuItem>
-							<MenuItem value="DONE">
+							<MenuItem value="DONE" onPointerDown={e => e.stopPropagation()}>
 								Done (only works if you enter scores)
 							</MenuItem>
 						</Select>

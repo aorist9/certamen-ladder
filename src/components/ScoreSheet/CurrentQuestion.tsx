@@ -62,7 +62,7 @@ const CurrentQuestion = ({
 
 	if (state === State.BONI) {
 		return (
-			<Stack className="current-tossup boni" sx={{ my: "1rem" }}>
+			<Stack className="current-tossup boni hide-print" sx={{ my: "1rem" }}>
 				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
 					Tossup {currentQuestion + 1}: Boni to{" "}
 					{questions[currentQuestion].correctTeam}
@@ -103,7 +103,7 @@ const CurrentQuestion = ({
 	} else if (state === State.EDITING) {
 		return (
 			<Stack
-				className="current-tossup editing"
+				className="current-tossup editing hide-print"
 				sx={{ my: "1rem", gap: "1rem" }}
 			>
 				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
@@ -133,7 +133,7 @@ const CurrentQuestion = ({
 		);
 	} else if (buzzer) {
 		return (
-			<Stack className="current-tossup buzzed" sx={{ my: "1rem" }}>
+			<Stack className="current-tossup buzzed hide-print" sx={{ my: "1rem" }}>
 				<Typography variant="h3" ref={headerRef} sx={{ fontSize: "2rem" }}>
 					Tossup {currentQuestion + 1}: {buzzer} Buzzed
 				</Typography>
@@ -196,7 +196,7 @@ const CurrentQuestion = ({
 		return (
 			<>
 				<Stack
-					className="current-tossup-header"
+					className="current-tossup-header hide-print"
 					sx={{
 						mt: "1rem",
 						zIndex: 999,
@@ -224,7 +224,7 @@ const CurrentQuestion = ({
 						setEditing={() => setState(State.EDITING)}
 					/>
 				</Stack>
-				<Stack className="current-tossup" sx={{ mt: "1rem" }}>
+				<Stack className="current-tossup hide-print" sx={{ mt: "1rem" }}>
 					{teams.map((team, teamIdx) => (
 						<Stack
 							key={

@@ -1,9 +1,9 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useRoundContext } from "../../contexts/RoundContext";
 import { NOT_A_TEAM } from "../../constants";
@@ -25,11 +25,15 @@ const TeamDisplay = ({
 	team: string;
 }) => {
 	const { isEditMode } = useRoundContext();
+	const theme = useTheme();
 
 	return (
 		<ListItem
-			className="team-select-item"
-			sx={{ width: "60%", border: "1px solid" }}
+			className={`team-select-item ${team === NOT_A_TEAM.name ? "hide-print" : ""}`}
+			sx={{
+				[theme.breakpoints.down("sm")]: { width: "80%", border: "1px solid" },
+				[theme.breakpoints.up("sm")]: { width: "60%", border: "1px solid" }
+			}}
 		>
 			<Stack
 				direction="row"

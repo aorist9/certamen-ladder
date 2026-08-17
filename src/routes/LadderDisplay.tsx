@@ -36,6 +36,7 @@ const LadderDisplay = () => {
 					>
 						<Typography variant="h2">{ladder.name}</Typography>
 						<Button
+							className="hide-print"
 							component={RouterLink}
 							to={`/scoreboard${ladderId ? `?ladder=${ladderId}` : `?publicId=${publicId}`}`}
 							variant="outlined"
@@ -57,7 +58,11 @@ const LadderDisplay = () => {
 						</Alert>
 					) : null}
 					{hideIfPublic(
-						<Typography color="text.secondary" sx={{ mt: 2 }}>
+						<Typography
+							color="text.secondary"
+							sx={{ mt: 2 }}
+							className="hide-print"
+						>
 							Click and drag to move a match up and down to a different room.
 						</Typography>
 					)}

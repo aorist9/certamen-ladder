@@ -69,6 +69,7 @@ function App() {
 							}}
 						>
 							<AppBar
+								className="App-header"
 								position="fixed"
 								elevation={2}
 								sx={{

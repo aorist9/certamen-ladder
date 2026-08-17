@@ -69,12 +69,17 @@ const QuestionsTable = ({
 							{currentQuestion === idx ? (
 								idx + 1
 							) : (
-								<Button
-									className="link-button"
-									onClick={() => setCurrentQuestion(idx)}
-								>
-									{idx + 1}
-								</Button>
+								<>
+									<Button
+										className="link-button hide-print"
+										onClick={() => setCurrentQuestion(idx)}
+									>
+										{idx + 1}
+									</Button>
+									<Typography className="print-only" variant="body2">
+										{idx + 1}
+									</Typography>
+								</>
 							)}
 						</TableCell>
 						<TableCell>

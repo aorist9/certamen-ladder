@@ -1,21 +1,21 @@
 .print-only {
-	display: none;
+	display: none !important;
 }
 
 @media print {
 	.App-header {
-		display: none;
+		display: none !important;
 	}
 
 	.hide-print {
-		display: none;
+		display: none !important;
 	}
 
 	.print-only {
-		display: block;
+		display: block !important;
 	}
 
 	button {
-		display: none;
+		display: none !important;
 	}
 }

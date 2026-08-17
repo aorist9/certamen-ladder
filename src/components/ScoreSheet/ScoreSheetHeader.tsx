@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { useRoundContext } from "../../contexts/RoundContext";
+import { useTheme } from "@mui/material/styles";
 
 const ScoreSheetHeader: React.FC<{
 	ladderId?: string | null;
@@ -14,14 +15,21 @@ const ScoreSheetHeader: React.FC<{
 }> = ({ ladderId, publicId }) => {
 	const { isEditMode, ladderName, roomName, roundNumber, setIsEditMode } =
 		useRoundContext();
+	const theme = useTheme();
+
 	return (
 		<Stack
 			component="header"
 			className="score-sheet-header"
-			direction="row"
+			direction={{ xs: "column", sm: "row" }}
 			sx={{
-				justifyContent: "space-between",
-				alignItems: "center"
+				[theme.breakpoints.down("sm")]: {
+					alignItems: "flex-start"
+				},
+				[theme.breakpoints.up("sm")]: {
+					justifyContent: "space-between",
+					alignItems: "center"
+				}
 			}}
 		>
 			<Box component="section">
@@ -43,7 +51,7 @@ const ScoreSheetHeader: React.FC<{
 				)}
 			</Box>
 			<FormControlLabel
-				className="do-not-print"
+				className="hide-print"
 				control={
 					<Checkbox
 						checked={isEditMode}
@@ -55,7 +63,7 @@ const ScoreSheetHeader: React.FC<{
 				label="Edit Mode"
 			/>
 			<MuiLink
-				className="do-not-print"
+				className="hide-print"
 				component={Link}
 				to={`/ladder?${
 					ladderId ? `ladder=${ladderId}` : `publicId=${publicId}`

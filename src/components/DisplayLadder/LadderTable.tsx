@@ -180,17 +180,10 @@ const LadderTable = ({
 									roundNumber={j}
 									startDrag={() => setDraggedRound(j)}
 									overrideScoresheet={() => {
-										if (
-											// eslint-disable-next-line no-restricted-globals
-											confirm(
-												"Are you sure you want to override the scoresheet? This can't be undone, but you'll still be able to see the scoresheet"
-											)
-										) {
-											const newPitting = [...pittings];
-											newPitting[j][i].scoresheetOverridden = true;
-											setPittings(newPitting);
-											updateMatches(newPitting);
-										}
+										const newPitting = [...pittings];
+										newPitting[j][i].scoresheetOverridden = true;
+										setPittings(newPitting);
+										updateMatches(newPitting);
 									}}
 								/>
 							))}

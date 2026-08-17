@@ -94,13 +94,14 @@ const Sidebar = ({ onClose, setVisible, visible }: SidebarProps) => {
 				</Drawer>
 			) : (
 				<SwipeableDrawer
+					disableEnforceFocus
 					onOpen={() => setVisible(true)}
 					open={visible}
 					swipeAreaWidth={drawerWidth}
 					onClose={onClose}
 					ModalProps={{ keepMounted: true }}
 					anchor="bottom"
-					disableSwipeToOpen={false}
+					disableSwipeToOpen
 					sx={{
 						"& .MuiDrawer-paper": {
 							boxSizing: "border-box",
