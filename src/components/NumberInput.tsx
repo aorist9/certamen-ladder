@@ -14,11 +14,13 @@ export default function NumberSpinner({
 	label,
 	error,
 	size = "medium",
+	maxWidth,
 	...other
 }: BaseNumberField.Root.Props & {
 	label?: React.ReactNode;
 	size?: "small" | "medium";
 	error?: boolean;
+	maxWidth?: string | number;
 }) {
 	let id = React.useId();
 	if (idProp) {
@@ -67,6 +69,7 @@ export default function NumberSpinner({
 						color: "text.primary",
 						fontWeight: 500,
 						lineHeight: 1.5,
+						maxWidth,
 						mb: 0.5
 					}}
 				>
@@ -79,7 +82,7 @@ export default function NumberSpinner({
 					/>
 				</BaseNumberField.ScrubAreaCursor>
 			</BaseNumberField.ScrubArea>
-			<Box sx={{ display: "flex" }}>
+			<Box sx={{ display: "flex", maxWidth }}>
 				<BaseNumberField.Decrement
 					render={
 						<Button

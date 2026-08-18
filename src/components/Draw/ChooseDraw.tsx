@@ -53,13 +53,14 @@ const Draw = (props: DrawProps) => {
 
 	return (
 		<Stack className="draw-body" direction="column" spacing={2}>
-			<Box component="section" sx={{ maxWidth: "300px" }}>
+			<Box component="section">
 				<NumberInput
 					id="number-of-letters"
 					label="How many letters should players choose from (it's okay if not all letters are picked)?"
 					onValueChange={(value: number | null) =>
 						value && setNumLetters(value)
 					}
+					maxWidth="350px"
 					value={numLetters}
 				/>
 			</Box>
