@@ -86,7 +86,8 @@ const Sidebar = ({ onClose, setVisible, visible }: SidebarProps) => {
 							width: drawerWidth,
 							backgroundColor: sidebarBg,
 							color: theme.palette.text.primary,
-							borderRight: `1px solid ${theme.palette.divider}`
+							borderRight: `1px solid ${theme.palette.divider}`,
+							overflowX: "hidden"
 						}
 					}}
 				>
