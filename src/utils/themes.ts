@@ -8,6 +8,7 @@ const buildTheme = (options: {
 	backgroundPaper: string;
 	textPrimary: string;
 	textSecondary: string;
+	error?: { main: string; contrastText: string };
 	headerSurface: string;
 	headerText: string;
 }) =>
@@ -20,6 +21,7 @@ const buildTheme = (options: {
 			secondary: {
 				main: options.secondary
 			},
+			error: options.error,
 			background: {
 				default: options.backgroundDefault,
 				paper: options.backgroundPaper
@@ -43,6 +45,13 @@ const buildTheme = (options: {
 			button: { textTransform: "none", fontWeight: 600 }
 		},
 		components: {
+			MuiCssBaseline: {
+				styleOverrides: {
+					textarea: {
+						color: options.textPrimary
+					}
+				}
+			},
 			MuiAppBar: {
 				styleOverrides: {
 					root: {
@@ -179,6 +188,7 @@ export const slateTheme = buildTheme({
 	backgroundPaper: "#f9fafb",
 	textPrimary: "#111827",
 	textSecondary: "#4b5563",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	headerSurface: "#1e3a8a",
 	headerText: "#f8fafc"
 });
