@@ -148,6 +148,7 @@ export const darkTheme = buildTheme({
 	mode: "dark",
 	primary: "#1976d2",
 	secondary: "#9c27b0",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	backgroundDefault: "#080d18",
 	backgroundPaper: "#111b2f",
 	textPrimary: "#f8fafc",
@@ -162,6 +163,7 @@ export const lightTheme = buildTheme({
 	secondary: "#9c27b0",
 	backgroundDefault: "#e7eefb",
 	backgroundPaper: "#ffffff",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	textPrimary: "#0f172a",
 	textSecondary: "#475569",
 	headerSurface: "#1d4ed8",
@@ -176,6 +178,7 @@ export const airyTheme = buildTheme({
 	backgroundPaper: "#ffffff",
 	textPrimary: "#111827",
 	textSecondary: "#4b5563",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	headerSurface: "#4338ca",
 	headerText: "#f8fafc"
 });
@@ -201,6 +204,7 @@ export const duskTheme = buildTheme({
 	backgroundPaper: "#111827",
 	textPrimary: "#f8fafc",
 	textSecondary: "#cbd5e1",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	headerSurface: "#172554",
 	headerText: "#f8fafc"
 });
@@ -213,6 +217,7 @@ export const forestTheme = buildTheme({
 	backgroundPaper: "#ffffff",
 	textPrimary: "#14532d",
 	textSecondary: "#4d7c59",
+	error: { main: "#b91c1c", contrastText: "#ffffff" },
 	headerSurface: "#166534",
 	headerText: "#f8fafc"
 });
